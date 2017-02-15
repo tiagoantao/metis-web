@@ -1,0 +1,32 @@
+{
+  "name": "genomics",
+  "version": "0.0.1",
+  "description": "Population Genetics teaching tool",
+  "license": "AGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiagoantao/genomics.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tiagoantao/genomics/issues",
+    "email": "tiagoantao@gmail.com"
+  },
+  "homepage": "https://github.com/tiagoantao/genomics",
+  "scripts": {
+    "build": "gulp build"
+  },
+  "keywords": [
+    "population genetics",
+    "simulation"
+  ],
+  "author": {
+    "name": "Tiago Antao",
+    "email": "tiagoantao@gmail.com",
+    "url": "http://tiago.org"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-nunjucks-render": "^2.0.0",
+    "nunjucks": "^3.0.0"
+  }
+}
