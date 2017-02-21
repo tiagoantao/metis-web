@@ -27,12 +27,15 @@
   },
   "devDependencies": {
     "@tiagoantao/metis": "0.0.3",
+    "babel-preset-es2015-rollup": "^3.0.0",
     "eslint": "^3.15.0",
     "gulp": "^3.9.1",
     "gulp-nunjucks-render": "^2.0.0",
     "nunjucks": "^3.0.0",
     "rollup-plugin-babel": "^2.7.1",
+    "rollup-plugin-node-builtins": "^2.1.0",
     "rollup-plugin-node-resolve": "^2.0.0",
-    "rollup-stream": "^1.19.0"
+    "rollup-stream": "^1.19.0",
+    "vinyl-source-stream": "^1.1.0"
   }
 }
