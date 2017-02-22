@@ -1,24 +1,25 @@
-const gulp = require('gulp')
-const nunjucks = require('gulp-nunjucks-render'),
+const gulp = require('gulp'),
+      nunjucks = require('gulp-nunjucks-render'),
+      rollup = require('rollup-stream'),
       rollup_babel = require('rollup-plugin-babel'),
-      rollup_resolve = require('rollup-plugin-node-resolve'),
       rollup_builtins = require('rollup-plugin-node-builtins'),
-      source = require('vinyl-source-stream'),
-      rollup = require('rollup-stream')
+      rollup_commonjs = require('rollup-plugin-commonjs'),
+      rollup_resolve = require('rollup-plugin-node-resolve'),
+      source = require('vinyl-source-stream')
 
 
 gulp.task('rollup', () => {
     return rollup({
             entry: 'src/support.js',
             format: 'iife',
-            moduleName: 'metis',
+            moduleName: 'support',
             plugins: [
-                //rollup_multi(),
-                rollup_babel({
-                    //presets: [ "es2015-rollup" ],
-                }),
-                rollup_resolve({module: true, main: true}),
-                rollup_builtins()
+                rollup_resolve({preferBuiltins: false}),
+                rollup_commonjs({
+                    namedExports: {
+                        'node_modules/events/events.js' : ['EventEmitter']
+                    }
+                })
             ]
         })
         .pipe(source('support.js'))
