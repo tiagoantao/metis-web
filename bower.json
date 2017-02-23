@@ -1,0 +1,25 @@
+{
+  "name": "genomics",
+  "description": "Population Genetics teaching tool",
+  "main": "",
+  "authors": [
+    "Tiago Antao <tiagoantao@gmail.com>"
+  ],
+  "license": "AGPL-3.0",
+  "keywords": [
+    "population",
+    "genetics",
+    "simulation"
+  ],
+  "homepage": "https://github.com/tiagoantao/genomics",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery-knob": "^1.2.13"
+  }
+}

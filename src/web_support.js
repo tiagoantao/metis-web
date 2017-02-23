@@ -1,4 +1,4 @@
-import Rx from 'rxjs/Rx'
+//import Rx from 'rxjs/Rx'
 //import {run} from '@cycle/rxjs-run'
 //import {makeDOMDriver} from '@cycle/dom'
 
