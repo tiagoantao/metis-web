@@ -1,6 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
-<div id="vis"></div>
 <script>
     let values = []
     let cycle = 1
@@ -34,14 +33,30 @@
       mode: "vega-lite",
       spec: jspec
     }
-    vg.embed("#vis", embedSpec, function(error, result) {
+    vg.embed("#vis-simple", embedSpec, function(error, result) {
 
     })
 </script>
-<input type="text" class="dial" data-min="30" data-max="200" value="50">
 <script>
     $(function() {
         $(".dial").knob();
     });
 </script>
+<h2>Introduction</h2>
+<div class="container">
+  <div class="card">
+    <div class="card-block">
+      <h4 class="card-title">A simple example</h4>
+      bla-blah
+      <div class="row">
+        <div class="col">
+          <input type="text" class="dial" data-min="30" data-max="200" value="50">
+        </div>
+        <div class="col">
+          <div id="vis-simple"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
