@@ -1,19 +1,26 @@
 {% extends "base.html" %}
 {% block content %}
 <script>
-    let values = []
-    let cycle = 1
-    let genome_size = 5
-    let record_stats = (stats) => {
-      let exp_he = stats.ExpHe
-      for (let i=0; i<genome_size; i++) {
-          values.push({cycle, ExpHe: exp_he.unlinked[i], marker: 'M' + i})
-      }
-      cycle++
+let pop_size = 50
+let num_markers = 5
+let simulate = (num_individuals, genome_size) => {
+  let values = []
+  let cycle = 1
+  let record_stats = (stats) => {
+    let exp_he = stats.ExpHe
+    for (let i=0; i<genome_size; i++) {
+        values.push({cycle, ExpHe: exp_he.unlinked[i], marker: 'M' + i})
     }
-    support.simulate(record_stats, 100, genome_size)
+    cycle++
+  }
+  support.simulate(record_stats, 100, genome_size)
+  return values
+}
 
-    let spec = `
+
+let plot = (values) => {
+
+  let spec = `
 {
   "description": "ExpHe over cycles",
   "data": {
@@ -27,30 +34,37 @@
     "color": {"field": "marker", "type": "nominal"}
   }
 }`
-    let jspec = JSON.parse(spec)
-    jspec.data.values = values
-    let embedSpec = {
-      mode: "vega-lite",
-      spec: jspec
-    }
-    vg.embed("#vis-simple", embedSpec, function(error, result) {
+  let jspec = JSON.parse(spec)
+  jspec.data.values = values
+  let embedSpec = {
+    mode: "vega-lite",
+    spec: jspec
+  }
+  vg.embed("#vis-simple", embedSpec, function(error, result) {})
+}
 
-    })
-</script>
-<script>
-    $(function() {
-        $(".dial").knob();
-    });
+let display_simulation = () => { 
+  let values = simulate(pop_size, num_markers)
+  plot(values)
+}
+
+display_simulation()
 </script>
 <h2>Introduction</h2>
 <div class="container">
   <div class="card">
     <div class="card-block">
       <h4 class="card-title">A simple example</h4>
-      bla-blah
       <div class="row">
         <div class="col">
-          <input type="text" class="dial" data-min="30" data-max="200" value="50">
+          <p class="text-center">Population size<br>
+            <input name="pop_size" type="text" data-width="100%" data-min="30" data-max="200" value="50">
+          </p>
+        </div>
+        <div class="col">
+          <p class="text-center">Number of markers<br>
+            <input name="num_markers" type="text" data-width="100%" data-min="1" data-max="20" value="5">
+          </p>
         </div>
         <div class="col">
           <div id="vis-simple"></div>
@@ -59,4 +73,21 @@
     </div>
   </div>
 </div>
+
+<script>
+    $(function() {
+        $("input[name='pop_size']").knob({
+          change: (v) => {
+            pop_size = Math.round(v)
+            display_simulation()
+          }
+        })
+        $("input[name='num_markers']").knob({
+          change: (v) => {
+            num_markers = Math.round(v)
+            display_simulation()
+          }
+        })
+    });
+</script>
 {% endblock %}
