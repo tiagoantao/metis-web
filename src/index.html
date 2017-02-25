@@ -3,7 +3,10 @@
 <script>
 let pop_size = 50
 let num_markers = 5
-let simulate = (num_individuals, genome_size) => {
+let num_cycles = 50
+
+
+let simulate = (num_individuals, genome_size, num_cycles) => {
   let values = []
   let cycle = 1
   let record_stats = (stats) => {
@@ -13,26 +16,26 @@ let simulate = (num_individuals, genome_size) => {
     }
     cycle++
   }
-  support.simulate(record_stats, 100, genome_size)
+  support.simulate(record_stats, pop_size, genome_size, num_cycles)
   return values
 }
 
 
-let plot = (values) => {
+let plot = (values, width) => {
 
   let spec = `
 {
   "description": "ExpHe over cycles",
   "data": {
-    "values": [
-    ]
+    "values": []
   },
   "mark": "line",
   "encoding": {
-    "x": {"field": "cycle", "type": "quantitative"},
+    "x": {"field": "cycle", "type": "quantitative", "bandSize": "fit"},
     "y": {"field": "ExpHe", "type": "quantitative"},
     "color": {"field": "marker", "type": "nominal"}
-  }
+  },
+  "width": 300
 }`
   let jspec = JSON.parse(spec)
   jspec.data.values = values
@@ -40,22 +43,44 @@ let plot = (values) => {
     mode: "vega-lite",
     spec: jspec
   }
-  vg.embed("#vis-simple", embedSpec, function(error, result) {})
+
+  let source = JSON.stringify(jspec, null, 2)  // == spec?
+  spec = vl.compile(jspec).spec
+  let div = d3.select('#vis-simple')
+      .classed('vega-embed', true)
+      .html('')
+
+  vg.parse.spec(spec, {}, function(error, chart) {
+    let view = chart({
+      el: '#vis-simple',
+      data: undefined,
+      renderer: 'canvas'
+    })
+
+    view.update()
+    /*
+    view.data('source').insert([{cycle:200, ExpHe: 0.5, marker: 'M0'}])
+    view.update()
+    */
+  })
+
 }
+
 
 let display_simulation = () => { 
-  let values = simulate(pop_size, num_markers)
-  plot(values)
+  let width = $('#intro').width()
+  let values = simulate(pop_size, num_markers, num_cycles)
+  let view = plot(values, width / 2)
 }
 
-display_simulation()
+$('document').ready(display_simulation)
 </script>
 <h2>Introduction</h2>
 <div class="container">
   <div class="card">
     <div class="card-block">
       <h4 class="card-title">A simple example</h4>
-      <div class="row">
+      <div class="row" id="intro">
         <div class="col">
           <p class="text-center">Population size<br>
             <input name="pop_size" type="text" data-width="100%" data-min="30" data-max="200" value="50">
@@ -67,6 +92,13 @@ display_simulation()
           </p>
         </div>
         <div class="col">
+          <p class="text-center">Cycles<br>
+            <input name="num_cycles" type="text" data-width="100%" data-min="5" data-max="200" value="50">
+          </p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col" id=ble>
           <div id="vis-simple"></div>
         </div>
       </div>
@@ -85,6 +117,12 @@ display_simulation()
         $("input[name='num_markers']").knob({
           change: (v) => {
             num_markers = Math.round(v)
+            display_simulation()
+          }
+        })
+        $("input[name='num_cycles']").knob({
+          change: (v) => {
+            num_cycles = Math.round(v)
             display_simulation()
           }
         })

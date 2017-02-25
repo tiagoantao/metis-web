@@ -15,7 +15,7 @@ import {RxOperator} from '@tiagoantao/metis/lib/metis/operator'
 import {do_n_cycles} from '@tiagoantao/metis/lib/metis/simulator'
 
 
-export let simulate = (observer, pop_size=50, genome_size=10, cycles=50) => {
+export let simulate = (observer, pop_size, genome_size, cycles) => {
     let unlinked_genome = genotype.generate_unlinked_genome(genome_size,
         () => {return new genotype.SNP()})
     const species = new Species('unlinked', unlinked_genome)
