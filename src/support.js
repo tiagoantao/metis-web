@@ -15,7 +15,7 @@ import {RxOperator} from '@tiagoantao/metis/lib/metis/operator'
 import {do_n_cycles} from '@tiagoantao/metis/lib/metis/simulator'
 
 
-export let simulate = (observer, pop_size, genome_size, cycles) => {
+export let simulate = (observer, pop_size, genome_size, cycles, controller) => {
     let unlinked_genome = genotype.generate_unlinked_genome(genome_size,
         () => {return new genotype.SNP()})
     const species = new Species('unlinked', unlinked_genome)
@@ -32,7 +32,7 @@ export let simulate = (observer, pop_size, genome_size, cycles) => {
         new SexStatistics(),
         new ExpHe(),
         observable]
-    do_n_cycles(cycles, individuals, operators)
+    do_n_cycles(cycles, individuals, operators, 0, controller)
 }
 
 

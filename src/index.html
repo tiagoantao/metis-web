@@ -7,21 +7,30 @@ let num_cycles = 50
 
 
 let simulate = (num_individuals, genome_size, num_cycles) => {
-  let values = []
+  let values
   let cycle = 1
   let record_stats = (stats) => {
+    values = []
     let exp_he = stats.ExpHe
     for (let i=0; i<genome_size; i++) {
         values.push({cycle, ExpHe: exp_he.unlinked[i], marker: 'M' + i})
     }
     cycle++
   }
-  support.simulate(record_stats, pop_size, genome_size, num_cycles)
-  return values
+  let width = $('#intro').width()
+  prepare_plot(width / 2, (view) => {
+    let controller = (state, do_async) => {
+      setTimeout(do_async, 10)
+      $('#status').empty()
+      $('#status').append('Cycle:' + state.cycle)
+      plot(view, values)
+    }
+    support.simulate(record_stats, pop_size, genome_size, num_cycles, controller)
+  })
 }
 
 
-let plot = (values, width) => {
+let prepare_plot = (width, cb) => {
 
   let spec = `
 {
@@ -38,13 +47,8 @@ let plot = (values, width) => {
   "width": 300
 }`
   let jspec = JSON.parse(spec)
-  jspec.data.values = values
-  let embedSpec = {
-    mode: "vega-lite",
-    spec: jspec
-  }
 
-  let source = JSON.stringify(jspec, null, 2)  // == spec?
+  let source = JSON.stringify(jspec, null, 2)
   spec = vl.compile(jspec).spec
   let div = d3.select('#vis-simple')
       .classed('vega-embed', true)
@@ -58,19 +62,19 @@ let plot = (values, width) => {
     })
 
     view.update()
-    /*
-    view.data('source').insert([{cycle:200, ExpHe: 0.5, marker: 'M0'}])
-    view.update()
-    */
+    cb(view)
   })
 
 }
 
 
+let plot = (view, values) => {
+    view.data('source').insert(values)
+    view.update()
+}
+
 let display_simulation = () => { 
-  let width = $('#intro').width()
-  let values = simulate(pop_size, num_markers, num_cycles)
-  let view = plot(values, width / 2)
+  simulate(pop_size, num_markers, num_cycles)
 }
 
 $('document').ready(display_simulation)
@@ -94,6 +98,11 @@ $('document').ready(display_simulation)
         <div class="col">
           <p class="text-center">Cycles<br>
             <input name="num_cycles" type="text" data-width="100%" data-min="5" data-max="200" value="50">
+          </p>
+        </div>
+        <div class="col">
+          <h3 class="text-center">Status</h3>
+          <h4 class="text-center" id="status">Ready</h4>
           </p>
         </div>
       </div>
