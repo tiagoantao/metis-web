@@ -18,7 +18,7 @@ let simulate = (num_individuals, genome_size, num_cycles) => {
     cycle++
   }
   let width = $('#intro').width()
-  prepare_plot(width / 2, (view) => {
+  prepare_plot(width / 1.1, (view) => {
     let controller = (state, do_async) => {
       setTimeout(do_async, 10)
       $('#status').empty()
@@ -43,10 +43,11 @@ let prepare_plot = (width, cb) => {
     "x": {"field": "cycle", "type": "quantitative", "bandSize": "fit"},
     "y": {"field": "ExpHe", "type": "quantitative"},
     "color": {"field": "marker", "type": "nominal"}
-  },
-  "width": 300
+  }
 }`
   let jspec = JSON.parse(spec)
+  jspec.width = width
+  jspec.height = width * 0.5
 
   let source = JSON.stringify(jspec, null, 2)
   spec = vl.compile(jspec).spec
