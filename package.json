@@ -1,17 +1,17 @@
 {
-  "name": "genomics",
+  "name": "@tiagoantao/metis-web",
   "version": "0.0.1",
-  "description": "Population Genetics teaching tool",
+  "description": "Metis web - Population genetics on the web",
   "license": "AGPL-3.0",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/tiagoantao/genomics.git"
+    "url": "git+https://github.com/tiagoantao/metis-web.git"
   },
   "bugs": {
-    "url": "https://github.com/tiagoantao/genomics/issues",
+    "url": "https://github.com/tiagoantao/metis-web/issues",
     "email": "tiagoantao@gmail.com"
   },
-  "homepage": "https://github.com/tiagoantao/genomics",
+  "homepage": "https://github.com/tiagoantao/metis-web",
   "scripts": {
     "build": "gulp build",
     "gulp": "gulp"
