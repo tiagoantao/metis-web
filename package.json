@@ -40,6 +40,6 @@
     "vinyl-source-stream": "^1.1.0"
   },
   "dependencies": {
-    "@tiagoantao/metis": "git://github.com/tiagoantao/metis.git"
+    "@tiagoantao/metis": "0.0.4"
   }
 }

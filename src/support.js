@@ -36,4 +36,8 @@ export let simulate = (observer, pop_size, genome_size, cycles, controller) => {
 }
 
 
-export * from './web_support.js'
+export let simulate_island = (observer, num_pops, pop_size, genome_size, cycles, controller) => {
+}
+
+
+//export * from './web_support'
