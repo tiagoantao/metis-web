@@ -1,4 +1,5 @@
 const gulp = require('gulp'),
+      bower = require('gulp-bower'),
       nunjucks = require('gulp-nunjucks-render'),
       rollup = require('rollup-stream'),
       rollup_babel = require('rollup-plugin-babel'),
@@ -6,6 +7,11 @@ const gulp = require('gulp'),
       rollup_commonjs = require('rollup-plugin-commonjs'),
       rollup_resolve = require('rollup-plugin-node-resolve'),
       source = require('vinyl-source-stream')
+
+
+gulp.task('bower', function() {
+  return bower()
+})
 
 
 gulp.task('rollup', () => {
@@ -33,6 +39,6 @@ gulp.task('templating', () =>
 )
 
 
-gulp.task('build', ['templating', 'rollup'], () => {})
+gulp.task('build', ['bower', 'templating', 'rollup'], () => {})
 
 gulp.task('default', ['build'], ()=>{})
