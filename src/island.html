@@ -8,7 +8,7 @@ let num_pops = 2
 let num_migs = 1
 
 
-let simulate = (num_pops, num_individuals, genome_size, num_cycles) => {
+let simulate = (num_pops, num_migs, num_individuals, genome_size, num_cycles) => {
   let values
   let cycle = 1
   let record_stats = (stats) => {
@@ -35,7 +35,7 @@ let simulate = (num_pops, num_individuals, genome_size, num_cycles) => {
 
 
 let display_simulation = () => { 
-  simulate(pop_size, num_markers, num_cycles)
+  simulate(num_pops, num_migs, pop_size, num_markers, num_cycles)
 }
 
 $('document').ready(display_simulation)
@@ -55,6 +55,16 @@ $('document').ready(display_simulation)
         <div class="col">
           <p class="text-center">Number of markers<br>
             <input name="num_markers" type="text" data-width="100%" data-min="1" data-max="20" value="5">
+          </p>
+        </div>
+        <div class="col">
+          <p class="text-center">Number of populations<br>
+            <input name="num_pops" type="text" data-width="100%" data-min="2" data-max="10" value="5">
+          </p>
+        </div>
+        <div class="col">
+          <p class="text-center">Number of migrants<br>
+            <input name="num_migs" type="text" data-width="100%" data-min="0" data-max="20" value="1">
           </p>
         </div>
         <div class="col">
@@ -88,6 +98,18 @@ $('document').ready(display_simulation)
         $("input[name='num_markers']").knob({
           change: (v) => {
             num_markers = Math.round(v)
+            display_simulation()
+          }
+        })
+        $("input[name='num_pops']").knob({
+          change: (v) => {
+            num_pops = Math.round(v)
+            display_simulation()
+          }
+        })
+        $("input[name='num_migs']").knob({
+          change: (v) => {
+            num_migs = Math.round(v)
             display_simulation()
           }
         })
