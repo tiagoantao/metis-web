@@ -40,4 +40,4 @@ export let simulate_island = (observer, num_pops, pop_size, genome_size, cycles,
 }
 
 
-//export * from './web_support'
+export * from './web_support'

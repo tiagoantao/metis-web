@@ -6,6 +6,8 @@ let num_markers = 5
 let num_cycles = 50
 
 
+
+
 let simulate = (num_individuals, genome_size, num_cycles) => {
   let values
   let cycle = 1
@@ -18,68 +20,26 @@ let simulate = (num_individuals, genome_size, num_cycles) => {
     cycle++
   }
   let width = $('#intro').width()
-  prepare_plot(width / 1.1, (view) => {
+  support.prepare_plot(support.exphe_spec, '#vis-simple', width / 1.1, (view) => {
     let controller = (state, do_async) => {
       setTimeout(do_async, 10)
       $('#status').empty()
       $('#status').append('Cycle:' + state.cycle)
-      plot(view, values)
+      view.data('source').insert(values)
+      view.update()
     }
     support.simulate(record_stats, pop_size, genome_size, num_cycles, controller)
   })
 }
 
 
-let prepare_plot = (width, cb) => {
-
-  let spec = `
-{
-  "description": "ExpHe over cycles",
-  "data": {
-    "values": []
-  },
-  "mark": "line",
-  "encoding": {
-    "x": {"field": "cycle", "type": "quantitative", "bandSize": "fit"},
-    "y": {"field": "ExpHe", "type": "quantitative"},
-    "color": {"field": "marker", "type": "nominal"}
-  }
-}`
-  let jspec = JSON.parse(spec)
-  jspec.width = width
-  jspec.height = width * 0.5
-
-  let source = JSON.stringify(jspec, null, 2)
-  spec = vl.compile(jspec).spec
-  let div = d3.select('#vis-simple')
-      .classed('vega-embed', true)
-      .html('')
-
-  vg.parse.spec(spec, {}, function(error, chart) {
-    let view = chart({
-      el: '#vis-simple',
-      data: undefined,
-      renderer: 'canvas'
-    })
-
-    view.update()
-    cb(view)
-  })
-
-}
-
-
-let plot = (view, values) => {
-    view.data('source').insert(values)
-    view.update()
-}
-
 let display_simulation = () => { 
-  simulate(pop_size, num_markers, num_cycles)
+    simulate(pop_size, num_markers, num_cycles)
 }
 
 $('document').ready(display_simulation)
 </script>
+
 <h2>Introduction</h2>
 <div class="container">
   <div class="card">
@@ -117,25 +77,25 @@ $('document').ready(display_simulation)
 </div>
 
 <script>
-    $(function() {
-        $("input[name='pop_size']").knob({
-          change: (v) => {
-            pop_size = Math.round(v)
-            display_simulation()
-          }
-        })
-        $("input[name='num_markers']").knob({
-          change: (v) => {
-            num_markers = Math.round(v)
-            display_simulation()
-          }
-        })
-        $("input[name='num_cycles']").knob({
-          change: (v) => {
-            num_cycles = Math.round(v)
-            display_simulation()
-          }
-        })
-    });
+$(function() {
+    $("input[name='pop_size']").knob({
+      change: (v) => {
+        pop_size = Math.round(v)
+        display_simulation()
+      }
+    })
+    $("input[name='num_markers']").knob({
+      change: (v) => {
+        num_markers = Math.round(v)
+        display_simulation()
+      }
+    })
+    $("input[name='num_cycles']").knob({
+      change: (v) => {
+        num_cycles = Math.round(v)
+        display_simulation()
+      }
+    })
+})
 </script>
 {% endblock %}
