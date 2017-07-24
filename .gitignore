@@ -1,0 +1,6 @@
+*~
+figwheel_server.log
+node_modules/
+package-lock.json
+target/
+resources/public/js/compiled
