@@ -8,7 +8,7 @@
                  [org.clojure/clojurescript "1.9.671"]
                  [org.omcljs/om "1.0.0-alpha34"]]
 
-  :plugins [[lein-figwheel "0.5.10"]
+  :plugins [[lein-figwheel "0.5.11"]
             [lein-marginalia "0.9.0"]
             [lein-cljsbuild "1.1.6"] ;:exclusions [[org.clojure/clojure]]]
             [lein-doo "0.1.7"]]
@@ -27,7 +27,7 @@
                         :output-dir "resources/public/js/compiled/out"
                         :source-map-timestamp true
                         :preloads [devtools.preload]
-                        :language-in :es5
+                        :language-in :ecmascript5
              :npm-deps {:vega-lite "2.0.0-beta.10"}
                         :pretty-print false
                         :optimizations :none
@@ -46,7 +46,7 @@
 
   :figwheel {
              :css-dirs ["resources/public/css"] ;; watch and update CSS
-             :validate-config false
+             ;:validate-config false
              }
 
   :profiles {:dev {:dependencies [[binaryage/devtools "0.9.2"]
