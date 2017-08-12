@@ -31,7 +31,7 @@
              :npm-deps {:vega-lite "2.0.0-beta.10"}
                         :pretty-print false
                         :optimizations :none
-
+                        :install-deps true
                         :static-fns true}}
 
                                         ;:test
