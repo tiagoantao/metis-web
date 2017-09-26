@@ -34,6 +34,7 @@
                         :pretty-print false
                         :optimizations :none
                         :closure-warnings {:non-standard-jsdoc :off}
+                        :install-deps :true
                         :static-fns true}}
 
                                         ;:test
