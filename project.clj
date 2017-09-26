@@ -5,7 +5,7 @@
             :url "https://www.gnu.org/licenses/agpl.html"}
 
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.9.854"] ;671
+                 [org.clojure/clojurescript "1.9.908"]
                  [org.omcljs/om "1.0.0-alpha34"]]
 
   :plugins [[lein-figwheel "0.5.11"]
