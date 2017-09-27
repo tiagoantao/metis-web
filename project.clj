@@ -4,8 +4,8 @@
   :license {:name "GNU Affero General Public License (AGPL)"
             :url "https://www.gnu.org/licenses/agpl.html"}
 
-  :dependencies [[org.clojure/clojure "1.9.0-alpha17"]
-                 [org.clojure/clojurescript "1.9.671"]
+  :dependencies [[org.clojure/clojure "1.8.0"]
+                 [org.clojure/clojurescript "1.9.854"] ;671
                  [org.omcljs/om "1.0.0-alpha34"]]
 
   :plugins [[lein-figwheel "0.5.11"]
@@ -27,11 +27,13 @@
                         :output-dir "resources/public/js/compiled/out"
                         :source-map-timestamp true
                         :preloads [devtools.preload]
-                        :language-in :ecmascript5
-             :npm-deps {:vega-lite "2.0.0-beta.10"}
+                        :language-in :ecmascript6
+                        :npm-deps {:vega-lite "2.0.0-beta.10"
+                                   :vega-embed "3.0.0-beta.19"
+                                   }
                         :pretty-print false
                         :optimizations :none
-
+                        :closure-warnings {:non-standard-jsdoc :off}
                         :static-fns true}}
 
                                         ;:test
@@ -46,15 +48,14 @@
 
   :figwheel {
              :css-dirs ["resources/public/css"] ;; watch and update CSS
+             :nrepl-port 7888
              ;:validate-config false
              }
 
   :profiles {:dev {:dependencies [[binaryage/devtools "0.9.2"]
-                                 [figwheel-sidecar "0.5.10"]
+                                 [figwheel-sidecar "0.5.11"]
                                  [com.cemerick/piggieback "0.2.1"]]
                   :source-paths ["src" "dev"]
-                  ;; for CIDER
-                  ;; :plugins [[cider/cider-nrepl "0.12.0"]]
                   :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
                   :clean-targets ^{:protect false} ["resources/public/js/compiled"
                                                     :target-path]}})
