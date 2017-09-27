@@ -17,6 +17,7 @@
             [lein-doo "0.1.7"]
             [lein-kibit "0.1.5"] ;Automate this
             [lein-bikeshed "0.4.1"] ;Automate this
+            [lein-ancient "0.6.12"]
             ]
 
   :cljsbuild
