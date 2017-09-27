@@ -5,11 +5,11 @@
             :url "https://www.gnu.org/licenses/agpl.html"}
 
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.9.854"] ;671
+                 [org.clojure/clojurescript "1.9.908"]
                  [org.omcljs/om "1.0.0-alpha34"]]
 
   :plugins [[lein-figwheel "0.5.11"]
-            [lein-marginalia "0.9.0"]
+            [lein-codox "0.10.3"]
             [lein-cljsbuild "1.1.6"] ;:exclusions [[org.clojure/clojure]]]
             [lein-doo "0.1.7"]]
 
@@ -34,6 +34,7 @@
                         :pretty-print false
                         :optimizations :none
                         :closure-warnings {:non-standard-jsdoc :off}
+                        :install-deps :true
                         :static-fns true}}
 
                                         ;:test
@@ -44,6 +45,14 @@
                                         ;            }}}}
 
             }}
+
+
+  :codox {
+          :output-path "docs"
+          :language :clojurescript
+          :source-paths ["src"]
+          :metadata {:doc/format :markdown}
+          }
 
 
   :figwheel {
