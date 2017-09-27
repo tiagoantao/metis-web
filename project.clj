@@ -6,11 +6,14 @@
 
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.908"]
-                 [org.omcljs/om "1.0.0-alpha34"]]
+                 [reagent "0.8.1-alpha1"]
+                 [cljsjs/d3 "4.3.0-5"]
+                 [cljsjs/vega "3.0.1-0"]
+                 [cljsjs/vega-lite "2.0.0-beta.14-0"]]
 
   :plugins [[lein-figwheel "0.5.11"]
             [lein-codox "0.10.3"]
-            [lein-cljsbuild "1.1.6"] ;:exclusions [[org.clojure/clojure]]]
+            [lein-cljsbuild "1.1.6"]
             [lein-doo "0.1.7"]]
 
   :cljsbuild
@@ -18,32 +21,14 @@
             :dev
             {:source-paths ["src"]
 
-             :figwheel {;:on-jsload "metis-web.core/on-js-reload"
-                        }
+             :figwheel {on-jsload "metis-web.core/on-js-reload"}
 
              :compiler {:main metis-web.core
-                        :asset-path "js/compiled/out"
-                        :output-to "resources/public/js/compiled/metis-web.js"
-                        :output-dir "resources/public/js/compiled/out"
+                        :output-to "target/metis-web.js"
+                        :output-dir "target/"
                         :source-map-timestamp true
                         :preloads [devtools.preload]
-                        :language-in :ecmascript6
-                        :npm-deps {:vega-lite "2.0.0-beta.10"
-                                   :vega-embed "3.0.0-beta.19"
-                                   }
-                        :pretty-print false
-                        :optimizations :none
-                        :closure-warnings {:non-standard-jsdoc :off}
-                        :install-deps :true
-                        :static-fns true}}
-
-                                        ;:test
-                                        ;{:source-paths ["src" "test"]
-                                        ; :compiler {:output-to "out/testable.js"
-                                        ;            :main metis-web.runner 
-                                        ;            :optimizations :none
-                                        ;            }}}}
-
+                        :optimizations :none}}
             }}
 
 
@@ -66,5 +51,4 @@
                                  [com.cemerick/piggieback "0.2.1"]]
                   :source-paths ["src" "dev"]
                   :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
-                  :clean-targets ^{:protect false} ["resources/public/js/compiled"
-                                                    :target-path]}})
+                  }})
