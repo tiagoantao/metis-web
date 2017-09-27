@@ -14,7 +14,10 @@
   :plugins [[lein-figwheel "0.5.11"]
             [lein-codox "0.10.3"]
             [lein-cljsbuild "1.1.6"]
-            [lein-doo "0.1.7"]]
+            [lein-doo "0.1.7"]
+            [lein-kibit "0.1.5"] ;Automate this
+            [lein-bikeshed "0.4.1"] ;Automate this
+            ]
 
   :cljsbuild
   {:builds {
