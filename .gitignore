@@ -7,3 +7,4 @@ resources/public/js/compiled
 .cljs_rhino_repl/
 .nrepl-port
 out/
+.lein-repl-history

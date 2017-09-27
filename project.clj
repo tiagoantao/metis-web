@@ -6,7 +6,7 @@
 
   :dependencies [[org.clojure/clojure "1.8.0"]
                  [org.clojure/clojurescript "1.9.908"]
-                 [reagent "0.8.1-alpha1"]
+                 [reagent "0.8.0-alpha1"]
                  [cljsjs/d3 "4.3.0-5"]
                  [cljsjs/vega "3.0.1-0"]
                  [cljsjs/vega-lite "2.0.0-beta.14-0"]]
