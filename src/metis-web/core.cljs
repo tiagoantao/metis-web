@@ -1,16 +1,18 @@
 (ns metis-web.core
   "A web interface to Metis, the JavaScript population genetics simulator"
   {:author "Tiago Antao"}
-  (:require [vega :as vg]
-            [vega-lite :as vl]
-            [vega-embed :as ve]
+  (:require [cljsjs.vega :as vg]
+            [cljsjs.vega-lite :as vl]
+            [cljsjs.d3]
             ))
 
+(comment
 (vl/unique [1 2 3] identity)
 (vg/parse)
 vl
 ve
 (enable-console-print!)
+)
 
 (comment
 (defn ^:export run

@@ -21,7 +21,7 @@
             :dev
             {:source-paths ["src"]
 
-             :figwheel {on-jsload "metis-web.core/on-js-reload"}
+             :figwheel {:on-jsload "metis-web.core/on-js-reload"}
 
              :compiler {:main metis-web.core
                         :output-to "target/metis-web.js"
@@ -47,8 +47,8 @@
              }
 
   :profiles {:dev {:dependencies [[binaryage/devtools "0.9.2"]
-                                 [figwheel-sidecar "0.5.11"]
-                                 [com.cemerick/piggieback "0.2.1"]]
-                  :source-paths ["src" "dev"]
-                  :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
+                                  [figwheel-sidecar "0.5.11"]
+                                  [com.cemerick/piggieback "0.2.1"]]
+                   :source-paths ["src" "dev"]
+                   :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
                   }})
