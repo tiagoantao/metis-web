@@ -11,7 +11,7 @@
                  [cljsjs/vega "3.0.1-0"]
                  [cljsjs/vega-lite "2.0.0-beta.14-0"]]
 
-  :plugins [[lein-figwheel "0.5.11"]
+  :plugins [[lein-figwheel "0.5.13"]
             [lein-codox "0.10.3"]
             [lein-cljsbuild "1.1.6"]
             [lein-doo "0.1.7"]
@@ -50,9 +50,9 @@
              ;:validate-config false
              }
 
-  :profiles {:dev {:dependencies [[binaryage/devtools "0.9.2"]
-                                  [figwheel-sidecar "0.5.11"]
-                                  [com.cemerick/piggieback "0.2.1"]]
+  :profiles {:dev {:dependencies [[binaryage/devtools "0.9.4"]
+                                  [figwheel-sidecar "0.5.13"]
+                                  [com.cemerick/piggieback "0.2.2"]]
                    :source-paths ["src" "dev"]
                    :repl-options {:nrepl-middleware [cemerick.piggieback/wrap-cljs-repl]}
                   }})
