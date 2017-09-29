@@ -24,7 +24,7 @@
   :hooks [leiningen.resource]
 
   :resource
-  {:resource-paths ["static"]
+  {:resource-paths ["static/out"]
    :target-path "resources/public"
              }
   

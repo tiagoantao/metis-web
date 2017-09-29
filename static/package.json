@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "metalsmith": "^2.3.0",
+    "metalsmith-layouts": "^1.8.1",
+    "nunjucks": "^3.0.1"
+  }
+}

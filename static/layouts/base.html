@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <!-- UIkit CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.30/css/uikit.min.css" />
+
+    <!-- jQuery is required -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <!-- UIkit JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.30/js/uikit.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.0.0-beta.30/js/uikit-icons.min.js"></script>
+    <title>{{ site.title }}</title>
+  </head>
+
+  <body>
+    <nav class="uk-navbar-container" uk-navbar>
+      <div class="uk-navbar-left">
+
+        <ul class="uk-navbar-nav">
+          <li class="uk-active"><a href="index.html">Metis</a></li>
+          <li><a href="#">Learning</a></li>
+	  <div class="uk-navbar-dropdown">
+              <ul class="uk-nav uk-navbar-dropdown-nav">
+                <li class="uk-active"><a href="#">Population structure</a></li>
+                <li><a href="#">Island</a></li>
+                <li><a href="#">Stepping-stone 1D</a></li>
+                <li><a href="#">Stepping-stone 2D</a></li>
+              </ul>
+            </div>
+        </ul>
+
+      </div>
+    </nav>
+    {{ contents | safe }}
+  </body>
+
+</html>
