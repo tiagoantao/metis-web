@@ -18,8 +18,16 @@
             [lein-kibit "0.1.5"] ;Automate this
             [lein-bikeshed "0.4.1"] ;Automate this
             [lein-ancient "0.6.12"]
+            [lein-resource "16.9.1"]
             ]
 
+  :hooks [leiningen.resource]
+
+  :resource
+  {:resource-paths ["static"]
+   :target-path "resources/public"
+             }
+  
   :cljsbuild
   {:builds {
             :dev
@@ -28,8 +36,9 @@
              :figwheel {:on-jsload "metis-web.core/on-js-reload"}
 
              :compiler {:main metis-web.core
-                        :output-to "target/metis-web.js"
-                        :output-dir "target/"
+                        :asset-path "js/compiled"
+                        :output-to "resources/public/js/compiled/metis-web.js"
+                        :output-dir "resources/public/js/compiled/"
                         :source-map-timestamp true
                         :preloads [devtools.preload]
                         :optimizations :none}}

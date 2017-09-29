@@ -8,3 +8,4 @@ resources/public/js/compiled
 .nrepl-port
 out/
 .lein-repl-history
+resources/
