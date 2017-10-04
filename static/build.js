@@ -9,7 +9,7 @@ let siteBuild = metalsmith(__dirname)
     .metadata({
         site: {
             title: 'Metis Web: Population genetics on the web',
-            url: 'https://web.tiago.org',
+            url: 'https://metis.tiago.org',
 	    author: 'Tiago Antao'
         }
     })
