@@ -5,7 +5,7 @@
             :url "https://www.gnu.org/licenses/agpl.html"}
 
   :dependencies [[org.clojure/clojure "1.8.0"]
-                 [org.clojure/clojurescript "1.9.908"]
+                 [org.clojure/clojurescript "1.9.946"]
                  [reagent "0.8.0-alpha1"]
                  [cljsjs/d3 "4.3.0-5"]
                  [cljsjs/vega "3.0.1-0"]
@@ -41,6 +41,9 @@
                         :output-dir "resources/public/js/compiled/"
                         :source-map-timestamp true
                         :preloads [devtools.preload]
+                        ;:npm-deps {"@tiagoantao/metis" ""}
+                        ;:npm-deps {:metis ""}
+                        ;:install-deps true
                         :optimizations :none}}
             }}
 
