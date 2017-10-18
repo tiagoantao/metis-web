@@ -2,6 +2,7 @@
   "dependencies": {
     "@cljs-oss/module-deps": "^1.1.1",
     "@tiagoantao/metis": "github:tiagoantao/metis",
+    "events": "^1.1.1",
     "jquery-knob": "^1.2.11",
     "metis": "^0.1.0"
   }
