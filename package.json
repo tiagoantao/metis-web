@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "@cljs-oss/module-deps": "^1.1.1",
+    "@tiagoantao/metis": "github:tiagoantao/metis",
+    "jquery-knob": "^1.2.11",
+    "metis": "^0.1.0"
+  }
+}
