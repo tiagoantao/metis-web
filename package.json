@@ -1,9 +1,43 @@
 {
+  "name": "@tiagoantao/metis-web",
+  "version": "0.0.8-SNAPSHOT",
+  "description": "A teaching tool for Population Genetics based on the metis simulator",
+  "license": "AGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tiagoantao/metis-web.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tiagoantao/metis-web/issues",
+    "email": "tiagoantao@gmail.com"
+  },
+  "homepage": "https://github.com/tiagoantao/metis-web",
+  "keywords": [
+    "population genetics",
+    "simulation"
+  ],
+
+  "scripts": {
+    "start": "cycle-scripts start",
+    "test": "cycle-scripts test",
+    "build": "cycle-scripts build",
+    "eject": "cycle-scripts eject"
+  },
+  "cca": {
+    "language": "javascript",
+    "streamLib": "rxjs"
+  },
+
   "dependencies": {
-    "@cljs-oss/module-deps": "^1.1.1",
+    "@cycle/dom": "^19.0.0",
+    "@cycle/rxjs-run": "^7.1.0",
     "@tiagoantao/metis": "github:tiagoantao/metis",
     "events": "^1.1.1",
     "jquery-knob": "^1.2.11",
-    "metis": "^0.1.0"
+    "metis": "^0.1.0",
+    "rxjs": "^5.5.0"
+  },
+  "devDependencies": {
+    "cycle-scripts": "^2.1.0"
   }
 }
