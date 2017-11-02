@@ -1,4 +1,5 @@
-import {run} from '@tiagoantao/metis'
+import {i_generate_basic_individual} from '@tiagoantao/metis'
 
-const makeMetisDriver = () => {
+export const makeMetisDriver = () => {
+    console.log(123, i_generate_basic_individual())
 }

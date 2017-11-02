@@ -9,4 +9,6 @@ const drivers = {
   DOM: makeDOMDriver('#root')
 }
 
+makeMetisDriver()
+
 run(main, drivers)
