@@ -5,18 +5,16 @@ export const App = (sources) => {
     .events('change')
     .map(ev => parseInt(ev.target.value))
     .startWith(50)
+    .subscribe(x => num_gens = x)
 
-  const num_gens = 
-
+  let num_gens = 0
+  
   const simulate$ = sources.DOM.select('#simulate')
     .events('click')
     .map(ev => parseInt(ev.target.value))
     .startWith(0)
 
-  const mrg = Rx.Observable.zip(num_gens$, simulate$)
-    .subscribe(x => console.log(x))
-
-  const vdom$ = simulate$.map(num_gens =>
+  const vdom$ = simulate$.map(_num_gens =>
     <div>
       <div>
         <input type="number" id="num_gens" value="{num_gens}"/>

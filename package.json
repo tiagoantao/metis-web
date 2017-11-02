@@ -16,7 +16,6 @@
     "population genetics",
     "simulation"
   ],
-
   "scripts": {
     "start": "cycle-scripts start",
     "test": "cycle-scripts test",
@@ -27,7 +26,6 @@
     "language": "javascript",
     "streamLib": "rxjs"
   },
-
   "dependencies": {
     "@cycle/dom": "^19.0.0",
     "@cycle/rxjs-run": "^7.1.0",
