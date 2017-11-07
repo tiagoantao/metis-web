@@ -19,13 +19,13 @@ export const makeMetisDriver = () => {
             await sleep(backoff)
             if (stack.length > 0) {
                 backoff = 1
-		const state = stack.push()
-		console.log(1, state, backoff)
+                const state = stack.push()
+                console.log(1, state, backoff)
             }
             else {
+                console.log(2, backoff)
                 backoff = Math.min(500, 2*backoff)
             }
-            
         }
     }
     
