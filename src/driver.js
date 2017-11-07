@@ -2,13 +2,30 @@ import xs from 'xstream'
 import {adapt} from '@cycle/run/lib/adapt'
 import {sim_cycle} from '@tiagoantao/metis'
 
+const sleep = (ms) => {
+    //XXX Sleep should go to a more general place?
+    return new Promise(resolve => {
+        setTimeout(() => {resolve()}, ms)
+    })
+}
+
 export const makeMetisDriver = () => {
     const stack = []
     let run = true
-    stack.listeners = []
-    stack.push = (elem) => {
-        for (listener of listeners) {
-            listener.call(event)
+
+    const report = async (listener) => {
+        var backoff = 1
+        while (run) {
+            await sleep(backoff)
+            if (stack.length > 0) {
+                backoff = 1
+		const state = stack.push()
+		console.log(1, state, backoff)
+            }
+            else {
+                backoff = Math.min(500, 2*backoff)
+            }
+            
         }
     }
     
@@ -20,10 +37,7 @@ export const makeMetisDriver = () => {
         })
 
         const sim_state$ = xs.create({
-            start: listener => {
-                while (run) {
-                }
-            },
+            start: listener => {report(listener)}
             stop: () => {run = false}
         })
 
