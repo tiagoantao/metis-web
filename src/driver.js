@@ -29,7 +29,7 @@ export const makeMetisDriver = () => {
         }
     }
     
-    const metis_driver (in_state$) {
+    const metis_driver = (in_state$) => {
         in_state$.addListener({
             next: state => {stack.push(state)},
             error: () => {},
@@ -37,7 +37,7 @@ export const makeMetisDriver = () => {
         })
 
         const sim_state$ = xs.create({
-            start: listener => {report(listener)}
+            start: listener => {report(listener)},
             stop: () => {run = false}
         })
 
