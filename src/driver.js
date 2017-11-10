@@ -1,3 +1,4 @@
+import regeneratorRuntime from 'regenerator-runtime'
 import xs from 'xstream'
 import {adapt} from '@cycle/run/lib/adapt'
 import {sim_cycle} from '@tiagoantao/metis'

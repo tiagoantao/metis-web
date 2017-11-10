@@ -13,6 +13,6 @@ const drivers = {
 const drv = makeMetisDriver()
 
 const in$ = Rx.Observable.from([1, 2])
-const out$ = drv($in$)
+const out$ = drv(in$)
 console.log(out$)
 run(main, drivers)
