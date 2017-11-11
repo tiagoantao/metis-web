@@ -7,12 +7,8 @@ import {makeMetisDriver} from './driver'
 const main = App
 
 const drivers = {
-  DOM: makeDOMDriver('#root')
+    DOM:  makeDOMDriver('#root'),
+    metis: makeMetisDriver() 
 }
 
-const drv = makeMetisDriver()
-
-const in$ = Rx.Observable.from([1, 2])
-const out$ = drv(in$)
-console.log(out$)
 run(main, drivers)
