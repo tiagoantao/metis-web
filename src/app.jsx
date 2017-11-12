@@ -8,12 +8,16 @@ export const App = (sources) => {
     .subscribe(x => num_gens = x)
 
   let num_gens = 0
-  
+
   const simulate$ = sources.DOM.select('#simulate')
     .events('click')
     .map(ev => parseInt(ev.target.value))
     .startWith(0)
 
+  const test$ = simulate$.map(_num_gens => Rx.Observable.from([num_gens]))
+
+  sources.metis.subscribe(x => console.log(x, 10))
+  
   const vdom$ = simulate$.map(_num_gens =>
     <div>
       <div>
@@ -26,7 +30,8 @@ export const App = (sources) => {
       )
 
   const sinks = {
-    DOM: vdom$
+    DOM: vdom$,
+    metis: test$
   }
   
   return sinks
