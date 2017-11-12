@@ -3,6 +3,7 @@ import xs from 'xstream'
 import {adapt} from '@cycle/run/lib/adapt'
 import {sim_cycle} from '@tiagoantao/metis'
 
+
 const sleep = (ms) => {
     //XXX Sleep should go to a more general place?
     return new Promise(resolve => {
@@ -19,9 +20,12 @@ export const makeMetisDriver = () => {
         while (run) {
             await sleep(backoff)
             if (stack.length > 0) {
-                const state = stack.pop().value
-                console.log(1, stack.length, state, backoff)
-		listener.next(state)
+                const cycles_state = stack.pop().value
+                console.log(1, stack.length, cycles_state, backoff)
+		//XXX The state should be deep copied
+		//Currently this is is mutated between source and sink
+		sim_cycle(cycles_state.state)
+                listener.next(cycles_state.state)
                 backoff = 1
             }
             else {
@@ -31,7 +35,6 @@ export const makeMetisDriver = () => {
     }
     
     const metis_driver = (in_state$) => {
-        console.log(123)
         in_state$.addListener({
             next: state => {stack.push(state)},
             error: () => {},
