@@ -19,9 +19,10 @@ export const makeMetisDriver = () => {
         while (run) {
             await sleep(backoff)
             if (stack.length > 0) {
-                backoff = 1
                 const state = stack.pop().value
                 console.log(1, stack.length, state, backoff)
+		listener.next(state)
+                backoff = 1
             }
             else {
                 backoff = Math.min(500, 2*backoff)
@@ -30,7 +31,7 @@ export const makeMetisDriver = () => {
     }
     
     const metis_driver = (in_state$) => {
-	console.log(123)
+        console.log(123)
         in_state$.addListener({
             next: state => {stack.push(state)},
             error: () => {},
