@@ -27,13 +27,13 @@
     "streamLib": "rxjs"
   },
   "dependencies": {
-    "@cycle/dom": "^19.0.0",
-    "@cycle/rxjs-run": "^7.1.0",
+    "@cycle/dom": "^20.1.0",
+    "@cycle/rxjs-run": "^8.0.0",
     "@tiagoantao/metis": "github:tiagoantao/metis",
     "events": "^1.1.1",
     "jquery-knob": "^1.2.11",
     "metis": "^0.1.0",
-    "rxjs": "^5.5.0"
+    "rxjs": "^5.5.2"
   },
   "devDependencies": {
     "babel-plugin-transform-runtime": "^6.23.0",
