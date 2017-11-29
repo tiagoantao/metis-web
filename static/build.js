@@ -18,7 +18,7 @@ let siteBuild = metalsmith(__dirname)
         default: 'base.html',
         partials: 'partials',
     }))
-    .destination('out')
+    .destination('../public')
     .build(function(err) {
         if (err) {
             console.log(err);
