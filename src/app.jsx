@@ -41,7 +41,10 @@ export const App = (sources) => {
     .startWith(0)
 
   const test$ = simulate$.map(_num_cycles =>
-    Rx.Observable.from([{num_cycles, state: prepare_sim_state(50)}]))
+    Rx.Observable.from([
+//      {num_cycles, state: prepare_sim_state(50)},
+      {num_cycles, state: prepare_sim_state(100)}
+    ]))
 
   sources.metis.subscribe(x => console.log(x, 10))
   

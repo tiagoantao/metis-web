@@ -14,6 +14,7 @@ const sleep = (ms) => {
 export const makeMetisDriver = () => {
     const stack = []
     let run = true
+    let count = 0
 
     const report = async (listener) => {
         var backoff = 1
@@ -21,7 +22,8 @@ export const makeMetisDriver = () => {
             await sleep(backoff)
             if (stack.length > 0) {
                 const cycles_state = stack.pop().value
-                console.log(1, stack.length, cycles_state, backoff)
+                console.log(11, stack.length, cycles_state, backoff, count)
+		count += 1
 		//XXX The state should be deep copied
 		//Currently this is is mutated between source and sink
 		sim_cycle(cycles_state.state)
@@ -36,7 +38,7 @@ export const makeMetisDriver = () => {
     
     const metis_driver = (in_state$) => {
         in_state$.addListener({
-            next: state => {stack.push(state)},
+            next: state => {console.log(123, state);stack.push(state)},
             error: () => {},
             complete: () => {}
         })
