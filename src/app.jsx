@@ -1,24 +1,34 @@
 import Rx from 'rxjs/Rx'
 
 import {
+  gn_generate_unlinked_genome,
+  gn_SNP,
   i_assign_random_sex,
-  i_generate_basic_individual,
+  integrated_create_randomized_genome,
+  integrated_generate_individual_with_genome,
   ops_culling_KillOlderGenerations,
   ops_rep_NoGenomeSexualReproduction,
   ops_stats_demo_SexStatistics,
+  ops_stats_hz_ExpHe,
   p_generate_n_inds,
   sp_Species} from '@tiagoantao/metis'
 
 
 const prepare_sim_state = (pop_size)  => {
+  const genome_size = 10
+
+  const unlinked_genome = gn_generate_unlinked_genome(
+    genome_size, () => {new gn_SNP()})
+  const species = new sp_Species('unlinked', unlinked_genome)
   const operators = [
     new ops_rep_NoGenomeSexualReproduction(species, pop_size),
     new ops_culling_KillOlderGenerations(),
-    new ops_stats_demo_SexStatistics()]
-
-  const species = new sp_Species()
+    new ops_stats_demo_SexStatistics(),
+    new ops_stats_hz_ExpHe()
+  ]
   const individuals = p_generate_n_inds(pop_size, () =>
-    i_assign_random_sex(i_generate_basic_individual(species)))
+    i_assign_random_sex(integrated_generate_individual_with_genome(
+      species, 0, integrated_create_randomized_genome)))
   const state = {
     global_parameters: {stop: false},
     individuals, operators, cycle: 1}
