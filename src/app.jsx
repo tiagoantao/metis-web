@@ -18,7 +18,7 @@ const prepare_sim_state = (pop_size)  => {
   const genome_size = 10
 
   const unlinked_genome = gn_generate_unlinked_genome(
-    genome_size, () => {new gn_SNP()})
+    genome_size, () => {return new gn_SNP()})
   const species = new sp_Species('unlinked', unlinked_genome)
   const operators = [
     new ops_rep_NoGenomeSexualReproduction(species, pop_size),
