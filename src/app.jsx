@@ -8,13 +8,27 @@ import {
   integrated_generate_individual_with_genome,
   ops_culling_KillOlderGenerations,
   ops_rep_SexualReproduction,
+  ops_RxOperator,  // Currently not in use
   ops_stats_demo_SexStatistics,
   ops_stats_hz_ExpHe,
   p_generate_n_inds,
   sp_Species} from '@tiagoantao/metis'
 
 
-const prepare_sim_state = (pop_size)  => {
+const exphe_spec =`{
+  "description": "ExpHe over cycles",
+  "data": {
+    "values": []
+  },
+  "mark": "line",
+  "encoding": {
+    "x": {"field": "cycle", "type": "quantitative", "bandSize": "fit"},
+    "y": {"field": "ExpHe", "type": "quantitative"},
+    "color": {"field": "marker", "type": "nominal"}
+  }
+}`
+
+const prepare_sim_state = (pop_size) => {
   const genome_size = 10
 
   const unlinked_genome = gn_generate_unlinked_genome(
@@ -29,7 +43,6 @@ const prepare_sim_state = (pop_size)  => {
   const individuals = p_generate_n_inds(pop_size, () =>
     i_assign_random_sex(integrated_generate_individual_with_genome(
       species, 0, integrated_create_randomized_genome)))
-  console.log(444, individuals[0])
   const state = {
     global_parameters: {stop: false},
     individuals, operators, cycle: 1}
@@ -52,14 +65,19 @@ export const App = (sources) => {
 
   const test$ = simulate$.map(_num_cycles =>
     Rx.Observable.from([
-//      {num_cycles, state: prepare_sim_state(50)},
       {num_cycles, state: prepare_sim_state(100)}
     ]))
 
-  sources.metis.subscribe(x => console.log(x, 10))
+  const record_stats = (stats) => {
+    console.log(10, 25, stats)
+  }
+  
+  sources.metis.subscribe(state => record_stats(state.global_parameters))
   
   const vdom$ = simulate$.map(_num_cycles =>
     <div>
+      <div id="chart">
+      </div>
       <div>
         <input type="number" id="num_cycles" value="{num_cycles}"/>
         <button id="simulate" value="1">Simulate</button>
