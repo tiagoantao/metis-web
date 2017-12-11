@@ -33,7 +33,10 @@
     "events": "^1.1.1",
     "jquery-knob": "^1.2.11",
     "metis": "^0.1.0",
-    "rxjs": "^5.5.2"
+    "rxjs": "^5.5.2",
+    "vega": "^3.0.8",
+    "vega-embed": "^3.0.0-rc7",
+    "vega-lite": "^2.0.3"
   },
   "devDependencies": {
     "babel-plugin-transform-runtime": "^6.23.0",
