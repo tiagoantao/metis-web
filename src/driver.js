@@ -1,7 +1,7 @@
 import regeneratorRuntime from 'regenerator-runtime'
 import xs from 'xstream'
 import {adapt} from '@cycle/run/lib/adapt'
-import {sim_cycle} from '@tiagoantao/metis'
+import {sim_do_n_cycles} from '@tiagoantao/metis'
 
 
 const sleep = (ms) => {
@@ -11,10 +11,19 @@ const sleep = (ms) => {
     })
 }
 
+
 export const makeMetisDriver = () => {
     const stack = []
     let run = true
     let count = 0
+
+    const bridge_sim_web = (listener, state, num_cycles) => {
+        //XXX The state should be deep copied
+        //Currently this is is mutated between source and sink
+        sim_do_n_cycles(num_cycles, state, (state) =>
+			listener.next(state))
+    }
+
 
     const report = async (listener) => {
         var backoff = 1
@@ -22,12 +31,11 @@ export const makeMetisDriver = () => {
             await sleep(backoff)
             if (stack.length > 0) {
                 const cycles_state = stack.pop().value
-                console.log(11, stack.length, cycles_state, backoff, count)
+		const state = cycles_state.state
+		const num_cycles = cycles_state.num_cycles
+                console.log(11, stack.length, state, backoff, count)
 		count += 1
-		//XXX The state should be deep copied
-		//Currently this is is mutated between source and sink
-		sim_cycle(cycles_state.state)
-                listener.next(cycles_state.state)
+		bridge_sim_web(listener, state, num_cycles)
                 backoff = 1
             }
             else {
@@ -36,15 +44,16 @@ export const makeMetisDriver = () => {
         }
     }
     
+
     const metis_driver = (in_state$) => {
         in_state$.addListener({
-            next: state => {console.log(123, state);stack.push(state)},
+            next: state => stack.push(state),
             error: () => {},
             complete: () => {}
         })
 
         const sim_state$ = xs.create({
-            start: listener => {report(listener)},
+            start: listener => report(listener),
             stop: () => {run = false}
         })
 

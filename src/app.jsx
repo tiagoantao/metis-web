@@ -1,5 +1,7 @@
 import Rx from 'rxjs/Rx'
 
+import {Plot} from './plot'
+
 import {
   gn_generate_unlinked_genome,
   gn_SNP,
@@ -14,19 +16,6 @@ import {
   p_generate_n_inds,
   sp_Species} from '@tiagoantao/metis'
 
-
-const exphe_spec =`{
-  "description": "ExpHe over cycles",
-  "data": {
-    "values": []
-  },
-  "mark": "line",
-  "encoding": {
-    "x": {"field": "cycle", "type": "quantitative", "bandSize": "fit"},
-    "y": {"field": "ExpHe", "type": "quantitative"},
-    "color": {"field": "marker", "type": "nominal"}
-  }
-}`
 
 const prepare_sim_state = (pop_size) => {
   const genome_size = 10
@@ -49,6 +38,7 @@ const prepare_sim_state = (pop_size) => {
   return state
 }
 
+
 export const App = (sources) => {
   const num_cycles$ = sources.DOM.select('#num_cycles')
     .events('change')
@@ -57,6 +47,11 @@ export const App = (sources) => {
     .subscribe(x => num_cycles = x)
 
   let num_cycles = 0
+
+  const props$ = Rx.Observable.of({x:1, y: 2})
+
+  const plot = Plot({DOM: sources.DOM, props: props$})
+  const plot_dom$ = plot.DOM
 
   const simulate$ = sources.DOM.select('#simulate')
     .events('click')
@@ -74,7 +69,8 @@ export const App = (sources) => {
   
   sources.metis.subscribe(state => record_stats(state.global_parameters))
   
-  const vdom$ = simulate$.map(_num_cycles =>
+  const vdom$ = Rx.Observable.combineLatest(simulate$, plot_dom$).
+		   map(([_num_cycles, _plot_dom]) =>
     <div>
       <div id="chart">
       </div>
@@ -82,6 +78,7 @@ export const App = (sources) => {
         <input type="number" id="num_cycles" value="{num_cycles}"/>
         <button id="simulate" value="1">Simulate</button>
       </div>
+      {_plot_dom}
       <div>bla {String(num_cycles)}
       </div>
     </div>      
