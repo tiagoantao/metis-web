@@ -30,6 +30,7 @@
     "@cycle/dom": "^20.1.0",
     "@cycle/rxjs-run": "^8.0.0",
     "@tiagoantao/metis": "github:tiagoantao/metis",
+    "d3": "^4.12.0",
     "events": "^1.1.1",
     "jquery-knob": "^1.2.11",
     "metis": "^0.1.0",
