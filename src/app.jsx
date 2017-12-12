@@ -44,11 +44,12 @@ export const App = (sources) => {
     .events('change')
     .map(ev => parseInt(ev.target.value))
     .startWith(50)
-    .subscribe(x => num_cycles = x)
+  num_cycles$.subscribe(x => num_cycles = x)
 
   let num_cycles = 0
 
-  const props$ = Rx.Observable.of({x:1, y: 2})
+  const props$ = num_cycles$
+    .map(cc => {return {x: cc, y: cc}})
 
   const plot = Plot({DOM: sources.DOM, props: props$})
   const plot_dom$ = plot.DOM
