@@ -4,9 +4,10 @@ import * as vl from 'vega-lite'
 
 
 const exphe_spec =`{
+  "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
   "description": "ExpHe over cycles",
   "data": {
-    "values": []
+    "name": "bla"
   },
   "mark": "line",
   "encoding": {
@@ -16,21 +17,26 @@ const exphe_spec =`{
   }
 }`
 
-
-const prepare_plot = (spec, id, width, cb) => {
-  const jspec = JSON.parse(spec)
+const prepare_plot = (vl_text, id, width, cb) => {
+  const vl_json = JSON.parse(vl_text)
   console.log(3333)
-  jspec.width = width
-  jspec.height = width * 0.5
-  const vspec = vg.parse(jspec)
-  
-  //const source = JSON.stringify(jspec, null, 2)
-  //spec = vl.compile(jspec).spec
-  const view = new vg.View(vspec)
+  vl_json.width = width
+  vl_json.height = width
+  const vg_spec = vg.parse(vl.compile(vl_json).spec)
+
+  console.log(vl.compile(vl_json).spec)
+  const view = new vg.View(vg_spec)
   view.renderer('canvas')
   const id_ = document.querySelector(id)
   console.log(1212, id_)
   view.initialize(id_)
+  const values3 = [{cycle: 2, ExpHe: 0.4, marker:"M1"}, {cycle: 3, ExpHe: 0.8, marker:"M1"}]
+  const values4 = [{cycle: 4, ExpHe: 0.4, marker:"M1"}, {cycle: 5, ExpHe: 0.8, marker:"M1"}]
+  console.log(55, view.data('bla'), view._runtime.data.bla)
+  view.insert('bla', values3)
+  view.run()
+  view.insert('bla', values4)
+  console.log(55, view.data('bla'), view._runtime.data.bla)
   view.run()
 }
 
@@ -40,7 +46,7 @@ export const Plot = (sources) => {
   const props$ = sources.props
 
 
-  prepare_plot(exphe_spec, '#vega', 500, (a) => console.log(123, a))
+  prepare_plot(exphe_spec, '#vegax', 500, (a) => console.log(123, a))
   
   const state$ = props$
     .map(props => ({
@@ -49,9 +55,7 @@ export const Plot = (sources) => {
     }))
 
   const vdom$ = state$.map(state =>
-    <div id="vega">
-      bla bla bla {state.x}
-    </div>
+    <div id="vega"></div>
   )
 
   const sinks = {
