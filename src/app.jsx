@@ -46,12 +46,20 @@ export const App = (sources) => {
     .startWith(50)
   num_cycles$.subscribe(x => num_cycles = x)
 
-  let num_cycles = 0
+  let num_cycles = 0 // XXX state....
 
-  const props$ = num_cycles$
-    .map(cc => {return {x: cc, y: cc}})
+  const props$ = sources.metis
+			.map(cc => {
+			  console.log(888, cc)
+			  return {x: cc, y: cc}
+			})
 
-  const plot = Plot({DOM: sources.DOM, props: props$})
+  const exphe$ = sources.metis.map( state => {
+    console.log(7654, state)
+    return {x: state.cycle, y:state.global_parameters.ExpHe.unlinked[0]}
+  })
+
+  const plot = Plot('#vega', {DOM: sources.DOM, props: exphe$})
   const plot_dom$ = plot.DOM
 
   const simulate$ = sources.DOM.select('#simulate')
@@ -67,7 +75,7 @@ export const App = (sources) => {
   const record_stats = (stats) => {
     console.log(10, 25, stats)
   }
-  
+
   sources.metis.subscribe(state => record_stats(state.global_parameters))
   
   const vdom$ = Rx.Observable.combineLatest(simulate$, plot_dom$).
@@ -76,10 +84,10 @@ export const App = (sources) => {
       <div id="chart">
       </div>
       <div>
-        <input type="number" id="num_cycles" value="{num_cycles}"/>
+        cycles: <input type="number" id="num_cycles" value="{num_cycles}"/>
         <button id="simulate" value="1">Simulate</button>
       </div>
-      {_plot_dom}
+      <div id="vega"></div>
       <div>bla {String(num_cycles)}
       </div>
     </div>      

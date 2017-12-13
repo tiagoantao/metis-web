@@ -17,7 +17,7 @@ const exphe_spec =`{
   }
 }`
 
-const prepare_plot = (vl_text, id, width, cb) => {
+const prepare_plot = (vl_text, id, width, points, cb) => {
   const vl_json = JSON.parse(vl_text)
   console.log(3333)
   vl_json.width = width
@@ -28,34 +28,44 @@ const prepare_plot = (vl_text, id, width, cb) => {
   const view = new vg.View(vg_spec)
   view.renderer('canvas')
   const id_ = document.querySelector(id)
-  console.log(1212, id_)
   view.initialize(id_)
-  const values3 = [{cycle: 2, ExpHe: 0.4, marker:"M1"}, {cycle: 3, ExpHe: 0.8, marker:"M1"}]
-  const values4 = [{cycle: 4, ExpHe: 0.4, marker:"M1"}, {cycle: 5, ExpHe: 0.8, marker:"M1"}]
-  console.log(55, view.data('bla'), view._runtime.data.bla)
-  view.insert('bla', values3)
-  view.run()
-  view.insert('bla', values4)
-  console.log(55, view.data('bla'), view._runtime.data.bla)
+  const values3 = [{cycle: 2, ExpHe: 0.4, marker:"M1"}]
+  const values4 = [{cycle: 4, ExpHe: 0.4, marker:"M1"},
+		   {cycle: 5, ExpHe: 0.8, marker:"M1"}]
+  //view.insert('bla', values3)
+  //view.run()
+  console.log('check')
+  console.log(values3)
+  console.log(points)
+  view.insert('bla', points)
   view.run()
 }
 
 
-export const Plot = (sources) => {
+export const Plot = (where, sources) => {
   const dom = sources.DOM
   const props$ = sources.props
 
 
-  prepare_plot(exphe_spec, '#vegax', 500, (a) => console.log(123, a))
+  //prepare_plot(exphe_spec, where, 500, (a) => console.log(123, a))
+
+  const points = []
   
   const state$ = props$
-    .map(props => ({
-      x: props.x,
-      y: props.y
-    }))
+    .map(props => {
+      console.log('qwerty', props)
+      return { cycle: props.x, ExpHe: props.y, marker: 'M1' }
+    }
+    )
 
+  state$.subscribe(poses => {
+    points.push(poses)
+    console.log('azerty',points)
+    prepare_plot(exphe_spec, where, 500, points, a => console.log(123, a))
+  })
+ 
   const vdom$ = state$.map(state =>
-    <div id="vega"></div>
+    <div id="vega">adasdsd</div>
   )
 
   const sinks = {
