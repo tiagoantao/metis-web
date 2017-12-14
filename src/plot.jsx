@@ -46,13 +46,15 @@ export const Plot = (where, sources) => {
   const state$ = props$
     .map(props => {
       console.log('qwerty', props)
-      return { x: props.x, y: props.y, marker: props.marker }
-    }
-    )
+      //return {x: props[0].x, y:props[0].y, marker: props[0].marker}
+      return props.map(p => {return {x: p.x, y: p.y, marker: p.marker}})
+    })
 
   state$.subscribe(poses => {
-    points.push(poses)
-    console.log('azerty',points)
+    //points.push(poses)
+    console.log(poses)
+    for (let x_points of poses) points.push(x_points)
+    console.log('azerty', points)
     prepare_plot(exphe_spec, where, 500, points, a => console.log(123, a))
   })
  

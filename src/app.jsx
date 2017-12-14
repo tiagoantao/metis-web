@@ -50,10 +50,10 @@ export const App = (sources) => {
 
   const exphe$ = sources.metis.map( state => {
     console.log(7654, state)
-    return {
-      x: state.cycle,
-      y: state.global_parameters.ExpHe.unlinked[0],
-      marker: 'M1'}
+    var cnt = 0
+    return state.global_parameters.ExpHe.unlinked.map(exphe => {
+      return {
+	x: state.cycle, y: exphe, marker: 'M' + cnt++}})
   })
 
   const plot = Plot('#vega', {DOM: sources.DOM, props: exphe$})
