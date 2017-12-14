@@ -7,12 +7,12 @@ const exphe_spec =`{
   "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
   "description": "ExpHe over cycles",
   "data": {
-    "name": "bla"
+    "name": "lines"
   },
   "mark": "line",
   "encoding": {
-    "x": {"field": "cycle", "type": "quantitative", "bandSize": "fit"},
-    "y": {"field": "ExpHe", "type": "quantitative"},
+    "x": {"field": "x", "type": "quantitative", "bandSize": "fit"},
+    "y": {"field": "y", "type": "quantitative"},
     "color": {"field": "marker", "type": "nominal"}
   }
 }`
@@ -29,15 +29,7 @@ const prepare_plot = (vl_text, id, width, points, cb) => {
   view.renderer('canvas')
   const id_ = document.querySelector(id)
   view.initialize(id_)
-  const values3 = [{cycle: 2, ExpHe: 0.4, marker:"M1"}]
-  const values4 = [{cycle: 4, ExpHe: 0.4, marker:"M1"},
-		   {cycle: 5, ExpHe: 0.8, marker:"M1"}]
-  //view.insert('bla', values3)
-  //view.run()
-  console.log('check')
-  console.log(values3)
-  console.log(points)
-  view.insert('bla', points)
+  view.insert('lines', points)
   view.run()
 }
 
@@ -49,12 +41,12 @@ export const Plot = (where, sources) => {
 
   //prepare_plot(exphe_spec, where, 500, (a) => console.log(123, a))
 
-  const points = []
+  const points = [] // Make a driver here...
   
   const state$ = props$
     .map(props => {
       console.log('qwerty', props)
-      return { cycle: props.x, ExpHe: props.y, marker: 'M1' }
+      return { x: props.x, y: props.y, marker: props.marker }
     }
     )
 

@@ -34,7 +34,7 @@ const prepare_sim_state = (pop_size) => {
       species, 0, integrated_create_randomized_genome)))
   const state = {
     global_parameters: {stop: false},
-    individuals, operators, cycle: 1}
+    individuals, operators, cycle: 0}
   return state
 }
 
@@ -48,15 +48,12 @@ export const App = (sources) => {
 
   let num_cycles = 0 // XXX state....
 
-  const props$ = sources.metis
-			.map(cc => {
-			  console.log(888, cc)
-			  return {x: cc, y: cc}
-			})
-
   const exphe$ = sources.metis.map( state => {
     console.log(7654, state)
-    return {x: state.cycle, y:state.global_parameters.ExpHe.unlinked[0]}
+    return {
+      x: state.cycle,
+      y: state.global_parameters.ExpHe.unlinked[0],
+      marker: 'M1'}
   })
 
   const plot = Plot('#vega', {DOM: sources.DOM, props: exphe$})
