@@ -3,7 +3,7 @@ import * as vg from 'vega'
 import * as vl from 'vega-lite'
 
 
-const exphe_spec =`{
+const plot_spec =`{
   "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
   "description": "ExpHe over cycles",
   "data": {
@@ -31,6 +31,15 @@ const prepare_plot = (vl_text, id, width, points, cb) => {
   view.initialize(id_)
   view.insert('lines', points)
   view.run()
+
+  return view
+}
+
+
+const update_plot = (view, points, cb) => {
+  view.insert('lines', points)
+  view.run()
+
 }
 
 
@@ -39,23 +48,27 @@ export const Plot = (where, sources) => {
   const props$ = sources.props
 
 
-  //prepare_plot(exphe_spec, where, 500, (a) => console.log(123, a))
+  let view = null
 
   const points = [] // Make a driver here...
+
+  console.log(where, 999999)
+  dom.select(where).elements().take(1).subscribe(x => {
+    view = prepare_plot(plot_spec, where, 500, (a) => console.log(123, a))
+  })
   
   const state$ = props$
     .map(props => {
       console.log('qwerty', props)
-      //return {x: props[0].x, y:props[0].y, marker: props[0].marker}
       return props.map(p => {return {x: p.x, y: p.y, marker: p.marker}})
     })
 
   state$.subscribe(poses => {
-    //points.push(poses)
-    console.log(poses)
     for (let x_points of poses) points.push(x_points)
     console.log('azerty', points)
-    prepare_plot(exphe_spec, where, 500, points, a => console.log(123, a))
+    if (view) {
+      update_plot(view, points, a => console.log(123, a))
+    }
   })
  
   const vdom$ = state$.map(state =>
