@@ -59,9 +59,6 @@ export const App = (sources) => {
   const plot = Plot('#vega', {DOM: sources.DOM, props: exphe$})
   const plot_dom$ = plot.DOM
 
-  sources.DOM.select('#simulate').events('click').map(
-    x => console.log(22222, x)).startWith(1)
-  
   const simulate$ = sources.DOM.select('#simulate')
     .events('click')
     .map(ev => parseInt(ev.target.value))
