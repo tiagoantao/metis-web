@@ -1,6 +1,7 @@
 import Rx from 'rxjs/Rx'
 
 import {Plot} from './plot'
+import {Slider} from './slider'
 
 import {
   gn_generate_unlinked_genome,
@@ -46,7 +47,7 @@ export const App = (sources) => {
     .startWith(50)
   num_cycles$.subscribe(x => num_cycles = x)
 
-  let num_cycles = 0 // XXX state....
+  let num_cycles = 50 // XXX state....
 
   const exphe$ = sources.metis.map( state => {
     console.log(7654, state)
@@ -64,7 +65,7 @@ export const App = (sources) => {
     .map(ev => parseInt(ev.target.value))
     .startWith(0)
 
-  const test$ = simulate$.map(_num_cycles =>
+  const test$ = simulate$.map(_ =>
     Rx.Observable.from([
       {num_cycles, state: prepare_sim_state(100)}
     ]))
@@ -73,22 +74,27 @@ export const App = (sources) => {
     console.log(10, 25, stats)
   }
 
-  sources.metis.subscribe(state => record_stats(state.global_parameters))
+
+  const pop_size = Slider({DOM: sources.DOM},
+			   {class: '.pop_size', label: 'pop size:',
+			    step: 10, min: 10, value: 50, max: 300})
+
+  pop_size.value.subscribe(x => console.log(111111111111111111, x)) 
+  //sources.metis.subscribe(state => record_stats(state.global_parameters))
   
-  const vdom$ = Rx.Observable.combineLatest(simulate$, plot_dom$).
-		   map(([_num_cycles, _plot_dom]) =>
+  const vdom$ = Rx.Observable.combineLatest(pop_size.DOM, num_cycles$, simulate$, plot_dom$).map(([pop_size, num_cycles, _, _plot_dom]) =>
     <div>
       <div id="chart">
       </div>
       <div>
-        cycles: <input type="number" id="num_cycles" value="{num_cycles}"/>
-        <button id="simulate" value="1">Simulate</button>
+	{pop_size}
+	cycles: <input style="width: 400px" type="range" min="10" step="10" max="250" id="num_cycles" value="{num_cycles}"/> {num_cycles}
+	<br/>
+	<button id="simulate" value="1">Simulate</button>
       </div>
       <div id="vega"></div>
-      <div>bla {String(num_cycles)}
-      </div>
     </div>      
-      )
+  )
 
   const sinks = {
     DOM: vdom$,
