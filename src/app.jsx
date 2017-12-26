@@ -18,8 +18,8 @@ import {
   sp_Species} from '@tiagoantao/metis'
 
 
-const prepare_sim_state = (pop_size) => {
-  const genome_size = 10
+const prepare_sim_state = (pop_size, num_markers) => {
+  const genome_size = num_markers
 
   const unlinked_genome = gn_generate_unlinked_genome(
     genome_size, () => {return new gn_SNP()})
@@ -57,6 +57,9 @@ export const App = (sources) => {
   const pop_size_c = Slider({DOM: sources.DOM},
 			    {class: '.pop_size', label: 'pop size:',
 			     step: 10, min: 10, value: 50, max: 300})
+  let pop_size
+  pop_size_c.value.subscribe(v => pop_size = v)
+  
 
   const num_cycles_c = Slider({DOM: sources.DOM},
 			      {class: '.num_cycles', label: 'cycles:',
@@ -64,19 +67,27 @@ export const App = (sources) => {
   let num_cycles
   num_cycles_c.value.subscribe(v => num_cycles = v)
 
+  const num_markers_c = Slider({DOM: sources.DOM},
+			      {class: '.num_markers', label: 'markers:',
+			       step: 1, min: 1, value: 4, max: 20})
+  let num_markers
+  num_markers_c.value.subscribe(v => num_markers = v)
+
+  
   const metis$ = simulate$.map(_ => {
     return Rx.Observable.from([
-      {num_cycles, state: prepare_sim_state(100)}
+      {num_cycles, state: prepare_sim_state(pop_size, num_markers)}
     ])
   })
 
   const vdom$ = Rx.Observable
-		  .combineLatest(pop_size_c.DOM, num_cycles_c.DOM)
-		  .map(([pop_size, num_cycles]) =>
+		  .combineLatest(pop_size_c.DOM, num_cycles_c.DOM, num_markers_c.DOM)
+		  .map(([pop_size, num_cycles, num_markers]) =>
     <div>
       <div>
 	{pop_size}
 	{num_cycles}
+	{num_markers}
 	<br/>
 	<button id="simulate" value="1">Simulate</button>
       </div>
