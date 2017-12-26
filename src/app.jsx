@@ -48,7 +48,7 @@ export const App = (sources) => {
 	x: state.cycle, y: exphe, marker: 'M' + cnt++}})
   })
 
-  const plot = Plot('#vega', {DOM: sources.DOM, vals: exphe$})
+  const plot = Plot('vega', {DOM: sources.DOM, vals: exphe$})
 
   const simulate$ = sources.DOM.select('#simulate')
 			   .events('click')

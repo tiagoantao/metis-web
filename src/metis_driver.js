@@ -21,10 +21,11 @@ export const makeMetisDriver = () => {
     const bridge_sim_web = (listener, state, num_cycles) => {
         //XXX The state should be deep copied
         //Currently this is is mutated between source and sink
-        sim_do_n_cycles(num_cycles, state, (state, cb) => {
-	    listener.next(state)
-	    if (cb && state.cycle < 1000) cb() // <1000 is a safeguard
-	})
+        sim_do_n_cycles(num_cycles, state, (state, cb) =>
+			setTimeout( () => {
+			    listener.next(state)
+			    if (cb && state.cycle < 1000) cb() // <1000 is a safeguard
+			}, 0))
     }
 
 

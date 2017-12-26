@@ -25,7 +25,7 @@ const prepare_plot = (vl_text, id, width, points, cb) => {
 
   const view = new vg.View(vg_spec)
   view.renderer('canvas')
-  const id_ = document.querySelector(id)
+  const id_ = document.querySelector('#' + id)
   view.initialize(id_)
   view.insert('lines', points)
   view.run()
@@ -34,8 +34,9 @@ const prepare_plot = (vl_text, id, width, points, cb) => {
 }
 
 
-const update_plot = (view, points, cb) => {
+const update_plot = (view, points) => {
   view.insert('lines', points).run()
+  //document.getElementById('vega').style.display = 'none'
 }
 
 const clean_plot = (view) => {
@@ -51,7 +52,7 @@ export const Plot = (where, sources) => {
 
   let max_cycle = -1 // XXX state
 
-  dom.select(where).elements().take(1).subscribe(x => {
+  dom.select('#' + where).elements().take(1).subscribe(x => {
     view = prepare_plot(plot_spec, where, 500)
   })
 
