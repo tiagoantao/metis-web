@@ -8,7 +8,7 @@ export const Slider = (sources, props) => {
   const new_value$ = DOM
     .select('input')
     .events('input')
-    .map(ev => {console.log(123123123); return conv(ev.target.value)})
+    .map(ev => conv(ev.target.value))
     .startWith(props.value)
 
   const vdom$ = new_value$

@@ -1,4 +1,4 @@
-import * as d3 from 'd3'  //XXX remove?
+//import * as d3 from 'd3'  //XXX remove?
 import * as vg from 'vega'
 import * as vl from 'vega-lite'
 
@@ -19,12 +19,10 @@ const plot_spec =`{
 
 const prepare_plot = (vl_text, id, width, points, cb) => {
   const vl_json = JSON.parse(vl_text)
-  console.log(3333)
   vl_json.width = width
   vl_json.height = width
   const vg_spec = vg.parse(vl.compile(vl_json).spec)
 
-  console.log(vl.compile(vl_json).spec)
   const view = new vg.View(vg_spec)
   view.renderer('canvas')
   const id_ = document.querySelector(id)
@@ -37,46 +35,55 @@ const prepare_plot = (vl_text, id, width, points, cb) => {
 
 
 const update_plot = (view, points, cb) => {
-  view.insert('lines', points)
-  view.run()
+  view.insert('lines', points).run()
+}
 
+const clean_plot = (view) => {
+  view.remove('lines', _ => true).run()
 }
 
 
 export const Plot = (where, sources) => {
   const dom = sources.DOM
-  const props$ = sources.props
-
+  const vals$ = sources.vals
 
   let view = null
 
-  const points = [] // Make a driver here...
+  let max_cycle = -1 // XXX state
 
-  console.log(where, 999999)
   dom.select(where).elements().take(1).subscribe(x => {
-    view = prepare_plot(plot_spec, where, 500, (a) => console.log(123, a))
+    view = prepare_plot(plot_spec, where, 500)
   })
-  
-  const state$ = props$
-    .map(props => {
-      console.log('qwerty', props)
-      return props.map(p => {return {x: p.x, y: p.y, marker: p.marker}})
+
+  const state$ = vals$
+    .map(val => {
+      return val.map(p => {return {x: p.x, y: p.y, marker: p.marker}})
     })
 
   state$.subscribe(poses => {
-    for (let x_points of poses) points.push(x_points)
-    console.log('azerty', points)
+    let points = []
+    for (let x_point of poses) {
+      if (x_point.x < max_cycle) {
+	console.log(2222, x_point)
+	clean_plot(view)
+      }
+      max_cycle = x_point.x
+
+      points.push(x_point)
+    }
     if (view) {
       update_plot(view, points, a => console.log(123, a))
     }
   })
- 
+
+  /*
   const vdom$ = state$.map(state =>
-    <div id="vega">adasdsd</div>
+    <div id="vega"></div>
   )
+  */
 
   const sinks = {
-    DOM: vdom$
+    update: state$.startWith(null)
   }
   
   return sinks

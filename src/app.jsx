@@ -41,54 +41,42 @@ const prepare_sim_state = (pop_size) => {
 
 
 export const App = (sources) => {
-  const num_cycles$ = sources.DOM.select('#num_cycles')
-    .events('change')
-    .map(ev => parseInt(ev.target.value))
-    .startWith(50)
-  num_cycles$.subscribe(x => num_cycles = x)
-
-  let num_cycles = 50 // XXX state....
-
-  const exphe$ = sources.metis.map( state => {
-    console.log(7654, state)
+  const exphe$ = sources.metis.map(state => {
     var cnt = 0
     return state.global_parameters.ExpHe.unlinked.map(exphe => {
       return {
 	x: state.cycle, y: exphe, marker: 'M' + cnt++}})
   })
 
-  const plot = Plot('#vega', {DOM: sources.DOM, props: exphe$})
-  const plot_dom$ = plot.DOM
+  const plot = Plot('#vega', {DOM: sources.DOM, vals: exphe$})
 
   const simulate$ = sources.DOM.select('#simulate')
-    .events('click')
-    .map(ev => parseInt(ev.target.value))
-    .startWith(0)
-
-  const test$ = simulate$.map(_ =>
-    Rx.Observable.from([
-      {num_cycles, state: prepare_sim_state(100)}
-    ]))
-
-  const record_stats = (stats) => {
-    console.log(10, 25, stats)
-  }
-
-
-  const pop_size = Slider({DOM: sources.DOM},
-			   {class: '.pop_size', label: 'pop size:',
-			    step: 10, min: 10, value: 50, max: 300})
-
-  pop_size.value.subscribe(x => console.log(111111111111111111, x)) 
-  //sources.metis.subscribe(state => record_stats(state.global_parameters))
+			   .events('click')
+			   .map(ev => parseInt(ev.target.value))
   
-  const vdom$ = Rx.Observable.combineLatest(pop_size.DOM, num_cycles$, simulate$, plot_dom$).map(([pop_size, num_cycles, _, _plot_dom]) =>
+  const pop_size_c = Slider({DOM: sources.DOM},
+			    {class: '.pop_size', label: 'pop size:',
+			     step: 10, min: 10, value: 50, max: 300})
+
+  const num_cycles_c = Slider({DOM: sources.DOM},
+			      {class: '.num_cycles', label: 'cycles:',
+			       step: 10, min: 10, value: 20, max: 200})
+  let num_cycles
+  num_cycles_c.value.subscribe(v => num_cycles = v)
+
+  const metis$ = simulate$.map(_ => {
+    return Rx.Observable.from([
+      {num_cycles, state: prepare_sim_state(100)}
+    ])
+  })
+
+  const vdom$ = Rx.Observable
+		  .combineLatest(pop_size_c.DOM, num_cycles_c.DOM)
+		  .map(([pop_size, num_cycles]) =>
     <div>
-      <div id="chart">
-      </div>
       <div>
 	{pop_size}
-	cycles: <input style="width: 400px" type="range" min="10" step="10" max="250" id="num_cycles" value="{num_cycles}"/> {num_cycles}
+	{num_cycles}
 	<br/>
 	<button id="simulate" value="1">Simulate</button>
       </div>
@@ -98,7 +86,7 @@ export const App = (sources) => {
 
   const sinks = {
     DOM: vdom$,
-    metis: test$
+    metis: metis$
   }
   
   return sinks
