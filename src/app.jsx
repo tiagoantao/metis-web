@@ -14,6 +14,7 @@ import {
   ops_RxOperator,  // Currently not in use
   ops_stats_demo_SexStatistics,
   ops_stats_hz_ExpHe,
+  ops_stats_NumAl,
   p_generate_n_inds,
   sp_Species} from '@tiagoantao/metis'
 
@@ -28,6 +29,7 @@ const prepare_sim_state = (pop_size, num_markers) => {
     new ops_rep_SexualReproduction(species, pop_size),
     new ops_culling_KillOlderGenerations(),
     new ops_stats_demo_SexStatistics(),
+    new ops_stats_NumAl(),
     new ops_stats_hz_ExpHe()
   ]
   const individuals = p_generate_n_inds(pop_size, () =>
@@ -48,7 +50,15 @@ export const App = (sources) => {
 	x: state.cycle, y: exphe, marker: 'M' + cnt++}})
   })
 
-  const plot = Plot('vega', {DOM: sources.DOM, vals: exphe$})
+  const numal$ = sources.metis.map(state => {
+    var cnt = 0
+    return state.global_parameters.NumAl.unlinked.map(numal => {
+      return {
+	x: state.cycle, y: numal, marker: 'M' + cnt++}})
+  })
+  
+  const exphe_plot = Plot('exphe', {DOM: sources.DOM, vals: exphe$})
+  const numal_plot = Plot('numal', {DOM: sources.DOM, vals: numal$})
 
   const simulate$ = sources.DOM.select('#simulate')
 			   .events('click')
@@ -81,19 +91,21 @@ export const App = (sources) => {
   })
 
   const vdom$ = Rx.Observable
-		  .combineLatest(pop_size_c.DOM, num_cycles_c.DOM, num_markers_c.DOM)
+		  .combineLatest(pop_size_c.DOM,
+				 num_cycles_c.DOM, num_markers_c.DOM)
 		  .map(([pop_size, num_cycles, num_markers]) =>
-    <div>
-      <div>
-	{pop_size}
-	{num_cycles}
-	{num_markers}
-	<br/>
-	<button id="simulate" value="1">Simulate</button>
-      </div>
-      <div id="vega"></div>
-    </div>      
-  )
+		    <div>
+		      <div>
+			{pop_size}
+			{num_cycles}
+			{num_markers}
+			<br/>
+			<button id="simulate" value="1">Simulate</button>
+		      </div>
+		      <div id="exphe"></div>
+		      <div id="numal"></div>
+		    </div>      
+		  )
 
   const sinks = {
     DOM: vdom$,
