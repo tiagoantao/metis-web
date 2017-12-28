@@ -31,7 +31,6 @@ const plot_spec = conf => {
 }`}
 
 const prepare_plot = (vl_text, conf, points, cb) => {
-  console.log(vl_text)
   const vl_json = JSON.parse(vl_text)
   vl_json.width = conf.width || 400
   vl_json.height = vl_json.width - vl_json.width / 4

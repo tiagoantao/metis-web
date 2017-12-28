@@ -2,7 +2,7 @@ import Rx from 'rxjs/Rx'
 
 import {Plot} from './plot'
 import {Selector} from './selector.js'
-import {Slider} from './slider'
+import {Slider} from './slider.js'
 
 
 import {
