@@ -3,29 +3,43 @@ import * as vg from 'vega'
 import * as vl from 'vega-lite'
 
 
-const plot_spec =`{
+const plot_spec = conf => {
+  const cf = Object.assign({}, conf)
+  cf.desc = cf.desc || ''
+  cf.title = cf.title || ''
+  cf.x_label = cf.x_label || 'Cycles'
+  cf.y_label = cf.y_label || ''
+  return `
+{
   "$schema": "https://vega.github.io/schema/vega-lite/v2.json",
-  "description": "ExpHe over cycles",
+  "description": "${cf.desc}",
+  "title": "${cf.title}",
   "data": {
     "name": "lines"
   },
   "mark": "line",
   "encoding": {
-    "x": {"field": "x", "type": "quantitative", "bandSize": "fit"},
-    "y": {"field": "y", "type": "quantitative"},
+    "x": {"field": "x",
+          "axis": {"title": "${cf.x_label}"},
+          "type": "quantitative",
+          "bandSize": "fit"},
+    "y": {"field": "y",
+          "axis": {"title": "${cf.y_label}"},
+           "type": "quantitative"},
     "color": {"field": "marker", "type": "nominal"}
   }
-}`
+}`}
 
-const prepare_plot = (vl_text, id, width, points, cb) => {
+const prepare_plot = (vl_text, conf, points, cb) => {
+  console.log(vl_text)
   const vl_json = JSON.parse(vl_text)
-  vl_json.width = width
-  vl_json.height = width
+  vl_json.width = conf.width || 400
+  vl_json.height = vl_json.width - vl_json.width / 4
   const vg_spec = vg.parse(vl.compile(vl_json).spec)
 
   const view = new vg.View(vg_spec)
   view.renderer('canvas')
-  const id_ = document.querySelector('#' + id)
+  const id_ = document.querySelector('#' + conf.id)
   view.initialize(id_)
   view.insert('lines', points)
   view.run()
@@ -44,7 +58,8 @@ const clean_plot = (view) => {
 }
 
 
-export const Plot = (where, sources) => {
+export const Plot = (conf, sources) => {
+  const where = conf.id
   const dom = sources.DOM
   const vals$ = sources.vals
 
@@ -53,7 +68,7 @@ export const Plot = (where, sources) => {
   let max_cycle = -1 // XXX state
 
   dom.select('#' + where).elements().take(1).subscribe(x => {
-    view = prepare_plot(plot_spec, where, 500)
+    view = prepare_plot(plot_spec(conf), conf)
   })
 
   const state$ = vals$

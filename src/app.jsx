@@ -57,8 +57,12 @@ export const App = (sources) => {
 	x: state.cycle, y: numal, marker: 'M' + cnt++}})
   })
   
-  const exphe_plot = Plot('exphe', {DOM: sources.DOM, vals: exphe$})
-  const numal_plot = Plot('numal', {DOM: sources.DOM, vals: numal$})
+  const exphe_plot = Plot(
+    {id: 'exphe', y_label: 'Expected Heterozygosity'},
+    {DOM: sources.DOM, vals: exphe$})
+  const numal_plot = Plot(
+    {id: 'numal', y_label: 'Number of distinct alleles'},
+    {DOM: sources.DOM, vals: numal$})
 
   const simulate$ = sources.DOM.select('#simulate')
 			   .events('click')
