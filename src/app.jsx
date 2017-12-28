@@ -1,7 +1,9 @@
 import Rx from 'rxjs/Rx'
 
 import {Plot} from './plot'
+import {Selector} from './selector.js'
 import {Slider} from './slider'
+
 
 import {
   gn_generate_unlinked_genome,
@@ -47,46 +49,52 @@ export const App = (sources) => {
     var cnt = 0
     return state.global_parameters.ExpHe.unlinked.map(exphe => {
       return {
-	x: state.cycle, y: exphe, marker: 'M' + cnt++}})
+        x: state.cycle, y: exphe, marker: 'M' + cnt++}})
   })
 
   const numal$ = sources.metis.map(state => {
     var cnt = 0
     return state.global_parameters.NumAl.unlinked.map(numal => {
       return {
-	x: state.cycle, y: numal, marker: 'M' + cnt++}})
+        x: state.cycle, y: numal, marker: 'M' + cnt++}})
   })
+
+
+  const marker_type_c = Selector({DOM: sources.DOM},
+                                 {class: '.marker_type',
+                                  label: 'marker type:'})
+  let marker_type
+  marker_type_c.value.subscribe(v => marker_type = v)
   
+  const pop_size_c = Slider({DOM: sources.DOM},
+                            {class: '.pop_size', label: 'pop size:',
+                             step: 10, min: 10, value: 50, max: 300})
+  let pop_size
+  pop_size_c.value.subscribe(v => pop_size = v)
+  
+  const num_cycles_c = Slider({DOM: sources.DOM},
+                              {class: '.num_cycles', label: 'cycles:',
+                               step: 10, min: 10, value: 20, max: 200})
+  let num_cycles
+  num_cycles_c.value.subscribe(v => num_cycles = v)
+
+  const num_markers_c = Slider({DOM: sources.DOM},
+                               {class: '.num_markers', label: 'markers:',
+                                step: 1, min: 1, value: 4, max: 20})
+  let num_markers
+  num_markers_c.value.subscribe(v => num_markers = v)
+
   const exphe_plot = Plot(
     {id: 'exphe', y_label: 'Expected Heterozygosity'},
     {DOM: sources.DOM, vals: exphe$})
+
   const numal_plot = Plot(
     {id: 'numal', y_label: 'Number of distinct alleles'},
     {DOM: sources.DOM, vals: numal$})
 
   const simulate$ = sources.DOM.select('#simulate')
-			   .events('click')
-			   .map(ev => parseInt(ev.target.value))
-  
-  const pop_size_c = Slider({DOM: sources.DOM},
-			    {class: '.pop_size', label: 'pop size:',
-			     step: 10, min: 10, value: 50, max: 300})
-  let pop_size
-  pop_size_c.value.subscribe(v => pop_size = v)
-  
-
-  const num_cycles_c = Slider({DOM: sources.DOM},
-			      {class: '.num_cycles', label: 'cycles:',
-			       step: 10, min: 10, value: 20, max: 200})
-  let num_cycles
-  num_cycles_c.value.subscribe(v => num_cycles = v)
-
-  const num_markers_c = Slider({DOM: sources.DOM},
-			      {class: '.num_markers', label: 'markers:',
-			       step: 1, min: 1, value: 4, max: 20})
-  let num_markers
-  num_markers_c.value.subscribe(v => num_markers = v)
-
+                           .events('click')
+                           .map(ev => parseInt(ev.target.value))
   
   const metis$ = simulate$.map(_ => {
     return Rx.Observable.from([
@@ -95,21 +103,22 @@ export const App = (sources) => {
   })
 
   const vdom$ = Rx.Observable
-		  .combineLatest(pop_size_c.DOM,
-				 num_cycles_c.DOM, num_markers_c.DOM)
-		  .map(([pop_size, num_cycles, num_markers]) =>
-		    <div>
-		      <div>
-			{pop_size}
-			{num_cycles}
-			{num_markers}
-			<br/>
-			<button id="simulate" value="1">Simulate</button>
-		      </div>
-		      <div id="exphe"></div>
-		      <div id="numal"></div>
-		    </div>      
-		  )
+                  .combineLatest(marker_type_c.DOM, pop_size_c.DOM,
+                                 num_cycles_c.DOM, num_markers_c.DOM)
+                  .map(([marker_type, pop_size, num_cycles, num_markers]) =>
+                    <div>
+                      <div>
+                        {marker_type}
+                        {pop_size}
+                        {num_cycles}
+                        {num_markers}
+                        <br/>
+                        <button id="simulate" value="1">Simulate</button>
+                      </div>
+                      <div id="exphe"></div>
+                      <div id="numal"></div>
+                    </div>      
+                  )
 
   const sinks = {
     DOM: vdom$,
