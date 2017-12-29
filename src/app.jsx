@@ -1,6 +1,6 @@
 import Rx from 'rxjs/Rx'
 
-import {Plot} from './plot'
+import {Plot} from './plot.js'
 import {Selector} from './selector.js'
 import {Slider} from './slider.js'
 
@@ -46,7 +46,7 @@ const prepare_sim_state = (pop_size, num_markers) => {
 
 export const App = (sources) => {
   const exphe$ = sources.metis.map(state => {
-    var cnt = 0
+    var cnt = 1
     return state.global_parameters.ExpHe.unlinked.map(exphe => {
       return {
         x: state.cycle, y: exphe, marker: 'M' + cnt++}})

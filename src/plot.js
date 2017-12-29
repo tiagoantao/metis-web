@@ -1,4 +1,5 @@
-//import * as d3 from 'd3'  //XXX remove?
+import {div} from '@cycle/dom'
+
 import * as vg from 'vega'
 import * as vl from 'vega-lite'
 
@@ -91,14 +92,11 @@ export const Plot = (conf, sources) => {
     }
   })
 
-  /*
-  const vdom$ = state$.map(state =>
-    <div id="vega"></div>
-  )
-  */
+  const vdom$ = state$.map( state => div({attrs: {id: conf.id}}))
 
   const sinks = {
     update: state$.startWith(null)
+    //DOM: vdom$
   }
   
   return sinks
