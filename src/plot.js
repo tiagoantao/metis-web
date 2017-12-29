@@ -61,7 +61,7 @@ const clean_plot = (view) => {
 export const Plot = (conf, sources) => {
   const where = conf.id
   const dom = sources.DOM
-  const vals$ = sources.vals
+  const vals$ = sources.vals.startWith([])
 
   let view = null
 
@@ -92,11 +92,11 @@ export const Plot = (conf, sources) => {
     }
   })
 
-  const vdom$ = state$.map( state => div({attrs: {id: conf.id}}))
+  const vdom$ = state$.map(state => div({attrs: {id: conf.id}}))
 
   const sinks = {
-    update: state$.startWith(null)
-    //DOM: vdom$
+    update: state$.startWith(null),
+    DOM: vdom$
   }
   
   return sinks

@@ -103,9 +103,12 @@ export const App = (sources) => {
   })
 
   const vdom$ = Rx.Observable
-                  .combineLatest(marker_type_c.DOM, pop_size_c.DOM,
-                                 num_cycles_c.DOM, num_markers_c.DOM)
-                  .map(([marker_type, pop_size, num_cycles, num_markers]) =>
+                  .combineLatest(
+                    marker_type_c.DOM, pop_size_c.DOM,
+                    num_cycles_c.DOM, num_markers_c.DOM,
+                    exphe_plot.DOM, numal_plot.DOM)
+                  .map(([marker_type, pop_size, num_cycles, num_markers,
+                         exphe, numal]) =>
                     <div>
                       <div>
                         {marker_type}
@@ -115,8 +118,8 @@ export const App = (sources) => {
                         <br/>
                         <button id="simulate" value="1">Simulate</button>
                       </div>
-                      <div id="exphe"></div>
-                      <div id="numal"></div>
+                      {exphe}
+                      {numal}
                     </div>      
                   )
 
