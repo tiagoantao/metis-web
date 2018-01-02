@@ -18,7 +18,7 @@ import {
   ops_stats_hz_ExpHe,
   ops_stats_NumAl,
   p_generate_n_inds,
-  sp_Species} from '@tiagoantao/metis'
+  sp_Species} from '@tiagoantao/metis-sim'
 
 
 const prepare_sim_state = (pop_size, num_markers) => {
