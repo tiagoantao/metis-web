@@ -10,4 +10,3 @@ out/
 .lein-repl-history
 resources/
 build/
-public/index.html

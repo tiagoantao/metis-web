@@ -7,7 +7,7 @@ import {makeMetisDriver} from './metis_driver'
 const main = App
 
 const drivers = {
-    DOM:  makeDOMDriver('#vis'),
+    DOM:  makeDOMDriver('#metis'),
     metis: makeMetisDriver() 
 }
 
