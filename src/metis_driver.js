@@ -1,7 +1,7 @@
 import regeneratorRuntime from 'regenerator-runtime'
 import xs from 'xstream'
 import {adapt} from '@cycle/run/lib/adapt'
-import {sim_do_n_cycles} from '@tiagoantao/metis'
+import {sim_do_n_cycles} from '@tiagoantao/metis-sim'
 
 
 const sleep = (ms) => {
