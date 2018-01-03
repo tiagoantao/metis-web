@@ -108,7 +108,8 @@ export const App = (sources) => {
 
   const sinks = {
     DOM: vdom$,
-    metis: Rx.Observable.merge(selection_pop.metis, single_pop.metis)
+    metis: Rx.Observable.merge(selection_pop.metis, freq_pop.metis,
+			       single_pop.metis)
   }
   
   return sinks

@@ -9,7 +9,7 @@ import {
   gn_generate_unlinked_genome,
   gn_SNP,
   i_assign_random_sex,
-  integrated_create_randomized_genome,
+  integrated_create_freq_genome,
   integrated_generate_individual_with_genome,
   ops_culling_KillOlderGenerations,
   ops_rep_SexualReproduction,
@@ -21,7 +21,7 @@ import {
   sp_Species} from '@tiagoantao/metis-sim'
 
 
-const prepare_sim_state = (tag, pop_size, num_markers) => {
+const prepare_sim_state = (tag, pop_size, num_markers, freq_start) => {
   const genome_size = num_markers
 
   const unlinked_genome = gn_generate_unlinked_genome(
@@ -36,16 +36,17 @@ const prepare_sim_state = (tag, pop_size, num_markers) => {
   ]
   const individuals = p_generate_n_inds(pop_size, () =>
     i_assign_random_sex(integrated_generate_individual_with_genome(
-      species, 0, integrated_create_randomized_genome)))
+      species, 0,
+      (ind) => integrated_create_freq_genome(freq_start / 100, ind))))
   const state = {
     global_parameters: {tag, stop: false},
     individuals, operators, cycle: 0}
+  console.log(777, state, 777)
   return state
 }
 
 
 export const SimpleFreqApp = (sources) => {
-
   const tag = 'simple-freq'
 
   const my_metis$ = sources.metis.filter(
@@ -101,10 +102,12 @@ export const SimpleFreqApp = (sources) => {
   const simulate$ = sources.DOM.select('#' + tag)
                            .events('click')
                            .map(ev => parseInt(ev.target.value))
+
+  simulate$.subscribe((x) => console.log(2123, x))
   
   const metis$ = simulate$.map(_ => {
     return Rx.Observable.from([
-      {num_cycles, state: prepare_sim_state(tag, pop_size, num_markers)}
+      {num_cycles, state: prepare_sim_state(tag, pop_size, num_markers, freq_start)}
     ])
   })
 
