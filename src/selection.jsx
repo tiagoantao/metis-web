@@ -44,9 +44,8 @@ const prepare_sim_state = (tag, pop_size, num_markers) => {
 }
 
 
-export const SelectionApp = (sources) => {
-
-  const tag = 'selection'
+export const SelectionAppFactory = (sel_type) => (sources) => {
+  const tag = 'selection' + sel_type
 
   const my_metis$ = sources.metis.filter(
     state => state.global_parameters.tag === tag)
@@ -65,6 +64,11 @@ export const SelectionApp = (sources) => {
         x: state.cycle, y: numal, marker: 'M' + cnt++}})
   })
 
+  const freq_start_c = Slider({DOM: sources.DOM},
+                              {className: '.' + tag + '-freq_start', label: 'freq start (%):',
+                               step: 1, min: 1, value: 50, max: 99})
+  let freq_start
+  freq_start_c.value.subscribe(v => freq_start = v)
 
   const pop_size_c = Slider({DOM: sources.DOM},
                             {className: '.' + tag + '-pop_size', label: 'pop size:',
@@ -95,9 +99,6 @@ export const SelectionApp = (sources) => {
   const simulate$ = sources.DOM.select('#' + tag)
                            .events('click')
                            .map(ev => parseInt(ev.target.value))
-  simulate$.subscribe(x => console.log(123, x))
-
-  numal$.subscribe(x => console.log(999, x))
   
   const metis$ = simulate$.map(_ => {
     return Rx.Observable.from([
@@ -107,22 +108,23 @@ export const SelectionApp = (sources) => {
 
   const vdom$ = Rx.Observable
                   .combineLatest(
-                    pop_size_c.DOM,
+                    freq_start_c.DOM, pop_size_c.DOM,
                     num_cycles_c.DOM, num_markers_c.DOM,
                     exphe_plot.DOM, numal_plot.DOM)
-                  .map(([pop_size, num_cycles, num_markers,
+                  .map(([freq_start, pop_size, num_cycles, num_markers,
                          exphe, numal]) =>
-                    <div>
-                      <div>
-                        {pop_size}
-                        {num_cycles}
-                        {num_markers}
-                        <br/>
-                        <button id={tag} value="1">Simulate</button>
-                      </div>
-                      {exphe}
-                      {numal}
-                    </div>
+			   <div>
+			     <div>
+			       {freq_start}
+                               {pop_size}
+                               {num_cycles}
+                               {num_markers}
+                               <br/>
+                               <button id={tag} value="1">Simulate</button>
+			     </div>
+			     {exphe}
+			     {numal}
+			   </div>
                   )
 
   const sinks = {

@@ -5,7 +5,7 @@ import {makeMetisDriver} from './metis_driver'
 
 import {SimpleApp} from './simple'
 import {SimpleFreqApp} from './simple-freq'
-import {SelectionApp} from './selection'
+import {SelectionAppFactory} from './selection'
 
 const uikit_template =
   nav({attrs:{className:"uk-navbar-container", "uk-navbar": 1}},
@@ -62,9 +62,9 @@ export const App = (sources) => {
                               .startWith({timeStamp: -1,
 					  srcElement: {id: 'menu-freq'}})
   
-  const selection_menu$ = sources.DOM.select('#menu-selection').events('click')
+  const selection_menu$ = sources.DOM.select('#menu-dominant').events('click')
 			         .startWith({timeStamp: -1,
-					     srcElement: {id: 'menu-selection'}})
+					     srcElement: {id: 'menu-dominant'}})
 
 
   const recent_event$ = Rx.Observable.combineLatest(
@@ -86,7 +86,7 @@ export const App = (sources) => {
   const sp_dom$ = single_pop.DOM
   const freq_pop = SimpleFreqApp({DOM: sources.DOM, metis: sources.metis})
   const fq_dom$ = freq_pop.DOM
-  const selection_pop = SelectionApp({DOM: sources.DOM, metis: sources.metis})
+  const selection_pop = SelectionAppFactory('dominant')({DOM: sources.DOM, metis: sources.metis})
   const sel_dom$ = selection_pop.DOM
 
   const vdom$ = Rx
@@ -100,7 +100,7 @@ export const App = (sources) => {
         <div style={arr[0] === 'menu-freq' ? 'display: block' : 'display: none'}>
 	  {arr[2]}
         </div>
-        <div style={arr[0] === 'menu-selection' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-dominant' ? 'display: block' : 'display: none'}>
 	  {arr[3]}
         </div>
       </div>
