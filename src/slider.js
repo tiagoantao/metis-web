@@ -2,7 +2,7 @@ import {div, input, p, span} from '@cycle/dom'
 
 
 export const Slider = (sources, props) => {
-  const DOM = sources.DOM.select(props.class)
+  const DOM = sources.DOM.select(props.className)
   const conv = props.conv || parseInt
 
   const new_value$ = DOM
@@ -13,9 +13,9 @@ export const Slider = (sources, props) => {
 
   const vdom$ = new_value$
     .map(state =>
-      div(props.class, [
+      div(props.className, [
 	span('.label', [props.label]),
-	input({attrs: {class: '.slider', type:'range',
+	input({attrs: {className: '.slider', type:'range',
 		       style: 'width: 500px', step: props.step,
 		       min: props.min, max: props.max, value: state}}),
 	span([state]),
