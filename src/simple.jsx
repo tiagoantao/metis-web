@@ -21,7 +21,7 @@ import {
   sp_Species} from '@tiagoantao/metis-sim'
 
 
-const prepare_sim_state = (pop_size, num_markers) => {
+const prepare_sim_state = (tag, pop_size, num_markers) => {
   const genome_size = num_markers
 
   const unlinked_genome = gn_generate_unlinked_genome(
@@ -38,21 +38,25 @@ const prepare_sim_state = (pop_size, num_markers) => {
     i_assign_random_sex(integrated_generate_individual_with_genome(
       species, 0, integrated_create_randomized_genome)))
   const state = {
-    global_parameters: {stop: false},
+    global_parameters: {tag, stop: false},
     individuals, operators, cycle: 0}
   return state
 }
 
 
 export const SimpleApp = (sources) => {
-  const exphe$ = sources.metis.map(state => {
+
+  const my_metis$ = sources.metis.filter(
+    state => state.global_parameters.tag === "simple")
+
+  const exphe$ = my_metis$.map(state => {
     var cnt = 1
     return state.global_parameters.ExpHe.unlinked.map(exphe => {
       return {
         x: state.cycle, y: exphe, marker: 'M' + cnt++}})
   })
 
-  const numal$ = sources.metis.map(state => {
+  const numal$ = my_metis$.map(state => {
     var cnt = 0
     return state.global_parameters.NumAl.unlinked.map(numal => {
       return {
@@ -98,7 +102,7 @@ export const SimpleApp = (sources) => {
   
   const metis$ = simulate$.map(_ => {
     return Rx.Observable.from([
-      {num_cycles, state: prepare_sim_state(pop_size, num_markers)}
+      {num_cycles, state: prepare_sim_state("simple", pop_size, num_markers)}
     ])
   })
 
