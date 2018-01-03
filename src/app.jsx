@@ -17,14 +17,30 @@ const uikit_template =
 	      <ul className="uk-nav uk-navbar-dropdown-nav">
                 <li><a href="#" id="menu-single">Single</a></li>
                 <li><a href="#" id="menu-selection">Selection</a></li>
-                <li><a href="#" id="menu-decline">Decline</a></li>
-                <li><a href="#">Island</a></li>
-		<li><a href="#">Stepping-stone 1D</a></li>
-                <li><a href="#">Stepping-stone 2D</a></li>
 	      </ul>
             </div>
 	  </li>
-	  <li><a href="#">Fluctuations</a></li>
+	  <li><a href="#">Fluctuations</a>
+	    <ul className="uk-nav uk-navbar-dropdown-nav">
+              <li><a href="#" id="menu-decline">Decline</a></li>
+	    </ul>
+
+	  </li>
+	  <li><a href="#">Selection</a>
+	    <ul className="uk-nav uk-navbar-dropdown-nav">
+              <li><a href="#" id="menu-decline">Decline</a></li>
+	    </ul>
+
+	  </li>
+	  <li><a href="#">Structure</a>
+	    <ul className="uk-nav uk-navbar-dropdown-nav">
+              <li><a href="#">Island</a></li>
+	      <li><a href="#">Stepping-stone 1D</a></li>
+              <li><a href="#">Stepping-stone 2D</a></li>
+	    </ul>
+
+	  </li>
+
         </ul>
 
       </div>

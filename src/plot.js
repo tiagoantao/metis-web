@@ -41,7 +41,6 @@ const prepare_plot = (vl_text, conf, points, cb) => {
     view.renderer('canvas')
     
     const id_ = document.querySelector('#' + conf.id)
-    console.log(8888, id_, conf.id)
     view.initialize(id_)
     view.insert('lines', points)
     view.run()
