@@ -95,6 +95,9 @@ export const SelectionApp = (sources) => {
   const simulate$ = sources.DOM.select('#' + tag)
                            .events('click')
                            .map(ev => parseInt(ev.target.value))
+  simulate$.subscribe(x => console.log(123, x))
+
+  numal$.subscribe(x => console.log(999, x))
   
   const metis$ = simulate$.map(_ => {
     return Rx.Observable.from([
@@ -111,7 +114,6 @@ export const SelectionApp = (sources) => {
                          exphe, numal]) =>
                     <div>
                       <div>
-                        {marker_type}
                         {pop_size}
                         {num_cycles}
                         {num_markers}

@@ -32,19 +32,21 @@ const plot_spec = conf => {
 }`}
 
 const prepare_plot = (vl_text, conf, points, cb) => {
-  const vl_json = JSON.parse(vl_text)
-  vl_json.width = conf.width || 400
-  vl_json.height = vl_json.width - vl_json.width / 4
-  const vg_spec = vg.parse(vl.compile(vl_json).spec)
+    const vl_json = JSON.parse(vl_text)
+    vl_json.width = conf.width || 400
+    vl_json.height = vl_json.width - vl_json.width / 4
+    const vg_spec = vg.parse(vl.compile(vl_json).spec)
 
-  const view = new vg.View(vg_spec)
-  view.renderer('canvas')
-  const id_ = document.querySelector('#' + conf.id)
-  view.initialize(id_)
-  view.insert('lines', points)
-  view.run()
+    const view = new vg.View(vg_spec)
+    view.renderer('canvas')
+    
+    const id_ = document.querySelector('#' + conf.id)
+    console.log(8888, id_, conf.id)
+    view.initialize(id_)
+    view.insert('lines', points)
+    view.run()
 
-  return view
+    return view
 }
 
 
