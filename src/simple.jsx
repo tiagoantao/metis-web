@@ -67,38 +67,38 @@ export const SimpleApp = (sources) => {
 
 
   const marker_type_c = Selector({DOM: sources.DOM},
-                                 {class: '.simple-marker_type',
+                                 {class: '.' + tag + '-marker_type',
                                   label: 'marker type:'})
   let marker_type
   marker_type_c.value.subscribe(v => marker_type = v)
   
   const pop_size_c = Slider({DOM: sources.DOM},
-                            {class: '.simple-pop_size', label: 'pop size:',
+                            {class: '.' + tag + '-pop_size', label: 'pop size:',
                              step: 10, min: 10, value: 50, max: 300})
   let pop_size
   pop_size_c.value.subscribe(v => pop_size = v)
   
   const num_cycles_c = Slider({DOM: sources.DOM},
-                              {class: '.simple-num_cycles', label: 'cycles:',
+                              {class: '.' + tag + '-num_cycles', label: 'cycles:',
                                step: 10, min: 10, value: 20, max: 200})
   let num_cycles
   num_cycles_c.value.subscribe(v => num_cycles = v)
 
   const num_markers_c = Slider({DOM: sources.DOM},
-                               {class: '.simple-num_markers', label: 'markers:',
+                               {class: '.' + tag + '-num_markers', label: 'markers:',
                                 step: 1, min: 1, value: 4, max: 20})
   let num_markers
   num_markers_c.value.subscribe(v => num_markers = v)
 
   const exphe_plot = Plot(
-    {id: 'simple-exphe', y_label: 'Expected Heterozygosity'},
+    {id: tag + '-exphe', y_label: 'Expected Heterozygosity'},
     {DOM: sources.DOM, vals: exphe$})
 
   const numal_plot = Plot(
-    {id: 'simple-numal', y_label: 'Number of distinct alleles'},
+    {id: tag + '-numal', y_label: 'Number of distinct alleles'},
     {DOM: sources.DOM, vals: numal$})
 
-  const simulate$ = sources.DOM.select('#simple-simulate')
+  const simulate$ = sources.DOM.select('#' + tag)
                            .events('click')
                            .map(ev => parseInt(ev.target.value))
   
@@ -122,7 +122,7 @@ export const SimpleApp = (sources) => {
                         {num_cycles}
                         {num_markers}
                         <br/>
-                        <button id="simple-simulate" value="1">Simulate</button>
+                        <button id={tag} value="1">Simulate</button>
                       </div>
                       {exphe}
                       {numal}
