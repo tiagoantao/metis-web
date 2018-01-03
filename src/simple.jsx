@@ -46,8 +46,10 @@ const prepare_sim_state = (tag, pop_size, num_markers) => {
 
 export const SimpleApp = (sources) => {
 
+  const tag = 'simple'
+
   const my_metis$ = sources.metis.filter(
-    state => state.global_parameters.tag === "simple")
+    state => state.global_parameters.tag === tag)
 
   const exphe$ = my_metis$.map(state => {
     var cnt = 1
@@ -102,7 +104,7 @@ export const SimpleApp = (sources) => {
   
   const metis$ = simulate$.map(_ => {
     return Rx.Observable.from([
-      {num_cycles, state: prepare_sim_state("simple", pop_size, num_markers)}
+      {num_cycles, state: prepare_sim_state(tag, pop_size, num_markers)}
     ])
   })
 
