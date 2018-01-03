@@ -20,14 +20,6 @@ export const Slider = (sources, props) => {
 		       min: props.min, max: props.max, value: state}}),
 	span([state]),
       ])
-      /*      <div className="labeled-slider">
-	 <span className="label">{props.label} {props.value} {state}</span>
-	 <input type="range"
-	 className="slider"
-	 style="width: 500px"
-	 min={props.min} max={props.max} value={state}>
-	 </input>
-	 </div>*/
     )
 
   const sinks = {

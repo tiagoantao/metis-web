@@ -49,7 +49,6 @@ export const makeMetisDriver = () => {
             }
         }
     }
-    
 
     const metis_driver = (in_state$) => {
         in_state$.addListener({

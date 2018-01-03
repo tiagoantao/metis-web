@@ -8,7 +8,7 @@ const main = App
 
 const drivers = {
     DOM:  makeDOMDriver('#metis'),
-    metis: makeMetisDriver() 
+    metis: makeMetisDriver()
 }
 
 run(main, drivers)

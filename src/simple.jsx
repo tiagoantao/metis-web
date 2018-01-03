@@ -120,7 +120,7 @@ export const SimpleApp = (sources) => {
                       </div>
                       {exphe}
                       {numal}
-                    </div>      
+                    </div>
                   )
 
   const sinks = {
