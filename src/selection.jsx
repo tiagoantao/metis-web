@@ -12,6 +12,7 @@ import {
   integrated_create_freq_genome,
   integrated_generate_individual_with_genome,
   ops_culling_KillOlderGenerations,
+  ops_rep_AutosomeSNPMater,
   ops_rep_SexualReproduction,
   ops_RxOperator,  // Currently not in use
   ops_stats_demo_SexStatistics,
@@ -21,14 +22,19 @@ import {
   sp_Species} from '@tiagoantao/metis-sim'
 
 
-const prepare_sim_state = (tag, pop_size, num_markers, freq_start) => {
+const prepare_sim_state = (tag, pop_size, num_markers, freq_start,
+  sel, marker_name, feature_position) => {
   const genome_size = num_markers
 
   const unlinked_genome = gn_generate_unlinked_genome(
     genome_size, () => {return new gn_SNP()})
   const species = new sp_Species('unlinked', unlinked_genome)
+  const mater_factory = (reproductor, individuals) =>
+    new ops_rep_AutosomeSNPMater(
+      reproductor, individuals,
+      sel, marker_name, feature_position)
   const operators = [
-    new ops_rep_SexualReproduction(species, pop_size),
+    new ops_rep_SexualReproduction(species, pop_size, [], mater_factory),
     new ops_culling_KillOlderGenerations(),
     new ops_stats_demo_SexStatistics(),
     new ops_stats_NumAl(),
@@ -108,8 +114,11 @@ export const SelectionAppFactory = (sel_type) => (sources) => {
                            .map(ev => parseInt(ev.target.value))
   
   const metis$ = simulate$.map(_ => {
+    const sel = {0: 0, 1: 1, 2: 1}
     return Rx.Observable.from([
-      {num_cycles, state: prepare_sim_state(tag, pop_size, num_markers, freq_start)}
+      {num_cycles, state: prepare_sim_state
+	(tag, pop_size, num_markers, freq_start,
+	sel, 'unlinked', 0)}
     ])
   })
 
