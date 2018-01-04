@@ -5,7 +5,7 @@ export const Selector = (sources, props) => {
   const DOM = sources.DOM.select(props.className)
 
   const new_value$ = DOM
-    .select('input')
+    .select('select')
     .events('input')
     .map(ev => ev.target.value)
     .startWith("SNP")
@@ -14,6 +14,7 @@ export const Selector = (sources, props) => {
     return {selected: "SNP"}
   }
 
+    new_value$.subscribe(x => console.log(1111, x))
   const opts = __conv_opts(props.opts)
   
   const vdom$ = new_value$
