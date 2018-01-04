@@ -7,6 +7,7 @@ import {Slider} from './slider.js'
 
 import {
   gn_generate_unlinked_genome,
+  gn_MicroSatellite,
   gn_SNP,
   i_assign_random_sex,
   integrated_create_randomized_genome,
@@ -21,11 +22,12 @@ import {
   sp_Species} from '@tiagoantao/metis-sim'
 
 
-const prepare_sim_state = (tag, pop_size, num_markers) => {
+const prepare_sim_state = (tag, pop_size, num_markers, marker_type) => {
   const genome_size = num_markers
 
+  console.log(marker_type)
   const unlinked_genome = gn_generate_unlinked_genome(
-    genome_size, () => {return new gn_SNP()})
+    genome_size, () => {return marker_type === 'SNP'? new gn_SNP() : new gn_MicroSatellite(Array.from(new Array(10), (x,i) => i))})
   const species = new sp_Species('unlinked', unlinked_genome)
   const operators = [
     new ops_rep_SexualReproduction(species, pop_size),
@@ -104,7 +106,7 @@ export const SimpleApp = (sources) => {
   
   const metis$ = simulate$.map(_ => {
     return Rx.Observable.from([
-      {num_cycles, state: prepare_sim_state(tag, pop_size, num_markers)}
+      {num_cycles, state: prepare_sim_state(tag, pop_size, num_markers, marker_type)}
     ])
   })
 
