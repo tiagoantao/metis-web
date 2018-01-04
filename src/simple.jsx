@@ -60,6 +60,11 @@ export const SimpleApp = (sources) => {
         x: state.cycle, y: exphe, marker: 'M' + cnt++}})
   })
 
+  const sex_ratio$ = my_metis$.map(state => {
+    const sr = state.global_parameters.SexRatio
+    return [{x: state.cycle, y: sr.females / sr.males, marker: 'Sex Ratio'}]
+  })
+  
   const numal$ = my_metis$.map(state => {
     var cnt = 0
     return state.global_parameters.NumAl.unlinked.map(numal => {
@@ -96,6 +101,11 @@ export const SimpleApp = (sources) => {
     {id: tag + '-exphe', y_label: 'Expected Heterozygosity'},
     {DOM: sources.DOM, vals: exphe$})
 
+  const sr_plot = Plot(
+    {id: tag + '-sr', y_label: 'Sex Ratio'},
+    {DOM: sources.DOM, vals: sex_ratio$})
+
+  
   const numal_plot = Plot(
     {id: tag + '-numal', y_label: 'Number of distinct alleles'},
     {DOM: sources.DOM, vals: numal$})
@@ -114,9 +124,9 @@ export const SimpleApp = (sources) => {
                   .combineLatest(
                     marker_type_c.DOM, pop_size_c.DOM,
                     num_cycles_c.DOM, num_markers_c.DOM,
-                    exphe_plot.DOM, numal_plot.DOM)
+                    exphe_plot.DOM, sr_plot.DOM, numal_plot.DOM)
                   .map(([marker_type, pop_size, num_cycles, num_markers,
-                         exphe, numal]) =>
+                         exphe, sex_ratio, numal]) =>
                     <div>
                       <div>
                         {marker_type}
@@ -127,6 +137,7 @@ export const SimpleApp = (sources) => {
                         <button id={tag} value="1">Simulate</button>
                       </div>
                       {exphe}
+		      {sex_ratio}
                       {numal}
                     </div>
                   )
