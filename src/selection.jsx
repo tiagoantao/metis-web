@@ -9,7 +9,7 @@ import {
   gn_generate_unlinked_genome,
   gn_SNP,
   i_assign_random_sex,
-  integrated_create_randomized_genome,
+  integrated_create_freq_genome,
   integrated_generate_individual_with_genome,
   ops_culling_KillOlderGenerations,
   ops_rep_SexualReproduction,
@@ -21,7 +21,7 @@ import {
   sp_Species} from '@tiagoantao/metis-sim'
 
 
-const prepare_sim_state = (tag, pop_size, num_markers) => {
+const prepare_sim_state = (tag, pop_size, num_markers, freq_start) => {
   const genome_size = num_markers
 
   const unlinked_genome = gn_generate_unlinked_genome(
@@ -36,7 +36,8 @@ const prepare_sim_state = (tag, pop_size, num_markers) => {
   ]
   const individuals = p_generate_n_inds(pop_size, () =>
     i_assign_random_sex(integrated_generate_individual_with_genome(
-      species, 0, integrated_create_randomized_genome)))
+      species, 0,
+      (ind) => integrated_create_freq_genome(freq_start / 100, ind))))
   const state = {
     global_parameters: {tag, stop: false},
     individuals, operators, cycle: 0}
@@ -64,6 +65,12 @@ export const SelectionAppFactory = (sel_type) => (sources) => {
         x: state.cycle, y: numal, marker: 'M' + cnt++}})
   })
 
+  const s_c = Slider({DOM: sources.DOM},
+                     {className: '.' + tag + '-s', label: 's (%):',
+                      step: 1, min: 1, value: 50, max: 99})
+  let s
+  s_c.value.subscribe(v => s = v)
+  
   const freq_start_c = Slider({DOM: sources.DOM},
                               {className: '.' + tag + '-freq_start', label: 'freq start (%):',
                                step: 1, min: 1, value: 50, max: 99})
@@ -102,19 +109,21 @@ export const SelectionAppFactory = (sel_type) => (sources) => {
   
   const metis$ = simulate$.map(_ => {
     return Rx.Observable.from([
-      {num_cycles, state: prepare_sim_state(tag, pop_size, num_markers)}
+      {num_cycles, state: prepare_sim_state(tag, pop_size, num_markers, freq_start)}
     ])
   })
 
   const vdom$ = Rx.Observable
                   .combineLatest(
+		    s_c.DOM,
                     freq_start_c.DOM, pop_size_c.DOM,
                     num_cycles_c.DOM, num_markers_c.DOM,
                     exphe_plot.DOM, numal_plot.DOM)
-                  .map(([freq_start, pop_size, num_cycles, num_markers,
+                  .map(([s, freq_start, pop_size, num_cycles, num_markers,
                          exphe, numal]) =>
 			   <div>
 			     <div>
+			       {s}
 			       {freq_start}
                                {pop_size}
                                {num_cycles}

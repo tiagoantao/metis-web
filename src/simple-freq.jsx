@@ -64,14 +64,6 @@ export const SimpleFreqApp = (sources) => {
       return {
         x: state.cycle, y: numal, marker: 'M' + cnt++}})
   })
-
-
-  const s_c = Slider({DOM: sources.DOM},
-                              {className: '.' + tag + '-s', label: 's (%):',
-                               step: 1, min: 1, value: 50, max: 99})
-  let s
-  s_c.value.subscribe(v => s = v)
-
   
   const freq_start_c = Slider({DOM: sources.DOM},
                               {className: '.' + tag + '-freq_start', label: 'freq start (%):',
@@ -119,7 +111,6 @@ export const SimpleFreqApp = (sources) => {
 
   const vdom$ = Rx.Observable
                   .combineLatest(
-		    s_c.DOM,
                     freq_start_c.DOM, pop_size_c.DOM,
                     num_cycles_c.DOM, num_markers_c.DOM,
                     exphe_plot.DOM, numal_plot.DOM)
@@ -127,7 +118,6 @@ export const SimpleFreqApp = (sources) => {
                          exphe, numal]) =>
                     <div>
                       <div>
-			{s}
                         {freq_start}
                         {pop_size}
                         {num_cycles}
