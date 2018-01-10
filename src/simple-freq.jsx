@@ -119,7 +119,7 @@ export const SimpleFreqApp = (sources) => {
   
   const metis$ = simulate$.map(_ => {
     return Rx.Observable.from([
-      {num_cycles, state: prepare_sim_state(tag, pop_size, num_markers, freq_start)}
+      {num_cycles, state: prepare_sim_state(tag, pop_size, num_markers, 100 - freq_start)}
     ])
   })
 
