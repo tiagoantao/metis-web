@@ -16,6 +16,7 @@ import {
   ops_RxOperator,  // Currently not in use
   ops_stats_demo_SexStatistics,
   ops_stats_hz_ExpHe,
+  ops_stats_FreqAl,
   ops_stats_NumAl,
   p_generate_n_inds,
   sp_Species} from '@tiagoantao/metis-sim'
@@ -32,6 +33,7 @@ const prepare_sim_state = (tag, pop_size, num_markers, freq_start) => {
     new ops_culling_KillOlderGenerations(),
     new ops_stats_demo_SexStatistics(),
     new ops_stats_NumAl(),
+    new ops_stats_FreqAl(),
     new ops_stats_hz_ExpHe()
   ]
   const individuals = p_generate_n_inds(pop_size, () =>
@@ -51,6 +53,14 @@ export const SimpleFreqApp = (sources) => {
   const my_metis$ = sources.metis.filter(
     state => state.global_parameters.tag === tag)
 
+  const freqal$ = my_metis$.map(state => {
+    var cnt = 1
+    return state.global_parameters.FreqAl.unlinked.map(freqal => {
+      return {
+        x: state.cycle, y: freqal, marker: 'M' + cnt++}})
+  })
+
+  
   const exphe$ = my_metis$.map(state => {
     var cnt = 1
     return state.global_parameters.ExpHe.unlinked.map(exphe => {
@@ -89,6 +99,10 @@ export const SimpleFreqApp = (sources) => {
   let num_markers
   num_markers_c.value.subscribe(v => num_markers = v)
 
+  const freqal_plot = Plot(
+    {id: tag + '-freqal', y_label: 'Frequency of Derived Allele'},
+    {DOM: sources.DOM, vals: freqal$})
+  
   const exphe_plot = Plot(
     {id: tag + '-exphe', y_label: 'Expected Heterozygosity'},
     {DOM: sources.DOM, vals: exphe$})
@@ -113,9 +127,10 @@ export const SimpleFreqApp = (sources) => {
                   .combineLatest(
                     freq_start_c.DOM, pop_size_c.DOM,
                     num_cycles_c.DOM, num_markers_c.DOM,
+		    freqal_plot.DOM,
                     exphe_plot.DOM, numal_plot.DOM)
                   .map(([freq_start, pop_size, num_cycles, num_markers,
-                         exphe, numal]) =>
+                         freqal, exphe, numal]) =>
                     <div>
                       <div>
                         {freq_start}
@@ -125,6 +140,7 @@ export const SimpleFreqApp = (sources) => {
                         <br/>
                         <button id={tag} value="1">Simulate</button>
                       </div>
+		      {freqal}
                       {exphe}
                       {numal}
                     </div>
