@@ -3,6 +3,7 @@ import {nav} from '@cycle/dom'
 
 import {makeMetisDriver} from './metis_driver'
 
+import {WFApp} from './wright-fisher'
 import {SimpleApp} from './simple'
 import {SimpleFreqApp} from './simple-freq'
 import {DeclineApp} from './decline'
@@ -60,6 +61,11 @@ export const App = (sources) => {
                               .startWith({timeStamp: -1,
 					  srcElement: {id: 'menu-single'}})
 
+  const wf_menu$ = sources.DOM.select('#menu-wf').events('click')
+                          .startWith({timeStamp: -1,
+	                               srcElement: {id: 'menu-wf'}})
+
+  
   const freq_menu$ = sources.DOM.select('#menu-freq').events('click')
                             .startWith({timeStamp: -1,
 					srcElement: {id: 'menu-freq'}})
@@ -73,7 +79,7 @@ export const App = (sources) => {
 					     srcElement: {id: 'menu-dominant'}})
 
   const recent_event$ = Rx.Observable.combineLatest(
-    single_menu$, freq_menu$, decline_menu$, selection_menu$)
+    single_menu$, wf_menu$, freq_menu$, decline_menu$, selection_menu$)
 			  .map(entries => {
 			    var ts = -10
 			    var id = ""
@@ -89,6 +95,8 @@ export const App = (sources) => {
 
   const single_pop = SimpleApp({DOM: sources.DOM, metis: sources.metis})
   const sp_dom$ = single_pop.DOM
+  const wf_pop = WFApp({DOM: sources.DOM, metis: sources.metis})
+  const wf_dom$ = wf_pop.DOM
   const freq_pop = SimpleFreqApp({DOM: sources.DOM, metis: sources.metis})
   const fq_dom$ = freq_pop.DOM
   const decline_pop = DeclineApp({DOM: sources.DOM, metis: sources.metis})
@@ -97,28 +105,32 @@ export const App = (sources) => {
   const sel_dom$ = selection_pop.DOM
 
   const vdom$ = Rx
-    .Observable.combineLatest(recent_event$, sp_dom$, fq_dom$, dc_dom$, sel_dom$)
+    .Observable.combineLatest(recent_event$, sp_dom$, wf_dom$, fq_dom$, dc_dom$, sel_dom$)
     .map(arr =>
       <div>
 	{uikit_template}
         <div style={arr[0] === 'menu-single' ? 'display: block' : 'display: none'}>
 	  {arr[1]}
         </div>
-        <div style={arr[0] === 'menu-freq' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-wf' ? 'display: block' : 'display: none'}>
 	  {arr[2]}
         </div>
-        <div style={arr[0] === 'menu-decline' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-freq' ? 'display: block' : 'display: none'}>
 	  {arr[3]}
+        </div>
+        <div style={arr[0] === 'menu-decline' ? 'display: block' : 'display: none'}>
+	  {arr[4]}
 	</div>
-          <div style={arr[0] === 'menu-dominant' ? 'display: block' : 'display: none'}>
-	    {arr[4]}
-          </div>
-	</div>
+        <div style={arr[0] === 'menu-dominant' ? 'display: block' : 'display: none'}>
+	  {arr[5]}
+        </div>
+      </div>
     )
 
   const sinks = {
     DOM: vdom$,
-    metis: Rx.Observable.merge(selection_pop.metis, freq_pop.metis,
+    metis: Rx.Observable.merge(selection_pop.metis, wf_pop.metis,
+			       freq_pop.metis,
 			       decline_pop.metis, single_pop.metis)
   }
   
