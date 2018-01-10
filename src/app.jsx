@@ -17,8 +17,9 @@ const uikit_template =
           <li><a href="#">Simple</a>
 	    <div className="uk-navbar-dropdown">
 	      <ul className="uk-nav uk-navbar-dropdown-nav">
-                <li><a href="#" id="menu-single">Single</a></li>
-                <li><a href="#" id="menu-freq">Frequency</a></li>
+		<li><a href="#" id="menu-wf">Wright-Fisher</a></li>
+                <li><a href="#" id="menu-single">Wright-Fisher with sex</a></li>
+                <li><a href="#" id="menu-freq">Initial Frequency</a></li>
 	      </ul>
             </div>
 	  </li>

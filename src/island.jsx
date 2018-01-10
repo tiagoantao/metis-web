@@ -7,41 +7,38 @@ import {Slider} from './slider.js'
 
 import {
   gn_generate_unlinked_genome,
+  gn_MicroSatellite,
   gn_SNP,
   i_assign_random_sex,
-  integrated_create_freq_genome,
+  integrated_create_randomized_genome,
   integrated_generate_individual_with_genome,
   ops_culling_KillOlderGenerations,
   ops_rep_SexualReproduction,
   ops_RxOperator,  // Currently not in use
   ops_stats_demo_SexStatistics,
   ops_stats_hz_ExpHe,
-  ops_stats_FreqAl,
-  ops_stats_TimeFix,
   ops_stats_NumAl,
   p_generate_n_inds,
   sp_Species} from '@tiagoantao/metis-sim'
 
 
-const prepare_sim_state = (tag, pop_size, num_markers, freq_start) => {
+const prepare_sim_state = (tag, pop_size, num_markers, marker_type) => {
   const genome_size = num_markers
 
+  console.log(marker_type)
   const unlinked_genome = gn_generate_unlinked_genome(
-    genome_size, () => {return new gn_SNP()})
+    genome_size, () => {return marker_type === 'SNP'? new gn_SNP() : new gn_MicroSatellite(Array.from(new Array(10), (x,i) => i))})
   const species = new sp_Species('unlinked', unlinked_genome)
   const operators = [
     new ops_rep_SexualReproduction(species, pop_size),
     new ops_culling_KillOlderGenerations(),
     new ops_stats_demo_SexStatistics(),
     new ops_stats_NumAl(),
-    new ops_stats_FreqAl(),
-    new ops_stats_TimeFix(),
     new ops_stats_hz_ExpHe()
   ]
   const individuals = p_generate_n_inds(pop_size, () =>
     i_assign_random_sex(integrated_generate_individual_with_genome(
-      species, 0,
-      (ind) => integrated_create_freq_genome(freq_start / 100, ind))))
+      species, 0, integrated_create_randomized_genome)))
   const state = {
     global_parameters: {tag, stop: false},
     individuals, operators, cycle: 0}
@@ -49,20 +46,13 @@ const prepare_sim_state = (tag, pop_size, num_markers, freq_start) => {
 }
 
 
-export const SimpleFreqApp = (sources) => {
-  const tag = 'simple-freq'
+export const SimpleApp = (sources) => {
+
+  const tag = 'simple'
 
   const my_metis$ = sources.metis.filter(
     state => state.global_parameters.tag === tag)
 
-  const freqal$ = my_metis$.map(state => {
-    var cnt = 1
-    return state.global_parameters.FreqAl.unlinked.map(freqal => {
-      return {
-        x: state.cycle, y: freqal, marker: 'M' + cnt++}})
-  })
-
-  
   const exphe$ = my_metis$.map(state => {
     var cnt = 1
     return state.global_parameters.ExpHe.unlinked.map(exphe => {
@@ -70,6 +60,11 @@ export const SimpleFreqApp = (sources) => {
         x: state.cycle, y: exphe, marker: 'M' + cnt++}})
   })
 
+  const sex_ratio$ = my_metis$.map(state => {
+    const sr = state.global_parameters.SexRatio
+    return [{x: state.cycle, y: sr.females / sr.males, marker: 'Sex Ratio'}]
+  })
+  
   const numal$ = my_metis$.map(state => {
     var cnt = 0
     return state.global_parameters.NumAl.unlinked.map(numal => {
@@ -77,22 +72,12 @@ export const SimpleFreqApp = (sources) => {
         x: state.cycle, y: numal, marker: 'M' + cnt++}})
   })
 
-  const timefix$ = my_metis$.map(state => {
-    var cnt = 1
-    return state.global_parameters.TimeFix.unlinked.map(tf => {
-      return {
-        cycle: tf, marker: 'M' + cnt++}})
-  })
 
-  const time_html$ = timefix$
-    .map((fix) => fix.map(tf => <p>Fix: {tf.cycle}</p>))
-    .startWith(<p></p>)
-  
-  const freq_start_c = Slider({DOM: sources.DOM},
-                              {className: '.' + tag + '-freq_start', label: 'freq start (%):',
-                               step: 1, min: 1, value: 50, max: 99})
-  let freq_start
-  freq_start_c.value.subscribe(v => freq_start = v)
+  const marker_type_c = Selector({DOM: sources.DOM},
+                                 {className: '.' + tag + '-marker_type',
+                                  label: 'marker type:'})
+  let marker_type
+  marker_type_c.value.subscribe(v => marker_type = v)
   
   const pop_size_c = Slider({DOM: sources.DOM},
                             {className: '.' + tag + '-pop_size', label: 'pop size:',
@@ -112,14 +97,15 @@ export const SimpleFreqApp = (sources) => {
   let num_markers
   num_markers_c.value.subscribe(v => num_markers = v)
 
-  const freqal_plot = Plot(
-    {id: tag + '-freqal', y_label: 'Frequency of Derived Allele'},
-    {DOM: sources.DOM, vals: freqal$})
-  
   const exphe_plot = Plot(
     {id: tag + '-exphe', y_label: 'Expected Heterozygosity'},
     {DOM: sources.DOM, vals: exphe$})
 
+  const sr_plot = Plot(
+    {id: tag + '-sr', y_label: 'Sex Ratio'},
+    {DOM: sources.DOM, vals: sex_ratio$})
+
+  
   const numal_plot = Plot(
     {id: tag + '-numal', y_label: 'Number of distinct alleles'},
     {DOM: sources.DOM, vals: numal$})
@@ -127,37 +113,31 @@ export const SimpleFreqApp = (sources) => {
   const simulate$ = sources.DOM.select('#' + tag)
                            .events('click')
                            .map(ev => parseInt(ev.target.value))
-
-  simulate$.subscribe((x) => console.log(2123, x))
   
   const metis$ = simulate$.map(_ => {
     return Rx.Observable.from([
-      {num_cycles, state: prepare_sim_state(tag, pop_size, num_markers, 100 - freq_start)}
+      {num_cycles, state: prepare_sim_state(tag, pop_size, num_markers, marker_type)}
     ])
   })
 
   const vdom$ = Rx.Observable
                   .combineLatest(
-                    freq_start_c.DOM, pop_size_c.DOM,
+                    marker_type_c.DOM, pop_size_c.DOM,
                     num_cycles_c.DOM, num_markers_c.DOM,
-		    time_html$,
-		    freqal_plot.DOM,
-                    exphe_plot.DOM, numal_plot.DOM)
-                  .map(([freq_start, pop_size, num_cycles, num_markers,
-			 time_html,
-                         freqal, exphe, numal]) =>
+                    exphe_plot.DOM, sr_plot.DOM, numal_plot.DOM)
+                  .map(([marker_type, pop_size, num_cycles, num_markers,
+                         exphe, sex_ratio, numal]) =>
                     <div>
                       <div>
-                        {freq_start}
+                        {marker_type}
                         {pop_size}
                         {num_cycles}
                         {num_markers}
                         <br/>
                         <button id={tag} value="1">Simulate</button>
                       </div>
-		      {time_html}
-		      {freqal}
                       {exphe}
+		      {sex_ratio}
                       {numal}
                     </div>
                   )
