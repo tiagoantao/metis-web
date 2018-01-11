@@ -62,12 +62,12 @@ export const SexRatioApp = (sources) => {
     var cnt = 1
     return state.global_parameters.ExpHe.unlinked.map(exphe => {
       return {
-        x: state.cycle, y: exphe, marker: 'M' + cnt++}})
+        x: state.cycle - 1, y: exphe, marker: 'M' + cnt++}})
   })
 
   const sex_ratio$ = my_metis$.map(state => {
     const sr = state.global_parameters.SexRatio
-    return [{x: state.cycle, y: sr.males / sr.females, marker: 'Sex Ratio'}]
+    return [{x: state.cycle - 1, y: sr.males / sr.females, marker: 'Sex Ratio'}]
   })
 
   const ne$ = my_metis$.map(state => {
@@ -75,14 +75,14 @@ export const SexRatioApp = (sources) => {
     const Nm = sr.males
     const Nf = sr.females
     const Ne = (4 * Nm * Nf) / (Nm + Nf)
-    return [{x: state.cycle, y: Ne, marker: 'Ne'}]
+    return [{x: state.cycle - 1, y: Ne, marker: 'Ne'}]
   })
   
   const numal$ = my_metis$.map(state => {
     var cnt = 0
     return state.global_parameters.NumAl.unlinked.map(numal => {
       return {
-        x: state.cycle, y: numal, marker: 'M' + cnt++}})
+        x: state.cycle - 1, y: numal, marker: 'M' + cnt++}})
   })
 
   const marker_type_c = Selector({DOM: sources.DOM},

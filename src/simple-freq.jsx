@@ -66,14 +66,14 @@ export const SimpleFreqApp = (sources) => {
     var cnt = 1
     return state.global_parameters.ExpHe.unlinked.map(exphe => {
       return {
-        x: state.cycle, y: exphe, marker: 'M' + cnt++}})
+        x: state.cycle - 1, y: exphe, marker: 'M' + cnt++}})
   })
 
   const numal$ = my_metis$.map(state => {
     var cnt = 0
     return state.global_parameters.NumAl.unlinked.map(numal => {
       return {
-        x: state.cycle, y: numal, marker: 'M' + cnt++}})
+        x: state.cycle - 1, y: numal, marker: 'M' + cnt++}})
   })
 
   const timefix$ = my_metis$.map(state => {
