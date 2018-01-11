@@ -22,7 +22,7 @@ import {
   sp_Species} from '@tiagoantao/metis-sim'
 
 
-const prepare_sim_state = (tag, pop_size, num_markers, marker_type) => {
+const prepare_sim_state = (tag, pop_size, num_markers, marker_type, perc_males) => {
   const genome_size = num_markers
 
   console.log(marker_type)
@@ -64,7 +64,7 @@ export const SexRatioApp = (sources) => {
 
   const sex_ratio$ = my_metis$.map(state => {
     const sr = state.global_parameters.SexRatio
-    return [{x: state.cycle, y: sr.females / sr.males, marker: 'Sex Ratio'}]
+    return [{x: state.cycle, y: sr.males / sr.females, marker: 'Sex Ratio'}]
   })
   
   const numal$ = my_metis$.map(state => {

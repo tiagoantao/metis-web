@@ -67,7 +67,7 @@ export const WFApp = (sources) => {
 
   const sex_ratio$ = my_metis$.map(state => {
     const sr = state.global_parameters.SexRatio
-    return [{x: state.cycle, y: sr.females / sr.males, marker: 'Sex Ratio'}]
+    return [{x: state.cycle, y: sr.males / sr.females, marker: 'Sex Ratio'}]
   })
   
   const numal$ = my_metis$.map(state => {
