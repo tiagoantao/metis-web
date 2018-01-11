@@ -46,7 +46,7 @@ const prepare_sim_state = (tag, pop_size, num_markers, marker_type, perc_males) 
       species, 0, integrated_create_randomized_genome), perc_males / 100))
   const state = {
     global_parameters: {tag, stop: false},
-    individuals, operators, cycle: 0}
+    individuals, operators, cycle: 1}
   return state
 }
 
@@ -68,6 +68,14 @@ export const SexRatioApp = (sources) => {
   const sex_ratio$ = my_metis$.map(state => {
     const sr = state.global_parameters.SexRatio
     return [{x: state.cycle, y: sr.males / sr.females, marker: 'Sex Ratio'}]
+  })
+
+  const ne$ = my_metis$.map(state => {
+    const sr = state.global_parameters.SexRatio
+    const Nm = sr.males
+    const Nf = sr.females
+    const Ne = (4 * Nm * Nf) / (Nm + Nf)
+    return [{x: state.cycle, y: Ne, marker: 'Ne'}]
   })
   
   const numal$ = my_metis$.map(state => {
@@ -116,6 +124,9 @@ export const SexRatioApp = (sources) => {
     {id: tag + '-sr', y_label: 'Sex Ratio'},
     {DOM: sources.DOM, vals: sex_ratio$})
 
+  const ne_plot = Plot(
+    {id: tag + '-ne', y_label: 'Ne'},
+    {DOM: sources.DOM, vals: ne$})
   
   const numal_plot = Plot(
     {id: tag + '-numal', y_label: 'Number of distinct alleles'},
@@ -138,10 +149,10 @@ export const SexRatioApp = (sources) => {
                     marker_type_c.DOM, frac_males_c.DOM,
 		    pop_size_c.DOM,
                     num_cycles_c.DOM, num_markers_c.DOM,
-                    exphe_plot.DOM, sr_plot.DOM, numal_plot.DOM)
+                    exphe_plot.DOM, sr_plot.DOM, ne_plot.DOM, numal_plot.DOM)
                   .map(([marker_type, frac_males, pop_size, num_cycles,
 			 num_markers,
-                         exphe, sex_ratio, numal]) =>
+                         exphe, sex_ratio, ne, numal]) =>
                     <div>
                       <div>
                         {marker_type}
@@ -154,6 +165,7 @@ export const SexRatioApp = (sources) => {
                       </div>
                       {exphe}
 		      {sex_ratio}
+		      {ne}
                       {numal}
                     </div>
                   )
