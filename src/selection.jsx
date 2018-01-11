@@ -143,6 +143,7 @@ export const SelectionAppFactory = (sel_type) => (sources) => {
                   .map(([s, freq_start, pop_size, num_cycles, num_markers,
                          exphe, numal]) =>
                            <div>
+                             <h1>Selection {sel_type}</h1>
                              <div>
                                {s}
                                {freq_start}
