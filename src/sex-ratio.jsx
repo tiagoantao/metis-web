@@ -9,10 +9,12 @@ import {
   gn_generate_unlinked_genome,
   gn_MicroSatellite,
   gn_SNP,
-  i_assign_random_sex,
+  i_assign_perc_male,
   integrated_create_randomized_genome,
   integrated_generate_individual_with_genome,
   ops_culling_KillOlderGenerations,
+  ops_rep_random_mater_factory,
+  ops_rep_sex_ratio_sexual_generator_factory,
   ops_rep_SexualReproduction,
   ops_RxOperator,  // Currently not in use
   ops_stats_demo_SexStatistics,
@@ -25,22 +27,23 @@ import {
 const prepare_sim_state = (tag, pop_size, num_markers, marker_type, perc_males) => {
   const genome_size = num_markers
 
-  console.log(marker_type)
   const unlinked_genome = gn_generate_unlinked_genome(
     genome_size, () => {return marker_type === 'SNP'?
 			       new gn_SNP() :
 			       new gn_MicroSatellite(Array.from(new Array(10), (x,i) => i))})
   const species = new sp_Species('unlinked', unlinked_genome)
   const operators = [
-    new ops_rep_SexualReproduction(species, pop_size),
+    new ops_rep_SexualReproduction(species, pop_size, [],
+				   ops_rep_random_mater_factory,
+				   ops_rep_sex_ratio_sexual_generator_factory(perc_males / (100 - perc_males))),
     new ops_culling_KillOlderGenerations(),
     new ops_stats_demo_SexStatistics(),
     new ops_stats_NumAl(),
     new ops_stats_hz_ExpHe()
   ]
   const individuals = p_generate_n_inds(pop_size, () =>
-    i_assign_random_sex(integrated_generate_individual_with_genome(
-      species, 0, integrated_create_randomized_genome)))
+    i_assign_perc_male(integrated_generate_individual_with_genome(
+      species, 0, integrated_create_randomized_genome), perc_males / 100))
   const state = {
     global_parameters: {tag, stop: false},
     individuals, operators, cycle: 0}
@@ -74,7 +77,6 @@ export const SexRatioApp = (sources) => {
         x: state.cycle, y: numal, marker: 'M' + cnt++}})
   })
 
-
   const marker_type_c = Selector({DOM: sources.DOM},
                                  {className: '.' + tag + '-marker_type',
                                   label: 'marker type:'})
@@ -83,14 +85,14 @@ export const SexRatioApp = (sources) => {
 
   const frac_males_c = Slider({DOM: sources.DOM},
                               {className: '.' + tag + '-fac_males', label: 'fraction of males:',
-                               step: 5, min: 10, value: 50, max: 90})
+                               step: 5, min: 10, value: 90, max: 90})
 
   let frac_males
   frac_males_c.value.subscribe(v => frac_males = v)
   
   const pop_size_c = Slider({DOM: sources.DOM},
                             {className: '.' + tag + '-pop_size', label: 'pop size:',
-                             step: 10, min: 10, value: 50, max: 300})
+                             step: 10, min: 10, value: 300, max: 300})
   let pop_size
   pop_size_c.value.subscribe(v => pop_size = v)
   
