@@ -73,9 +73,10 @@ export const SelectionAppFactory = (sel_type) => (sources) => {
 
   const s_c = Slider({DOM: sources.DOM},
                      {className: '.' + tag + '-s', label: 's (%):',
-                      step: 1, min: 1, value: 50, max: 99})
+                      step: 1, min: 0, value: 10, max: 20,
+                      print: (x) => x / 100})
   let s
-  s_c.value.subscribe(v => s = v)
+  s_c.value.subscribe(v => s = v / 100)
   
   const freq_start_c = Slider({DOM: sources.DOM},
                               {className: '.' + tag + '-freq_start', label: 'freq start (%):',
@@ -114,35 +115,46 @@ export const SelectionAppFactory = (sel_type) => (sources) => {
                            .map(ev => parseInt(ev.target.value))
   
   const metis$ = simulate$.map(_ => {
-    const sel = {0: 0, 1: 1, 2: 1}
+    let sel = null
+    switch (sel_type) {
+      case 'dominant':
+        sel = {0: 1 - s, 1: 1, 2: 1}
+        break
+      case 'recessive':
+        sel = {0: 1 - s, 1: 1 - s, 2: 1}
+        break
+      case 'hz':
+        sel = {0: 1 - s, 1: 1, 2: 1 - s}
+        break
+    }
     return Rx.Observable.from([
-      {num_cycles, state: prepare_sim_state
-	(tag, pop_size, num_markers, freq_start,
-	sel, 'unlinked', 0)}
+          {num_cycles, state: prepare_sim_state
+            (tag, pop_size, num_markers, freq_start,
+             sel, 'unlinked', 0)}
     ])
   })
 
   const vdom$ = Rx.Observable
                   .combineLatest(
-		    s_c.DOM,
+                    s_c.DOM,
                     freq_start_c.DOM, pop_size_c.DOM,
                     num_cycles_c.DOM, num_markers_c.DOM,
                     exphe_plot.DOM, numal_plot.DOM)
                   .map(([s, freq_start, pop_size, num_cycles, num_markers,
                          exphe, numal]) =>
-			   <div>
-			     <div>
-			       {s}
-			       {freq_start}
+                           <div>
+                             <div>
+                               {s}
+                               {freq_start}
                                {pop_size}
                                {num_cycles}
                                {num_markers}
                                <br/>
                                <button id={tag} value="1">Simulate</button>
-			     </div>
-			     {exphe}
-			     {numal}
-			   </div>
+                             </div>
+                             {exphe}
+                             {numal}
+                           </div>
                   )
 
   const sinks = {
