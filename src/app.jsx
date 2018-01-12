@@ -9,6 +9,7 @@ import {SimpleFreqApp} from './simple-freq'
 import {DeclineApp} from './decline'
 import {SelectionAppFactory} from './selection'
 import {SexRatioApp} from './sex-ratio'
+import {SelectionDriftApp} from './selection-drift'
 
 const uikit_template =
   nav({attrs:{className:"uk-navbar-container", "uk-navbar": 1}},
