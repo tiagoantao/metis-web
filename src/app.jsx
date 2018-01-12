@@ -61,7 +61,7 @@ const uikit_template =
           <li><a href="#">Comparisons</a>
             <div className="uk-navbar-dropdown">
               <ul className="uk-nav uk-navbar-dropdown-nav">
-                <li><a href="#" id="">Selection and Drift</a></li>
+                <li><a href="#" id="menu-sel-drift">Selection and Drift</a></li>
                 <li><a href="#" id="">Selection modes</a></li>
               </ul>
             </div>
@@ -105,13 +105,18 @@ export const App = (sources) => {
 
   const sex_ratio_menu$ = sources.DOM.select('#menu-sex-ratio').events('click')
                                  .startWith({timeStamp: -1,
-                                              srcElement: {id: 'menu-sex-ratio'}})
+                                             srcElement: {id: 'menu-sex-ratio'}})
 
+  const sel_drift_menu$ = sources.DOM.select('#menu-sel-drift').events('click')
+                                 .startWith({timeStamp: -1,
+                                             srcElement: {id: 'menu-sel-drift'}})
+  
   
   const recent_event$ = Rx.Observable.combineLatest(
     single_menu$, wf_menu$, freq_menu$, decline_menu$,
     dominant_menu$, recessive_menu$, hz_menu$,
-    sex_ratio_menu$)
+    sex_ratio_menu$,
+    sel_drift_menu$)
                           .map(entries => {
                             var ts = -10
                             var id = ""
@@ -144,16 +149,19 @@ export const App = (sources) => {
     DOM: sources.DOM, metis: sources.metis})
   const hz_dom$ = hz_pop.DOM
 
-
   const sex_ratio_pop = SexRatioApp({DOM: sources.DOM, metis: sources.metis})
   const sr_dom$ = sex_ratio_pop.DOM
 
+  const sel_drift_pop = SelectionDriftApp({DOM: sources.DOM, metis: sources.metis})
+  const sd_dom$ = sel_drift_pop.DOM
 
   
   const vdom$ = Rx
-    .Observable.combineLatest(recent_event$, sp_dom$, wf_dom$, fq_dom$, dc_dom$,
+    .Observable.combineLatest(recent_event$, sp_dom$, wf_dom$, fq_dom$,
+                              dc_dom$,
                               dom_dom$, rec_dom$, hz_dom$,
-			      sr_dom$)
+                              sr_dom$,
+                              sd_dom$)
     .map(arr =>
       <div>
         {uikit_template}
@@ -181,6 +189,9 @@ export const App = (sources) => {
         <div style={arr[0] === 'menu-sex-ratio' ? 'display: block' : 'display: none'}>
           {arr[8]}
         </div>
+        <div style={arr[0] === 'menu-sel-drift' ? 'display: block' : 'display: none'}>
+          {arr[9]}
+        </div>
       </div>
     )
 
@@ -189,7 +200,9 @@ export const App = (sources) => {
     metis: Rx.Observable.merge(dominant_pop.metis, recessive_pop.metis,
                                hz_pop.metis, wf_pop.metis,
                                freq_pop.metis, sex_ratio_pop.metis,
-                               decline_pop.metis, single_pop.metis)
+                               decline_pop.metis, single_pop.metis,
+                               sel_drift_pop.metis)
+    
   }
   
   return sinks
