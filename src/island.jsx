@@ -22,10 +22,10 @@ import {
   sp_Species} from '@tiagoantao/metis-sim'
 
 
-const prepare_sim_state = (tag, pop_size, num_markers, marker_type) => {
+const prepare_sim_state = (tag, num_demes, deme_size,
+			   num_markers, marker_type) => {
   const genome_size = num_markers
 
-  console.log(marker_type)
   const unlinked_genome = gn_generate_unlinked_genome(
     genome_size, () => {return marker_type === 'SNP'? new gn_SNP() : new gn_MicroSatellite(Array.from(new Array(10), (x,i) => i))})
   const species = new sp_Species('unlinked', unlinked_genome)
@@ -46,7 +46,7 @@ const prepare_sim_state = (tag, pop_size, num_markers, marker_type) => {
 }
 
 
-export const SimpleApp = (sources) => {
+export const IslandApp = (sources) => {
 
   const tag = 'island'
 
