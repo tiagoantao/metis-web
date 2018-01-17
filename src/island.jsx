@@ -22,7 +22,7 @@ import {
   sp_Species} from '@tiagoantao/metis-sim'
 
 
-const prepare_sim_state = (tag, num_demes, deme_size,
+const prepare_sim_state = (tag, num_demes, deme_size, num_migs,
 			   num_markers, marker_type) => {
   const genome_size = num_markers
 
@@ -32,6 +32,7 @@ const prepare_sim_state = (tag, num_demes, deme_size,
   const operators = [
     new ops_rep_SexualReproduction(species, pop_size),
     new ops_culling_KillOlderGenerations(),
+    //new ops_pop_MigrateIsland(
     new ops_stats_demo_SexStatistics(),
     new ops_stats_NumAl(),
     new ops_stats_hz_ExpHe()
@@ -80,6 +81,12 @@ export const IslandApp = (sources) => {
   let num_demes
   num_demes_c.value.subscribe(v => num_demes = v)
 
+  const num_migs_c = Slider({DOM: sources.DOM},
+                            {className: '.' + tag + '-num_migs', label: 'num migrants:',
+                             step: 1, min: 0, value: 1, max: 0})
+  let num_migs
+  num_migs_c.value.subscribe(v => num_migs = v)
+  
   
   const num_cycles_c = Slider({DOM: sources.DOM},
                               {className: '.' + tag + '-num_cycles', label: 'cycles:',
@@ -103,7 +110,8 @@ export const IslandApp = (sources) => {
   
   const metis$ = simulate$.map(_ => {
     return Rx.Observable.from([
-      {num_cycles, state: prepare_sim_state(tag, num_demes, deme_size,
+      {num_cycles, state: prepare_sim_state(tag,
+					    num_demes, deme_size, num_migs,
 					    num_markers, marker_type)}
     ])
   })
@@ -111,15 +119,18 @@ export const IslandApp = (sources) => {
   const vdom$ = Rx.Observable
                   .combineLatest(
                     marker_type_c.DOM,
-		    deme_size_c.DOM, num_demes_c.DOM,
+		    deme_size_c.DOM, num_demes_c.DOM, num_migs_c.DOM,
                     num_cycles_c.DOM, num_markers_c.DOM,
                     numal_plot.DOM)
-                  .map(([marker_type, num_demes, deme_size, num_cycles, num_markers,
+                  .map(([marker_type,
+			 num_demes, deme_size, num_migs,
+			 num_cycles, num_markers,
                          numal]) =>
 			   <div>
 			     <div>
                                {marker_type}
                                {num_demes}
+			       {num_migs}
 			       {deme_size}
                                {num_cycles}
                                {num_markers}
