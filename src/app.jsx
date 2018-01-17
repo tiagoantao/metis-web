@@ -8,6 +8,7 @@ import {SimpleApp} from './simple'
 import {SimpleFreqApp} from './simple-freq'
 import {DeclineApp} from './decline'
 import {SelectionAppFactory} from './selection'
+import {IslandApp} from './island'
 import {SexRatioApp} from './sex-ratio'
 import {SelectionDriftApp} from './selection-drift'
 
@@ -45,7 +46,7 @@ const uikit_template =
           <li><a href="#">Structure</a>
             <div className="uk-navbar-dropdown">
               <ul className="uk-nav uk-navbar-dropdown-nav">
-                <li><a href="#">Island</a></li>
+                <li><a href="#" id="menu-island">Island</a></li>
                 <li><a href="#">Stepping-stone 1D</a></li>
                 <li><a href="#">Stepping-stone 2D</a></li>
               </ul>
@@ -103,6 +104,10 @@ export const App = (sources) => {
                           .startWith({timeStamp: -1,
                                       srcElement: {id: 'menu-hz'}})
 
+  const island_menu$ = sources.DOM.select('#menu-island').events('click')
+                              .startWith({timeStamp: -1,
+                                             srcElement: {id: 'menu-island'}})
+  
   const sex_ratio_menu$ = sources.DOM.select('#menu-sex-ratio').events('click')
                                  .startWith({timeStamp: -1,
                                              srcElement: {id: 'menu-sex-ratio'}})
@@ -113,8 +118,10 @@ export const App = (sources) => {
   
   
   const recent_event$ = Rx.Observable.combineLatest(
-    single_menu$, wf_menu$, freq_menu$, decline_menu$,
+    single_menu$, wf_menu$, freq_menu$,
+    decline_menu$,
     dominant_menu$, recessive_menu$, hz_menu$,
+    island_menu$,
     sex_ratio_menu$,
     sel_drift_menu$)
                           .map(entries => {
@@ -149,6 +156,9 @@ export const App = (sources) => {
     DOM: sources.DOM, metis: sources.metis})
   const hz_dom$ = hz_pop.DOM
 
+  const island_pop = IslandApp({DOM: sources.DOM, metis: sources.metis})
+  const il_dom$ = island_pop.DOM
+  
   const sex_ratio_pop = SexRatioApp({DOM: sources.DOM, metis: sources.metis})
   const sr_dom$ = sex_ratio_pop.DOM
 
@@ -157,9 +167,11 @@ export const App = (sources) => {
 
   
   const vdom$ = Rx
-    .Observable.combineLatest(recent_event$, sp_dom$, wf_dom$, fq_dom$,
+    .Observable.combineLatest(recent_event$,
+			      sp_dom$, wf_dom$, fq_dom$,
                               dc_dom$,
                               dom_dom$, rec_dom$, hz_dom$,
+			      il_dom$,
                               sr_dom$,
                               sd_dom$)
     .map(arr =>
@@ -186,22 +198,27 @@ export const App = (sources) => {
         <div style={arr[0] === 'menu-hz' ? 'display: block' : 'display: none'}>
           {arr[7]}
         </div>
-        <div style={arr[0] === 'menu-sex-ratio' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-island' ? 'display: block' : 'display: none'}>
           {arr[8]}
         </div>
-        <div style={arr[0] === 'menu-sel-drift' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-sex-ratio' ? 'display: block' : 'display: none'}>
           {arr[9]}
+        </div>
+        <div style={arr[0] === 'menu-sel-drift' ? 'display: block' : 'display: none'}>
+          {arr[19]}
         </div>
       </div>
     )
 
   const sinks = {
     DOM: vdom$,
-    metis: Rx.Observable.merge(dominant_pop.metis, recessive_pop.metis,
-                               hz_pop.metis, wf_pop.metis,
-                               freq_pop.metis, sex_ratio_pop.metis,
-                               decline_pop.metis, single_pop.metis,
-                               sel_drift_pop.metis)
+    metis: Rx.Observable.merge(
+      wf_pop.metis, single_pop.metis, freq_pop.metis,
+      decline_pop.metis, 
+      dominant_pop.metis, recessive_pop.metis, hz_pop.metis,
+      island_pop.metis,
+      sex_ratio_pop.metis,
+      sel_drift_pop.metis)
     
   }
   
