@@ -48,23 +48,11 @@ const prepare_sim_state = (tag, pop_size, num_markers, marker_type) => {
 
 export const SimpleApp = (sources) => {
 
-  const tag = 'simple'
+  const tag = 'island'
 
   const my_metis$ = sources.metis.filter(
     state => state.global_parameters.tag === tag)
 
-  const exphe$ = my_metis$.map(state => {
-    var cnt = 1
-    return state.global_parameters.ExpHe.unlinked.map(exphe => {
-      return {
-        x: state.cycle - 1, y: exphe, marker: 'M' + cnt++}})
-  })
-
-  const sex_ratio$ = my_metis$.map(state => {
-    const sr = state.global_parameters.SexRatio
-    return [{x: state.cycle - 1, y: sr.males / sr.females, marker: 'Sex Ratio'}]
-  })
-  
   const numal$ = my_metis$.map(state => {
     var cnt = 0
     return state.global_parameters.NumAl.unlinked.map(numal => {
@@ -79,11 +67,19 @@ export const SimpleApp = (sources) => {
   let marker_type
   marker_type_c.value.subscribe(v => marker_type = v)
   
-  const pop_size_c = Slider({DOM: sources.DOM},
-                            {className: '.' + tag + '-pop_size', label: 'pop size:',
-                             step: 10, min: 10, value: 50, max: 300})
-  let pop_size
-  pop_size_c.value.subscribe(v => pop_size = v)
+  const deme_size_c = Slider({DOM: sources.DOM},
+                             {className: '.' + tag + '-deme_size', label: 'deme size:',
+                              step: 10, min: 10, value: 50, max: 100})
+  let deme_size
+  deme_size_c.value.subscribe(v => deme_size = v)
+
+
+  const num_demes_c = Slider({DOM: sources.DOM},
+                             {className: '.' + tag + '-num_demes', label: 'num demes:',
+                              step: 1, min: 2, value: 2, max: 10})
+  let num_demes
+  num_demes_c.value.subscribe(v => num_demes = v)
+
   
   const num_cycles_c = Slider({DOM: sources.DOM},
                               {className: '.' + tag + '-num_cycles', label: 'cycles:',
@@ -97,15 +93,6 @@ export const SimpleApp = (sources) => {
   let num_markers
   num_markers_c.value.subscribe(v => num_markers = v)
 
-  const exphe_plot = Plot(
-    {id: tag + '-exphe', y_label: 'Expected Heterozygosity'},
-    {DOM: sources.DOM, vals: exphe$})
-
-  const sr_plot = Plot(
-    {id: tag + '-sr', y_label: 'Sex Ratio'},
-    {DOM: sources.DOM, vals: sex_ratio$})
-
-  
   const numal_plot = Plot(
     {id: tag + '-numal', y_label: 'Number of distinct alleles'},
     {DOM: sources.DOM, vals: numal$})
@@ -116,30 +103,31 @@ export const SimpleApp = (sources) => {
   
   const metis$ = simulate$.map(_ => {
     return Rx.Observable.from([
-      {num_cycles, state: prepare_sim_state(tag, pop_size, num_markers, marker_type)}
+      {num_cycles, state: prepare_sim_state(tag, num_demes, deme_size,
+					    num_markers, marker_type)}
     ])
   })
 
   const vdom$ = Rx.Observable
                   .combineLatest(
-                    marker_type_c.DOM, pop_size_c.DOM,
+                    marker_type_c.DOM,
+		    deme_size_c.DOM, num_demes_c.DOM,
                     num_cycles_c.DOM, num_markers_c.DOM,
-                    exphe_plot.DOM, sr_plot.DOM, numal_plot.DOM)
-                  .map(([marker_type, pop_size, num_cycles, num_markers,
-                         exphe, sex_ratio, numal]) =>
-                    <div>
-                      <div>
-                        {marker_type}
-                        {pop_size}
-                        {num_cycles}
-                        {num_markers}
-                        <br/>
-                        <button id={tag} value="1">Simulate</button>
-                      </div>
-                      {exphe}
-		      {sex_ratio}
-                      {numal}
-                    </div>
+                    numal_plot.DOM)
+                  .map(([marker_type, num_demes, deme_size, num_cycles, num_markers,
+                         numal]) =>
+			   <div>
+			     <div>
+                               {marker_type}
+                               {num_demes}
+			       {deme_size}
+                               {num_cycles}
+                               {num_markers}
+                               <br/>
+                               <button id={tag} value="1">Simulate</button>
+			     </div>
+			     {numal}
+			   </div>
                   )
 
   const sinks = {
