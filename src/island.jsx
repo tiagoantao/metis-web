@@ -13,8 +13,8 @@ import {
   integrated_create_randomized_genome,
   integrated_generate_individual_with_genome,
   ops_culling_KillOlderGenerations,
-  ops_rep_SexualReproduction,
-  ops_RxOperator,  // Currently not in use
+  ops_p_MigrationIslandFixed,
+  ops_rep_StructuredSexualReproduction,
   ops_stats_demo_SexStatistics,
   ops_stats_hz_ExpHe,
   ops_stats_NumAl,
@@ -30,9 +30,9 @@ const prepare_sim_state = (tag, num_demes, deme_size, num_migs,
     genome_size, () => {return marker_type === 'SNP'? new gn_SNP() : new gn_MicroSatellite(Array.from(new Array(10), (x,i) => i))})
   const species = new sp_Species('unlinked', unlinked_genome)
   const operators = [
-    new ops_rep_SexualReproduction(species, pop_size),
+    new ops_rep_StructuredSexualReproduction(species, deme_size, num_demes),
     new ops_culling_KillOlderGenerations(),
-    //new ops_pop_MigrateIsland(
+    new ops_p_MigrationIslandFixed(num_migs),
     new ops_stats_demo_SexStatistics(),
     new ops_stats_NumAl(),
     new ops_stats_hz_ExpHe()
