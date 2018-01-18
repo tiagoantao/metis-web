@@ -20,6 +20,7 @@ import {
   ops_stats_demo_SexStatistics,
   ops_stats_hz_ExpHe,
   ops_stats_NumAl,
+  ops_wrap_list,
   p_generate_n_inds,
   sp_Species} from '@tiagoantao/metis-sim'
 
@@ -32,7 +33,7 @@ const prepare_sim_state = (tag, pop_size, num_markers, marker_type, perc_males) 
 			       new gn_SNP() :
 			       new gn_MicroSatellite(Array.from(new Array(10), (x,i) => i))})
   const species = new sp_Species('unlinked', unlinked_genome)
-  const operators = [
+  const operators = ops_wrap_list([
     new ops_rep_SexualReproduction(species, pop_size, [],
 				   ops_rep_random_mater_factory,
 				   ops_rep_sex_ratio_sexual_generator_factory(perc_males / (100 - perc_males))),
@@ -40,7 +41,7 @@ const prepare_sim_state = (tag, pop_size, num_markers, marker_type, perc_males) 
     new ops_stats_demo_SexStatistics(),
     new ops_stats_NumAl(),
     new ops_stats_hz_ExpHe()
-  ]
+  ])
   const individuals = p_generate_n_inds(pop_size, () =>
     i_assign_perc_male(integrated_generate_individual_with_genome(
       species, 0, integrated_create_randomized_genome), perc_males / 100))

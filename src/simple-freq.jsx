@@ -19,6 +19,7 @@ import {
   ops_stats_FreqAl,
   ops_stats_TimeFix,
   ops_stats_NumAl,
+  ops_wrap_list,
   p_generate_n_inds,
   sp_Species} from '@tiagoantao/metis-sim'
 
@@ -29,7 +30,7 @@ const prepare_sim_state = (tag, pop_size, num_markers, freq_start) => {
   const unlinked_genome = gn_generate_unlinked_genome(
     genome_size, () => {return new gn_SNP()})
   const species = new sp_Species('unlinked', unlinked_genome)
-  const operators = [
+  const operators = ops_wrap_list([
     new ops_rep_SexualReproduction(species, pop_size),
     new ops_culling_KillOlderGenerations(),
     new ops_stats_demo_SexStatistics(),
@@ -37,7 +38,7 @@ const prepare_sim_state = (tag, pop_size, num_markers, freq_start) => {
     new ops_stats_FreqAl(),
     new ops_stats_TimeFix(),
     new ops_stats_hz_ExpHe()
-  ]
+  ])
   const individuals = p_generate_n_inds(pop_size, () =>
     i_assign_random_sex(integrated_generate_individual_with_genome(
       species, 0,
