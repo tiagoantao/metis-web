@@ -85,7 +85,7 @@ export const IslandApp = (sources) => {
 
   const num_migs_c = Slider({DOM: sources.DOM},
                             {className: '.' + tag + '-num_migs', label: 'num migrants:',
-                             step: 1, min: 0, value: 1, max: 0})
+                             step: 1, min: 0, value: 1, max: 9})
   let num_migs
   num_migs_c.value.subscribe(v => num_migs = v)
   
