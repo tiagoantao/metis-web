@@ -18,6 +18,7 @@ import {
   ops_stats_demo_SexStatistics,
   ops_stats_hz_ExpHe,
   ops_stats_NumAl,
+  p_assign_fixed_size_population,
   p_generate_n_inds,
   sp_Species} from '@tiagoantao/metis-sim'
 
@@ -37,12 +38,13 @@ const prepare_sim_state = (tag, num_demes, deme_size, num_migs,
     new ops_stats_NumAl(),
     new ops_stats_hz_ExpHe()
   ]
-  const individuals = p_generate_n_inds(pop_size, () =>
+  const individuals = p_generate_n_inds(deme_size * num_demes, () =>
     i_assign_random_sex(integrated_generate_individual_with_genome(
       species, 0, integrated_create_randomized_genome)))
+  p_assign_fixed_size_population(individuals, num_demes)
   const state = {
     global_parameters: {tag, stop: false},
-    individuals, operators, cycle: 0}
+    individuals, operators, cycle: 1}
   return state
 }
 
