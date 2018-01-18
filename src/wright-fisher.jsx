@@ -46,7 +46,7 @@ const prepare_sim_state = (tag, pop_size, num_markers, marker_type) => {
       species, 0, integrated_create_randomized_genome)))
   const state = {
     global_parameters: {tag, stop: false},
-    individuals, operators, cycle: 0}
+    individuals, operators, cycle: 1}
   return state
 }
 

@@ -59,7 +59,7 @@ const prepare_sim_state = (tag, start_pop_size, end_pop_size,
       species, 0, integrated_create_randomized_genome)))
   const state = {
     global_parameters: {tag, stop: false},
-    individuals, operators, cycle: 0}
+    individuals, operators, cycle: 1}
   return state
 }
 

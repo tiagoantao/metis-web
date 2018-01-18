@@ -44,7 +44,7 @@ const prepare_sim_state = (tag, pop_size, num_markers, freq_start) => {
       (ind) => integrated_create_freq_genome(freq_start / 100, ind))))
   const state = {
     global_parameters: {tag, stop: false},
-    individuals, operators, cycle: 0}
+    individuals, operators, cycle: 1}
   return state
 }
 
