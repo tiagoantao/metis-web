@@ -28,7 +28,10 @@ const prepare_sim_state = (tag, pop_size, num_markers, marker_type) => {
 
   console.log(marker_type)
   const unlinked_genome = gn_generate_unlinked_genome(
-    genome_size, () => {return marker_type === 'SNP'? new gn_SNP() : new gn_MicroSatellite(Array.from(new Array(10), (x,i) => i))})
+    genome_size, () => {return marker_type === 'SNP'?
+                               new gn_SNP() :
+                               new gn_MicroSatellite(
+                                 Array.from(new Array(10), (x,i) => i))})
   const species = new sp_Species('unlinked', unlinked_genome)
   const operators = ops_wrap_list([
     new ops_rep_SexualReproduction(species, pop_size),
@@ -48,7 +51,6 @@ const prepare_sim_state = (tag, pop_size, num_markers, marker_type) => {
 
 
 export const SimpleApp = (sources) => {
-
   const tag = 'simple'
 
   const my_metis$ = sources.metis.filter(

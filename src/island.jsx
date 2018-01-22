@@ -17,6 +17,7 @@ import {
   ops_rep_StructuredSexualReproduction,
   ops_stats_demo_SexStatistics,
   ops_stats_hz_ExpHe,
+  ops_stats_hz_ExpHeDeme,
   ops_stats_NumAl,
   ops_wrap_list,
   p_assign_fixed_size_population,
@@ -25,19 +26,23 @@ import {
 
 
 const prepare_sim_state = (tag, num_demes, deme_size, num_migs,
-			   num_markers, marker_type) => {
+                           num_markers, marker_type) => {
   const genome_size = num_markers
 
   const unlinked_genome = gn_generate_unlinked_genome(
-    genome_size, () => {return marker_type === 'SNP'? new gn_SNP() : new gn_MicroSatellite(Array.from(new Array(10), (x,i) => i))})
+    genome_size, () => {
+      return marker_type === 'SNP'?
+        new gn_SNP() :
+        new gn_MicroSatellite(Array.from(new Array(10), (x,i) => i))
+      })
   const species = new sp_Species('unlinked', unlinked_genome)
   const operators = ops_wrap_list([
     new ops_rep_StructuredSexualReproduction(species, deme_size, num_demes),
     new ops_culling_KillOlderGenerations(),
     new ops_p_MigrationIslandFixed(num_migs),
     new ops_stats_demo_SexStatistics(),
-    new ops_stats_NumAl(),
-    new ops_stats_hz_ExpHe()
+    new ops_stats_hz_ExpHe(),
+    new ops_stats_hz_ExpHeDeme()
   ])
   const individuals = p_generate_n_inds(deme_size * num_demes, () =>
     i_assign_random_sex(integrated_generate_individual_with_genome(
@@ -57,14 +62,21 @@ export const IslandApp = (sources) => {
   const my_metis$ = sources.metis.filter(
     state => state.global_parameters.tag === tag)
 
-  const numal$ = my_metis$.map(state => {
-    var cnt = 0
-    return state.global_parameters.NumAl.unlinked.map(numal => {
+  const exphe$ = my_metis$.map(state => {
+    var cnt = 1
+    return state.global_parameters.ExpHe.unlinked.map(exphe => {
       return {
-        x: state.cycle - 1, y: numal, marker: 'M' + cnt++}})
+        x: state.cycle - 1, y: exphe, marker: 'M' + cnt++}})
   })
 
-
+  const dexphe$ = my_metis$.map(state => {
+    var cnt = 1
+      console.log(state.global_parameters)
+    return state.global_parameters.DemeExpHe[0].unlinked.map(exphe => {
+      return {
+        x: state.cycle - 1, y: exphe, marker: 'M' + cnt++}})
+  })
+    
   const marker_type_c = Selector({DOM: sources.DOM},
                                  {className: '.' + tag + '-marker_type',
                                   label: 'marker type:'})
@@ -103,9 +115,13 @@ export const IslandApp = (sources) => {
   let num_markers
   num_markers_c.value.subscribe(v => num_markers = v)
 
-  const numal_plot = Plot(
-    {id: tag + '-numal', y_label: 'Number of distinct alleles'},
-    {DOM: sources.DOM, vals: numal$})
+  const exphe_plot = Plot(
+    {id: tag + '-exphe', y_label: 'Expected Hz - Meta population'},
+    {DOM: sources.DOM, vals: exphe$})
+
+  const dexphe_plot = Plot(
+    {id: tag + '-dexphe', y_label: 'Expected Hz - A Deme'},
+    {DOM: sources.DOM, vals: dexphe$})
 
   const simulate$ = sources.DOM.select('#' + tag)
                            .events('click')
@@ -114,34 +130,35 @@ export const IslandApp = (sources) => {
   const metis$ = simulate$.map(_ => {
     return Rx.Observable.from([
       {num_cycles, state: prepare_sim_state(tag,
-					    num_demes, deme_size, num_migs,
-					    num_markers, marker_type)}
+                                            num_demes, deme_size, num_migs,
+                                            num_markers, marker_type)}
     ])
   })
 
   const vdom$ = Rx.Observable
                   .combineLatest(
                     marker_type_c.DOM,
-		    deme_size_c.DOM, num_demes_c.DOM, num_migs_c.DOM,
+                    deme_size_c.DOM, num_demes_c.DOM, num_migs_c.DOM,
                     num_cycles_c.DOM, num_markers_c.DOM,
-                    numal_plot.DOM)
+                    exphe_plot.DOM, dexphe_plot.DOM)
                   .map(([marker_type,
-			 num_demes, deme_size, num_migs,
-			 num_cycles, num_markers,
-                         numal]) =>
-			   <div>
-			     <div>
+                         num_demes, deme_size, num_migs,
+                         num_cycles, num_markers,
+                         exphe, dexphe]) =>
+                           <div>
+                             <div>
                                {marker_type}
                                {num_demes}
-			       {num_migs}
-			       {deme_size}
+                               {num_migs}
+                               {deme_size}
                                {num_cycles}
                                {num_markers}
                                <br/>
                                <button id={tag} value="1">Simulate</button>
-			     </div>
-			     {numal}
-			   </div>
+                             </div>
+                             {exphe}
+                             {dexphe}
+                           </div>
                   )
 
   const sinks = {
