@@ -6,6 +6,7 @@ import {makeMetisDriver} from './metis_driver'
 import {WFApp} from './wright-fisher'
 import {SimpleApp} from './simple'
 import {SimpleFreqApp} from './simple-freq'
+import {StochasticityApp} from './stochasticity'
 import {DeclineApp} from './decline'
 import {SelectionAppFactory} from './selection'
 import {IslandApp} from './island'
@@ -24,6 +25,7 @@ const uikit_template =
                 <li><a href="#" id="menu-wf">Wright-Fisher</a></li>
                 <li><a href="#" id="menu-single">Wright-Fisher with sex</a></li>
                 <li><a href="#" id="menu-freq">Initial Frequency</a></li>
+                <li><a href="#" id="menu-stoch">Stochasticity</a></li>
               </ul>
             </div>
           </li>
@@ -56,6 +58,7 @@ const uikit_template =
             <div className="uk-navbar-dropdown">
               <ul className="uk-nav uk-navbar-dropdown-nav">
                 <li><a href="#" id="menu-sex-ratio">Sex-Ratio</a></li>
+                <li><a href="#" id="menu-alpha">Alpha male</a></li>
               </ul>
             </div>
           </li>
@@ -63,7 +66,6 @@ const uikit_template =
             <div className="uk-navbar-dropdown">
               <ul className="uk-nav uk-navbar-dropdown-nav">
                 <li><a href="#" id="menu-sel-drift">Selection and Drift</a></li>
-                <li><a href="#" id="">Selection modes</a></li>
               </ul>
             </div>
           </li>
@@ -87,6 +89,10 @@ export const App = (sources) => {
   const freq_menu$ = sources.DOM.select('#menu-freq').events('click')
                             .startWith({timeStamp: -1,
                                         srcElement: {id: 'menu-freq'}})
+
+  const stoch_menu$ = sources.DOM.select('#menu-stoch').events('click')
+                             .startWith({timeStamp: -1,
+                                        srcElement: {id: 'menu-stoch'}})
 
   const decline_menu$ = sources.DOM.select('#menu-decline').events('click')
                                .startWith({timeStamp: -1,
@@ -118,7 +124,7 @@ export const App = (sources) => {
   
   
   const recent_event$ = Rx.Observable.combineLatest(
-    single_menu$, wf_menu$, freq_menu$,
+    single_menu$, wf_menu$, freq_menu$, stoch_menu$,
     decline_menu$,
     dominant_menu$, recessive_menu$, hz_menu$,
     island_menu$,
@@ -143,6 +149,8 @@ export const App = (sources) => {
   const wf_dom$ = wf_pop.DOM
   const freq_pop = SimpleFreqApp({DOM: sources.DOM, metis: sources.metis})
   const fq_dom$ = freq_pop.DOM
+  const stoch_pop = StochasticityApp({DOM: sources.DOM, metis: sources.metis})
+  const sch_dom$ = stoch_pop.DOM
   const decline_pop = DeclineApp({DOM: sources.DOM, metis: sources.metis})
   const dc_dom$ = decline_pop.DOM
 
@@ -168,7 +176,7 @@ export const App = (sources) => {
   
   const vdom$ = Rx
     .Observable.combineLatest(recent_event$,
-			      sp_dom$, wf_dom$, fq_dom$,
+			      sp_dom$, wf_dom$, fq_dom$, sch_dom$,
                               dc_dom$,
                               dom_dom$, rec_dom$, hz_dom$,
 			      il_dom$,
@@ -186,26 +194,29 @@ export const App = (sources) => {
         <div style={arr[0] === 'menu-freq' ? 'display: block' : 'display: none'}>
           {arr[3]}
         </div>
-        <div style={arr[0] === 'menu-decline' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-stoch' ? 'display: block' : 'display: none'}>
           {arr[4]}
         </div>
-        <div style={arr[0] === 'menu-dominant' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-decline' ? 'display: block' : 'display: none'}>
           {arr[5]}
         </div>
-        <div style={arr[0] === 'menu-recessive' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-dominant' ? 'display: block' : 'display: none'}>
           {arr[6]}
         </div>
-        <div style={arr[0] === 'menu-hz' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-recessive' ? 'display: block' : 'display: none'}>
           {arr[7]}
         </div>
-        <div style={arr[0] === 'menu-island' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-hz' ? 'display: block' : 'display: none'}>
           {arr[8]}
         </div>
-        <div style={arr[0] === 'menu-sex-ratio' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-island' ? 'display: block' : 'display: none'}>
           {arr[9]}
         </div>
+        <div style={arr[0] === 'menu-sex-ratio' ? 'display: block' : 'display: none'}>
+          {arr[10]}
+        </div>
         <div style={arr[0] === 'menu-sel-drift' ? 'display: block' : 'display: none'}>
-          {arr[19]}
+          {arr[11]}
         </div>
       </div>
     )
@@ -213,7 +224,7 @@ export const App = (sources) => {
   const sinks = {
     DOM: vdom$,
     metis: Rx.Observable.merge(
-      wf_pop.metis, single_pop.metis, freq_pop.metis,
+      wf_pop.metis, single_pop.metis, freq_pop.metis, stoch_pop.metis,
       decline_pop.metis, 
       dominant_pop.metis, recessive_pop.metis, hz_pop.metis,
       island_pop.metis,
