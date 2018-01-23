@@ -11,6 +11,7 @@ import {DeclineApp} from './decline'
 import {SelectionAppFactory} from './selection'
 import {IslandApp} from './island'
 import {SexRatioApp} from './sex-ratio'
+import {AlphaApp} from './alpha'
 import {SelectionDriftApp} from './selection-drift'
 
 const uikit_template =
@@ -92,7 +93,7 @@ export const App = (sources) => {
 
   const stoch_menu$ = sources.DOM.select('#menu-stoch').events('click')
                              .startWith({timeStamp: -1,
-                                        srcElement: {id: 'menu-stoch'}})
+                                         srcElement: {id: 'menu-stoch'}})
 
   const decline_menu$ = sources.DOM.select('#menu-decline').events('click')
                                .startWith({timeStamp: -1,
@@ -112,12 +113,16 @@ export const App = (sources) => {
 
   const island_menu$ = sources.DOM.select('#menu-island').events('click')
                               .startWith({timeStamp: -1,
-                                             srcElement: {id: 'menu-island'}})
+                                          srcElement: {id: 'menu-island'}})
   
   const sex_ratio_menu$ = sources.DOM.select('#menu-sex-ratio').events('click')
                                  .startWith({timeStamp: -1,
                                              srcElement: {id: 'menu-sex-ratio'}})
 
+  const alpha_menu$ = sources.DOM.select('#menu-alpha').events('click')
+                                 .startWith({timeStamp: -1,
+                                             srcElement: {id: 'menu-alpha'}})
+  
   const sel_drift_menu$ = sources.DOM.select('#menu-sel-drift').events('click')
                                  .startWith({timeStamp: -1,
                                              srcElement: {id: 'menu-sel-drift'}})
@@ -128,7 +133,7 @@ export const App = (sources) => {
     decline_menu$,
     dominant_menu$, recessive_menu$, hz_menu$,
     island_menu$,
-    sex_ratio_menu$,
+    sex_ratio_menu$, alpha_menu$,
     sel_drift_menu$)
                           .map(entries => {
                             var ts = -10
@@ -170,6 +175,9 @@ export const App = (sources) => {
   const sex_ratio_pop = SexRatioApp({DOM: sources.DOM, metis: sources.metis})
   const sr_dom$ = sex_ratio_pop.DOM
 
+  const alpha_pop = AlphaApp({DOM: sources.DOM, metis: sources.metis})
+  const ap_dom$ = alpha_pop.DOM
+  
   const sel_drift_pop = SelectionDriftApp({DOM: sources.DOM, metis: sources.metis})
   const sd_dom$ = sel_drift_pop.DOM
 
@@ -180,7 +188,7 @@ export const App = (sources) => {
                               dc_dom$,
                               dom_dom$, rec_dom$, hz_dom$,
 			      il_dom$,
-                              sr_dom$,
+                              sr_dom$, ap_dom$,
                               sd_dom$)
     .map(arr =>
       <div>
@@ -215,8 +223,11 @@ export const App = (sources) => {
         <div style={arr[0] === 'menu-sex-ratio' ? 'display: block' : 'display: none'}>
           {arr[10]}
         </div>
-        <div style={arr[0] === 'menu-sel-drift' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-alpha' ? 'display: block' : 'display: none'}>
           {arr[11]}
+        </div>
+        <div style={arr[0] === 'menu-sel-drift' ? 'display: block' : 'display: none'}>
+          {arr[12]}
         </div>
       </div>
     )
@@ -228,7 +239,7 @@ export const App = (sources) => {
       decline_pop.metis, 
       dominant_pop.metis, recessive_pop.metis, hz_pop.metis,
       island_pop.metis,
-      sex_ratio_pop.metis,
+      sex_ratio_pop.metis, alpha_pop.metis,
       sel_drift_pop.metis)
     
   }
