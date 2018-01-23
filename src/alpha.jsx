@@ -9,12 +9,11 @@ import {
   gn_generate_unlinked_genome,
   gn_MicroSatellite,
   gn_SNP,
-  i_assign_perc_male,
+  i_assign_random_sex,
   integrated_create_randomized_genome,
   integrated_generate_individual_with_genome,
   ops_culling_KillOlderGenerations,
-  ops_rep_random_mater_factory,
-  ops_rep_sex_ratio_sexual_generator_factory,
+  ops_rep_alpha_sire_factory,
   ops_rep_SexualReproduction,
   ops_RxOperator,  // Currently not in use
   ops_stats_demo_SexStatistics,
@@ -25,7 +24,7 @@ import {
   sp_Species} from '@tiagoantao/metis-sim'
 
 
-const prepare_sim_state = (tag, pop_size, num_markers, marker_type, perc_males) => {
+const prepare_sim_state = (tag, pop_size, num_markers, marker_type, perc_alpha) => {
   const genome_size = num_markers
 
   const unlinked_genome = gn_generate_unlinked_genome(
@@ -35,16 +34,16 @@ const prepare_sim_state = (tag, pop_size, num_markers, marker_type, perc_males) 
   const species = new sp_Species('unlinked', unlinked_genome)
   const operators = ops_wrap_list([
     new ops_rep_SexualReproduction(species, pop_size, [],
-				   ops_rep_random_mater_factory,
-				   ops_rep_sex_ratio_sexual_generator_factory(perc_males / (100 - perc_males))),
+				   ops_rep_alpha_sire_factory(perc_alpha / 100)),
+
     new ops_culling_KillOlderGenerations(),
     new ops_stats_demo_SexStatistics(),
     new ops_stats_NumAl(),
     new ops_stats_hz_ExpHe()
   ])
   const individuals = p_generate_n_inds(pop_size, () =>
-    i_assign_perc_male(integrated_generate_individual_with_genome(
-      species, 0, integrated_create_randomized_genome), perc_males / 100))
+    i_assign_random_sex(integrated_generate_individual_with_genome(
+      species, 0, integrated_create_randomized_genome)))
   const state = {
     global_parameters: {tag, stop: false},
     individuals, operators, cycle: 1}
@@ -92,12 +91,11 @@ export const AlphaApp = (sources) => {
   let marker_type
   marker_type_c.value.subscribe(v => marker_type = v)
 
-  const frac_males_c = Slider({DOM: sources.DOM},
-                              {className: '.' + tag + '-fac_males', label: 'fraction of males:',
-                               step: 5, min: 10, value: 90, max: 90})
-
-  let frac_males
-  frac_males_c.value.subscribe(v => frac_males = v)
+  const perc_alpha_c = Slider({DOM: sources.DOM},
+                              {className: '.' + tag + '-perc_alpha', label: 'fraction sired by a single male:',
+                               step: 5, min: 10, value: 50, max: 100})
+  let perc_alpha
+  perc_alpha_c.value.subscribe(v => perc_alpha = v)
   
   const pop_size_c = Slider({DOM: sources.DOM},
                             {className: '.' + tag + '-pop_size', label: 'pop size:',
@@ -141,23 +139,23 @@ export const AlphaApp = (sources) => {
     return Rx.Observable.from([
       {num_cycles,
        state: prepare_sim_state(tag, pop_size, num_markers,
-				marker_type, frac_males)}
+				marker_type, perc_alpha)}
     ])
   })
 
   const vdom$ = Rx.Observable
                   .combineLatest(
-                    marker_type_c.DOM, frac_males_c.DOM,
+                    marker_type_c.DOM, perc_alpha_c.DOM,
 		    pop_size_c.DOM,
                     num_cycles_c.DOM, num_markers_c.DOM,
                     exphe_plot.DOM, sr_plot.DOM, ne_plot.DOM, numal_plot.DOM)
-                  .map(([marker_type, frac_males, pop_size, num_cycles,
+                  .map(([marker_type, perc_alpha, pop_size, num_cycles,
 			 num_markers,
                          exphe, sex_ratio, ne, numal]) =>
                     <div>
                       <div>
                         {marker_type}
-			{frac_males}
+			{perc_alpha}
                         {pop_size}
                         {num_cycles}
                         {num_markers}
