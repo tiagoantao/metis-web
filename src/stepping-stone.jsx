@@ -25,21 +25,21 @@ import {
   sp_Species} from '@tiagoantao/metis-sim'
 
 
-const prepare_sim_state = (tag, d1, d2, deme_size, num_migs,
+const prepare_sim_state = (tag, deme_size, d1, d2, num_migs,
                            num_markers, marker_type) => {
   const genome_size = num_markers
-
+  const num_demes = d1 * d2
   const unlinked_genome = gn_generate_unlinked_genome(
     genome_size, () => {
       return marker_type === 'SNP'?
-        new gn_SNP() :
-        new gn_MicroSatellite(Array.from(new Array(10), (x,i) => i))
-      })
+             new gn_SNP() :
+             new gn_MicroSatellite(Array.from(new Array(10), (x,i) => i))
+    })
   const species = new sp_Species('unlinked', unlinked_genome)
   const operators = ops_wrap_list([
     new ops_rep_StructuredSexualReproduction(species, deme_size, num_demes),
     new ops_culling_KillOlderGenerations(),
-    new ops_p_MigrationIslandFixed(num_migs),
+    new ops_p_MigrationSteppingStoneFixed(num_migs, d1, d2),
     new ops_stats_demo_SexStatistics(),
     new ops_stats_hz_ExpHe(),
     new ops_stats_hz_ExpHeDeme()
@@ -138,7 +138,7 @@ export const SteppingStoneApp = (sources) => {
   const metis$ = simulate$.map(_ => {
     return Rx.Observable.from([
       {num_cycles, state: prepare_sim_state(tag,
-                                            d1, d2, deme_size, num_migs,
+                                            deme_size, d1, d2, num_migs,
                                             num_markers, marker_type)}
     ])
   })
