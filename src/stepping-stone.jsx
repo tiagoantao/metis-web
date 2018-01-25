@@ -76,7 +76,7 @@ export const SteppingStoneApp = (sources) => {
       return {
         x: state.cycle - 1, y: exphe, marker: 'M' + cnt++}})
   })
-    
+  
   const marker_type_c = Selector({DOM: sources.DOM},
                                  {className: '.' + tag + '-marker_type',
                                   label: 'marker type:'})
@@ -84,17 +84,25 @@ export const SteppingStoneApp = (sources) => {
   marker_type_c.value.subscribe(v => marker_type = v)
   
   const deme_size_c = Slider({DOM: sources.DOM},
-                             {className: '.' + tag + '-deme_size', label: 'deme size:',
+                             {className: '.' + tag + '-deme_size',
+			      label: 'deme size:',
                               step: 10, min: 10, value: 50, max: 100})
   let deme_size
   deme_size_c.value.subscribe(v => deme_size = v)
 
 
-  const num_demes_c = Slider({DOM: sources.DOM},
-                             {className: '.' + tag + '-num_demes', label: 'num demes:',
-                              step: 1, min: 2, value: 2, max: 10})
-  let num_demes
-  num_demes_c.value.subscribe(v => num_demes = v)
+  const d1_c = Slider({DOM: sources.DOM},
+                      {className: '.' + tag + '-d1', label: 'num demes y:',
+                       step: 1, min: 1, value: 1, max: 6})
+  let d1
+  d1_c.value.subscribe(v => d1 = v)
+
+
+  const d2_c = Slider({DOM: sources.DOM},
+                       {className: '.' + tag + '-d2', label: 'num demes x:',
+                              step: 1, min: 1, value: 2, max: 6})
+  let d2
+  d2_c.value.subscribe(v => d2 = v)
 
   const num_migs_c = Slider({DOM: sources.DOM},
                             {className: '.' + tag + '-num_migs', label: 'num migrants:',
@@ -130,7 +138,7 @@ export const SteppingStoneApp = (sources) => {
   const metis$ = simulate$.map(_ => {
     return Rx.Observable.from([
       {num_cycles, state: prepare_sim_state(tag,
-                                            num_demes, deme_size, num_migs,
+                                            d1, d2, deme_size, num_migs,
                                             num_markers, marker_type)}
     ])
   })
@@ -138,19 +146,20 @@ export const SteppingStoneApp = (sources) => {
   const vdom$ = Rx.Observable
                   .combineLatest(
                     marker_type_c.DOM,
-                    deme_size_c.DOM, num_demes_c.DOM, num_migs_c.DOM,
+                    deme_size_c.DOM, d1_c.DOM, d2_c.DOM, num_migs_c.DOM,
                     num_cycles_c.DOM, num_markers_c.DOM,
                     exphe_plot.DOM, dexphe_plot.DOM)
                   .map(([marker_type,
-                         num_demes, deme_size, num_migs,
+                         deme_size, d1, d2, num_migs,
                          num_cycles, num_markers,
                          exphe, dexphe]) =>
                            <div>
                              <div>
                                {marker_type}
-                               {num_demes}
-                               {num_migs}
                                {deme_size}
+                               {d1}
+			       {d2}
+                               {num_migs}
                                {num_cycles}
                                {num_markers}
                                <br/>

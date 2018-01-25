@@ -228,16 +228,16 @@ export const App = (sources) => {
           {arr[9]}
         </div>
         <div style={arr[0] === 'menu-stoned' ? 'display: block' : 'display: none'}>
-          {arr[9]}
-        </div>
-        <div style={arr[0] === 'menu-sex-ratio' ? 'display: block' : 'display: none'}>
           {arr[10]}
         </div>
-        <div style={arr[0] === 'menu-alpha' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-sex-ratio' ? 'display: block' : 'display: none'}>
           {arr[11]}
         </div>
-        <div style={arr[0] === 'menu-sel-drift' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-alpha' ? 'display: block' : 'display: none'}>
           {arr[12]}
+        </div>
+        <div style={arr[0] === 'menu-sel-drift' ? 'display: block' : 'display: none'}>
+          {arr[13]}
         </div>
       </div>
     )
