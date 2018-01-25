@@ -69,10 +69,19 @@ export const SteppingStoneApp = (sources) => {
         x: state.cycle - 1, y: exphe, marker: 'M' + cnt++}})
   })
 
-  const dexphe$ = my_metis$.map(state => {
+  const pexphe$ = my_metis$.map(state => {
     var cnt = 1
-      console.log(state.global_parameters)
     return state.global_parameters.DemeExpHe[0].unlinked.map(exphe => {
+      return {
+        x: state.cycle - 1, y: exphe, marker: 'M' + cnt++}})
+  })
+
+  const cexphe$ = my_metis$.map(state => {
+    var cnt = 1
+    const y = Math.floor(d1/2)
+    const x = Math.floor(d2/2)
+    const cosmo = x + y*d2
+    return state.global_parameters.DemeExpHe[cosmo].unlinked.map(exphe => {
       return {
         x: state.cycle - 1, y: exphe, marker: 'M' + cnt++}})
   })
@@ -93,14 +102,14 @@ export const SteppingStoneApp = (sources) => {
 
   const d1_c = Slider({DOM: sources.DOM},
                       {className: '.' + tag + '-d1', label: 'num demes y:',
-                       step: 1, min: 1, value: 1, max: 6})
+                       step: 1, min: 1, value: 5, max: 6})
   let d1
   d1_c.value.subscribe(v => d1 = v)
 
 
   const d2_c = Slider({DOM: sources.DOM},
                        {className: '.' + tag + '-d2', label: 'num demes x:',
-                              step: 1, min: 1, value: 2, max: 6})
+                              step: 1, min: 1, value: 5, max: 6})
   let d2
   d2_c.value.subscribe(v => d2 = v)
 
@@ -127,10 +136,14 @@ export const SteppingStoneApp = (sources) => {
     {id: tag + '-exphe', y_label: 'Expected Hz - Meta population'},
     {DOM: sources.DOM, vals: exphe$})
 
-  const dexphe_plot = Plot(
-    {id: tag + '-dexphe', y_label: 'Expected Hz - A Deme'},
-    {DOM: sources.DOM, vals: dexphe$})
+  const pexphe_plot = Plot(
+    {id: tag + '-pexphe', y_label: 'Expected Hz - Peripheral Deme'},
+    {DOM: sources.DOM, vals: pexphe$})
 
+  const cexphe_plot = Plot(
+    {id: tag + '-cexphe', y_label: 'Expected Hz - Cosmopolitan Deme'},
+    {DOM: sources.DOM, vals: cexphe$})
+  
   const simulate$ = sources.DOM.select('#' + tag)
                            .events('click')
                            .map(ev => parseInt(ev.target.value))
@@ -148,11 +161,11 @@ export const SteppingStoneApp = (sources) => {
                     marker_type_c.DOM,
                     deme_size_c.DOM, d1_c.DOM, d2_c.DOM, num_migs_c.DOM,
                     num_cycles_c.DOM, num_markers_c.DOM,
-                    exphe_plot.DOM, dexphe_plot.DOM)
+                    exphe_plot.DOM, pexphe_plot.DOM, cexphe_plot.DOM)
                   .map(([marker_type,
                          deme_size, d1, d2, num_migs,
                          num_cycles, num_markers,
-                         exphe, dexphe]) =>
+                         exphe, pexphe, cexphe]) =>
                            <div>
                              <div>
                                {marker_type}
@@ -166,7 +179,8 @@ export const SteppingStoneApp = (sources) => {
                                <button id={tag} value="1">Simulate</button>
                              </div>
                              {exphe}
-                             {dexphe}
+                             {pexphe}
+                             {cexphe}			     
                            </div>
                   )
 
