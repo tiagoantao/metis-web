@@ -128,11 +128,12 @@ export const IslandApp = (sources) => {
                            .map(ev => parseInt(ev.target.value))
   
   const metis$ = simulate$.map(_ => {
-    return Rx.Observable.from([
-      {num_cycles, state: prepare_sim_state(tag,
-                                            num_demes, deme_size, num_migs,
-                                            num_markers, marker_type)}
-    ])
+    const init = {
+      num_cycles,
+      state: prepare_sim_state(tag, num_demes, deme_size, num_migs,
+                               num_markers, marker_type)
+    }
+    return init
   })
 
   const vdom$ = Rx.Observable

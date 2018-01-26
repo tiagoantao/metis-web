@@ -135,16 +135,23 @@ export const SelectionDriftApp = (sources) => {
   
   const metis1$ = simulate$.map(_ => {
     const sel = {0: 1 - s, 1: 1, 2: 1}
-    return Rx.Observable.from([
-      {num_cycles, state: prepare_sim_state(tag1, pop_size1, num_markers, 100 - freq_start, sel, 'unlinked', 0)}
-    ])
+    const init = {
+      num_cycles,
+      state: prepare_sim_state(tag1, pop_size1,
+			       num_markers, 100 - freq_start, sel,
+			       'unlinked', 0)
+    }
+    return init
   })
 
   const metis2$ = simulate$.map(_ => {
     const sel = {0: 1 - s, 1: 1, 2: 1}
-    return Rx.Observable.from([
-      {num_cycles, state: prepare_sim_state(tag2, pop_size2, num_markers, 100 - freq_start, sel, 'unlinked', 0)}
-    ])
+    const init = {
+      num_cycles,
+      state: prepare_sim_state(tag2, pop_size2,
+			       num_markers, 100 - freq_start, sel,
+			       'unlinked', 0)}
+    return init
   })
   
   const vdom$ = Rx.Observable

@@ -128,11 +128,11 @@ export const SelectionAppFactory = (sel_type) => (sources) => {
         sel = {0: 1 - s, 1: 1, 2: 1 - s}
         break
     }
-    return Rx.Observable.from([
-          {num_cycles, state: prepare_sim_state
-            (tag, pop_size, num_markers, freq_start,
-             sel, 'unlinked', 0)}
-    ])
+    const init = {
+      num_cycles, state: prepare_sim_state(
+	tag, pop_size, num_markers, freq_start, sel, 'unlinked', 0)
+    }
+    return init
   })
 
   const vdom$ = Rx.Observable

@@ -35,7 +35,7 @@ export const makeMetisDriver = () => {
         while (run) {
             await sleep(backoff)
             if (stack.length > 0) {
-                const cycles_state = stack.pop().value
+                const cycles_state = stack.pop()
 		console.log(9999, cycles_state)
 		const state = cycles_state.state
 		const num_cycles = cycles_state.num_cycles
@@ -52,7 +52,10 @@ export const makeMetisDriver = () => {
 
     const metis_driver = (in_state$) => {
         in_state$.addListener({
-            next: state => stack.push(state),
+            next: state => {
+		console.log(123, state)
+		if (state != undefined) stack.push(state)
+	    },
             error: () => {},
             complete: () => {}
         })
