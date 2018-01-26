@@ -51,10 +51,14 @@ const prepare_sim_state = (tag, pop_size, num_markers, freq_start) => {
 
 
 export const StochasticityApp = (sources) => {
-  const tag = 'stochasticity'
+  const tag_prefix = 'stochasticity-'
 
-  const my_metis$ = sources.metis.filter(
-    state => state.global_parameters.tag === tag)
+  const all_my_metis$ = []
+  for (let rep=0; rep<10; rep++) {
+    const my_metis$ = sources.metis.filter(
+      state => state.global_parameters.tag === tag)
+    all_my_metis$.push(my_metis$)
+  }
 
   const freqal$ = my_metis$.map(state => {
     var cnt = 1
@@ -63,31 +67,6 @@ export const StochasticityApp = (sources) => {
         x: state.cycle, y: freqal, marker: 'M' + cnt++}})
   })
 
-  const exphe$ = my_metis$.map(state => {
-    var cnt = 1
-    return state.global_parameters.ExpHe.unlinked.map(exphe => {
-      return {
-        x: state.cycle - 1, y: exphe, marker: 'M' + cnt++}})
-  })
-
-  const numal$ = my_metis$.map(state => {
-    var cnt = 0
-    return state.global_parameters.NumAl.unlinked.map(numal => {
-      return {
-        x: state.cycle - 1, y: numal, marker: 'M' + cnt++}})
-  })
-
-  const timefix$ = my_metis$.map(state => {
-    var cnt = 1
-    return state.global_parameters.TimeFix.unlinked.map(tf => {
-      return {
-        cycle: tf, marker: 'M' + cnt++}})
-  })
-
-  const time_html$ = timefix$
-    .map((fix) => fix.map(tf => <p>Fix: {tf.cycle}</p>))
-    .startWith(<p></p>)
-  
   const freq_start_c = Slider({DOM: sources.DOM},
                               {className: '.' + tag + '-freq_start', label: 'freq start (%):',
                                step: 1, min: 1, value: 50, max: 99})
@@ -116,14 +95,6 @@ export const StochasticityApp = (sources) => {
     {id: tag + '-freqal', y_label: 'Frequency of Derived Allele'},
     {DOM: sources.DOM, vals: freqal$})
   
-  const exphe_plot = Plot(
-    {id: tag + '-exphe', y_label: 'Expected Heterozygosity'},
-    {DOM: sources.DOM, vals: exphe$})
-
-  const numal_plot = Plot(
-    {id: tag + '-numal', y_label: 'Number of distinct alleles'},
-    {DOM: sources.DOM, vals: numal$})
-
   const simulate$ = sources.DOM.select('#' + tag)
                            .events('click')
                            .map(ev => parseInt(ev.target.value))
@@ -140,12 +111,9 @@ export const StochasticityApp = (sources) => {
                   .combineLatest(
                     freq_start_c.DOM, pop_size_c.DOM,
                     num_cycles_c.DOM, num_markers_c.DOM,
-		    time_html$,
-		    freqal_plot.DOM,
-                    exphe_plot.DOM, numal_plot.DOM)
+		    freqal_plot.DOM)
                   .map(([freq_start, pop_size, num_cycles, num_markers,
-			 time_html,
-                         freqal, exphe, numal]) =>
+			 freqal]) =>
                     <div>
                       <div>
                         {freq_start}
@@ -155,10 +123,7 @@ export const StochasticityApp = (sources) => {
                         <br/>
                         <button id={tag} value="1">Simulate</button>
                       </div>
-		      {time_html}
 		      {freqal}
-                      {exphe}
-                      {numal}
                     </div>
                   )
 
