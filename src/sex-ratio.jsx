@@ -138,11 +138,12 @@ export const SexRatioApp = (sources) => {
                            .map(ev => parseInt(ev.target.value))
   
   const metis$ = simulate$.map(_ => {
-    return Rx.Observable.from([
-      {num_cycles,
-       state: prepare_sim_state(tag, pop_size, num_markers,
-				marker_type, frac_males)}
-    ])
+    const init = {
+      num_cycles,
+      state: prepare_sim_state(tag, pop_size, num_markers,
+			       marker_type, frac_males)
+    }
+    return init
   })
 
   const vdom$ = Rx.Observable
