@@ -16,6 +16,7 @@ export const makeMetisDriver = () => {
     const stack = []
     let run = true
     let count = 0
+    let simulator_run = false
 
 
     const bridge_sim_web = (listener, state, num_cycles) => {
@@ -23,6 +24,10 @@ export const makeMetisDriver = () => {
         //Currently this is is mutated between source and sink
         sim_do_n_cycles(num_cycles, state, (state, cb) =>
 			setTimeout( () => {
+			    if (state.cycle > num_cycles + 1) {
+				console.log('Make sure about this')
+				simulator_run = false
+			    }
 			    listener.next(state)
 			    if (cb && state.cycle < 1000) cb() // <1000 is a safeguard
 			}, 0))
@@ -34,7 +39,8 @@ export const makeMetisDriver = () => {
         var backoff = 1
         while (run) {
             await sleep(backoff)
-            if (stack.length > 0) {
+            if ((stack.length > 0) && (!simulator_run)) {
+		simulator_run = true
                 const cycles_state = stack.pop()
 		console.log(9999, cycles_state)
 		const state = cycles_state.state
@@ -52,10 +58,7 @@ export const makeMetisDriver = () => {
 
     const metis_driver = (in_state$) => {
         in_state$.addListener({
-            next: state => {
-		console.log(123, state)
-		if (state != undefined) stack.push(state)
-	    },
+            next: state => stack.push(state),
             error: () => {},
             complete: () => {}
         })
