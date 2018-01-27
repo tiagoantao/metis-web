@@ -51,20 +51,22 @@ const prepare_sim_state = (tag, pop_size, num_markers, freq_start) => {
 
 
 export const StochasticityApp = (sources) => {
-  const tag_prefix = 'stochasticity-'
+  const tag = 'stochasticity'
 
-  const all_my_metis$ = []
-  for (let rep=0; rep<10; rep++) {
-    const my_metis$ = sources.metis.filter(
-      state => state.global_parameters.tag === tag)
-    all_my_metis$.push(my_metis$)
-  }
+  const my_metis$ = sources.metis.filter(
+    state => state.global_parameters.tag === tag)
 
+  var freq_cycle = 1000
+  var freq_cnt = 0
   const freqal$ = my_metis$.map(state => {
-    var cnt = 1
-    return state.global_parameters.FreqAl.unlinked.map(freqal => {
-      return {
-        x: state.cycle, y: freqal, marker: 'M' + cnt++}})
+    if (state.cycle < freq_cycle) {
+      freq_cnt ++
+    }
+    freq_cycle = state.cycle
+
+    const freqal = state.global_parameters.FreqAl.unlinked[0]
+    //console.log(333, state.cycle, freq_cnt)
+    return [{x: state.cycle, y: freqal, marker: 'Sim' + freq_cnt}]
   })
 
   const freq_start_c = Slider({DOM: sources.DOM},
@@ -92,7 +94,8 @@ export const StochasticityApp = (sources) => {
   num_markers_c.value.subscribe(v => num_markers = v)
 
   const freqal_plot = Plot(
-    {id: tag + '-freqal', y_label: 'Frequency of Derived Allele'},
+    {clean: false,
+     id: tag + '-freqal', y_label: 'Frequency of Derived Allele'},
     {DOM: sources.DOM, vals: freqal$})
   
   const simulate$ = sources.DOM.select('#' + tag)
@@ -100,17 +103,20 @@ export const StochasticityApp = (sources) => {
                            .map(ev => parseInt(ev.target.value))
 
   simulate$.subscribe((x) => console.log(2123, x))
-  
+
   const metis$ = simulate$.map(_ => {
-    return Rx.Observable.from([
-      {num_cycles, state: prepare_sim_state(tag, pop_size, num_markers, 100 - freq_start)}
-    ])
+    const init = {
+      num_cycles,
+      state: prepare_sim_state(tag, pop_size,
+			       num_markers, 100 - freq_start)
+    }
+    return init
   })
 
   const vdom$ = Rx.Observable
                   .combineLatest(
-                    freq_start_c.DOM, pop_size_c.DOM,
-                    num_cycles_c.DOM, num_markers_c.DOM,
+		    freq_start_c.DOM, pop_size_c.DOM,
+		    num_cycles_c.DOM, num_markers_c.DOM,
 		    freqal_plot.DOM)
                   .map(([freq_start, pop_size, num_cycles, num_markers,
 			 freqal]) =>

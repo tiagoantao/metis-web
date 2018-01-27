@@ -14,7 +14,6 @@ export const Selector = (sources, props) => {
     return {selected: "SNP"}
   }
 
-    new_value$.subscribe(x => console.log(1111, x))
   const opts = __conv_opts(props.opts)
   
   const vdom$ = new_value$
