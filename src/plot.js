@@ -60,7 +60,8 @@ const clean_plot = (view) => {
 
 
 export const Plot = (conf, sources) => {
-  const where = conf.id
+    const where = conf.id
+    const clean = conf.clean === undefined ? true : conf.clean
   const dom = sources.DOM
   const vals$ = sources.vals.startWith([])
 
@@ -80,7 +81,7 @@ export const Plot = (conf, sources) => {
   state$.subscribe(poses => {
     let points = []
     for (let x_point of poses) {
-      if (x_point.x < max_cycle) {
+      if (x_point.x < max_cycle && clean) {
 	console.log(2222, x_point)
 	clean_plot(view)
       }
