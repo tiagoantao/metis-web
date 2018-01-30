@@ -167,7 +167,9 @@ export const SimpleApp = (sources) => {
             {sex_ratio}
             {numal}
             <br/>
-            <button id={tag + '_save'} value="1">Save</button>
+	    <div style="text-align: center">
+              <button id={tag + '_save'} value="1">Save Genepop</button>
+	    </div>
           </div>
     )
 
