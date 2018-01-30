@@ -155,7 +155,7 @@ export const SimpleApp = (sources) => {
       ([marker_type, pop_size, num_cycles, num_markers,
         exphe, sex_ratio, numal]) =>
           <div>
-            <div>
+            <div style="text-align: center">
               {marker_type}
               {pop_size}
               {num_cycles}
