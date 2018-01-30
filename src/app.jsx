@@ -31,6 +31,8 @@ const load_url_obs = Rx.Observable.bindCallback(load_url)
 
 const uikit_template$ = load_url_obs('/menu.html')
 
+const main_template$ = load_url_obs('/menu.html')
+
 
 uikit_template$.subscribe(x => console.log(111, x))
 
@@ -155,50 +157,53 @@ export const App = (sources) => {
       il_dom$, sst_dom$,
       sr_dom$, ap_dom$,
       sd_dom$)
-    .map(arr =>
-      <div>
-        <div innerHTML={arr[1].responseText}></div>
-        <div style={arr[0] === 'menu-single' ? 'display: block' : 'display: none'}>
+    .map(arr => {
+      const event = arr[0]
+      const menu = arr[1].responseText
+      arr = arr.slice(2)
+      return <div>
+        <div innerHTML={menu}></div>
+        <div style={event === 'menu-single' ? 'display: block' : 'display: none'}>
+          {arr[0]}
+        </div>
+        <div style={event === 'menu-wf' ? 'display: block' : 'display: none'}>
+          {arr[1]}
+        </div>
+        <div style={event === 'menu-freq' ? 'display: block' : 'display: none'}>
           {arr[2]}
         </div>
-        <div style={arr[0] === 'menu-wf' ? 'display: block' : 'display: none'}>
+        <div style={event === 'menu-stoch' ? 'display: block' : 'display: none'}>
           {arr[3]}
         </div>
-        <div style={arr[0] === 'menu-freq' ? 'display: block' : 'display: none'}>
+        <div style={event === 'menu-decline' ? 'display: block' : 'display: none'}>
           {arr[4]}
         </div>
-        <div style={arr[0] === 'menu-stoch' ? 'display: block' : 'display: none'}>
+        <div style={event === 'menu-dominant' ? 'display: block' : 'display: none'}>
           {arr[5]}
         </div>
-        <div style={arr[0] === 'menu-decline' ? 'display: block' : 'display: none'}>
+        <div style={event === 'menu-recessive' ? 'display: block' : 'display: none'}>
           {arr[6]}
         </div>
-        <div style={arr[0] === 'menu-dominant' ? 'display: block' : 'display: none'}>
+        <div style={event === 'menu-hz' ? 'display: block' : 'display: none'}>
           {arr[7]}
         </div>
-        <div style={arr[0] === 'menu-recessive' ? 'display: block' : 'display: none'}>
+        <div style={event === 'menu-island' ? 'display: block' : 'display: none'}>
           {arr[8]}
         </div>
-        <div style={arr[0] === 'menu-hz' ? 'display: block' : 'display: none'}>
+        <div style={event === 'menu-stoned' ? 'display: block' : 'display: none'}>
           {arr[9]}
         </div>
-        <div style={arr[0] === 'menu-island' ? 'display: block' : 'display: none'}>
+        <div style={event === 'menu-sex-ratio' ? 'display: block' : 'display: none'}>
           {arr[10]}
         </div>
-        <div style={arr[0] === 'menu-stoned' ? 'display: block' : 'display: none'}>
+        <div style={event === 'menu-alpha' ? 'display: block' : 'display: none'}>
           {arr[11]}
         </div>
-        <div style={arr[0] === 'menu-sex-ratio' ? 'display: block' : 'display: none'}>
+        <div style={event === 'menu-sel-drift' ? 'display: block' : 'display: none'}>
           {arr[12]}
         </div>
-        <div style={arr[0] === 'menu-alpha' ? 'display: block' : 'display: none'}>
-          {arr[13]}
-        </div>
-        <div style={arr[0] === 'menu-sel-drift' ? 'display: block' : 'display: none'}>
-          {arr[14]}
-        </div>
       </div>
-    )
+    })
 
   const sinks = {
     DOM: vdom$,
