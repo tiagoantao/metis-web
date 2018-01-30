@@ -3,6 +3,7 @@ import Rx from 'rxjs/Rx'
 import {Plot} from './plot.js'
 import {Selector} from './selector.js'
 import {Slider} from './slider.js'
+import {Table} from './table.js'
 
 
 import {
@@ -84,10 +85,6 @@ export const SimpleFreqApp = (sources) => {
         cycle: tf, marker: 'M' + cnt++}})
   })
 
-  const time_html$ = timefix$
-    .map((fix) => fix.map(tf => <p>Fix: {tf.cycle}</p>))
-    .startWith(<p></p>)
-  
   const freq_start_c = Slider(
     {DOM: sources.DOM},
     {className: '.' + tag + '-freq_start',
@@ -121,6 +118,12 @@ export const SimpleFreqApp = (sources) => {
   const freqal_plot = Plot(
     {id: tag + '-freqal', y_label: 'Frequency of Derived Allele'},
     {DOM: sources.DOM, vals: freqal$})
+
+  const timefix_table = Table(
+    {DOM: sources.DOM,
+     data: timefix$.startWith([])},
+    {fields: ['marker', 'cycle']}
+  )
   
   const exphe_plot = Plot(
     {id: tag + '-exphe', y_label: 'Expected Heterozygosity'},
@@ -148,7 +151,7 @@ export const SimpleFreqApp = (sources) => {
   const vdom$ = Rx.Observable.combineLatest(
     freq_start_c.DOM, pop_size_c.DOM,
     num_cycles_c.DOM, num_markers_c.DOM,
-    time_html$,
+    timefix_table.DOM,
     freqal_plot.DOM,
     exphe_plot.DOM, numal_plot.DOM)
                   .map(([freq_start, pop_size, num_cycles, num_markers,
