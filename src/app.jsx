@@ -31,12 +31,16 @@ const load_url_obs = Rx.Observable.bindCallback(load_url)
 
 const uikit_template$ = load_url_obs('/menu.html')
 
-const main_template$ = load_url_obs('/menu.html')
+const main_template$ = load_url_obs('/main.html')
 
 
 uikit_template$.subscribe(x => console.log(111, x))
 
 export const App = (sources) => {
+  const main_page$ = sources.DOM.select('#main').events('click')
+                            .startWith({timeStamp: -1,
+                                        srcElement: {id: 'main'}})
+
   const single_menu$ = sources.DOM.select('#menu-single').events('click')
                               .startWith({timeStamp: -1,
                                           srcElement: {id: 'menu-single'}})
@@ -92,6 +96,7 @@ export const App = (sources) => {
   
   
   const recent_event$ = Rx.Observable.combineLatest(
+    main_page$,
     single_menu$, wf_menu$, freq_menu$, stoch_menu$,
     decline_menu$,
     dominant_menu$, recessive_menu$, hz_menu$,
@@ -150,7 +155,7 @@ export const App = (sources) => {
   
   const vdom$ = Rx
     .Observable.combineLatest(
-      recent_event$, uikit_template$,
+      recent_event$, uikit_template$, main_template$,
       sp_dom$, wf_dom$, fq_dom$, sch_dom$,
       dc_dom$,
       dom_dom$, rec_dom$, hz_dom$,
@@ -160,9 +165,13 @@ export const App = (sources) => {
     .map(arr => {
       const event = arr[0]
       const menu = arr[1].responseText
-      arr = arr.slice(2)
+      const main = arr[2].responseText
+      arr = arr.slice(3)
       return <div>
-        <div innerHTML={menu}></div>
+        <div innerHTML={menu}/>
+	<div style={event === 'main' ? 'display: block' : 'display: none'}
+	     innerHTML={main}/>
+
         <div style={event === 'menu-single' ? 'display: block' : 'display: none'}>
           {arr[0]}
         </div>
@@ -202,6 +211,7 @@ export const App = (sources) => {
         <div style={event === 'menu-sel-drift' ? 'display: block' : 'display: none'}>
           {arr[12]}
         </div>
+	<div style="width: 50%; margin-left: auto"><img src="umt.jpg"/></div>
       </div>
     })
 
