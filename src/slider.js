@@ -14,18 +14,17 @@ export const Slider = (sources, props) => {
 	  .startWith(props.value)
 
     const vdom$ = new_value$
-	  .map(state =>
-	       div({attrs: {
-		   style: 'text-align: center',
-		   className: props.className}}, [
-		   span('.label', [props.label]),
-		   br(),
-		   input({attrs: {className: '.slider', type:'range',
-				  style: 'width: 500px', step: props.step,
-				  min: props.min, max: props.max, value: state}}),
-		   span([print(state)]),
-	       ])
-	      )
+          .map(state =>
+               div(props.className, {attrs: {style: 'text-align: center'}}, [
+                   span('.label', [props.label]),
+                   br(),
+                   input({attrs: {className: '.slider', type:'range',
+                                  style: 'width: 500px', step: props.step,
+                                  min: props.min, max: props.max,
+                                  value: state}}),
+                   span([print(state)]),
+               ])
+              )
 
     const sinks = {
 	DOM: vdom$,

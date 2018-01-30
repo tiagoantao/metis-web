@@ -18,9 +18,8 @@ export const Selector = (sources, props) => {
     
     const vdom$ = new_value$
           .map(state =>
-               div({attrs: {
-                   style: 'text-align: center',
-                   className: props.className}}, [
+               div(props.className, {attrs: {
+                   style: 'text-align: center',}}, [
                        span('.label', [props.label + ' ']),
                        select({attrs: {name}}, [
                            option('Microsat'),
