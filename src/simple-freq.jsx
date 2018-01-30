@@ -145,18 +145,18 @@ export const SimpleFreqApp = (sources) => {
     return init
   })
 
-  const vdom$ = Rx.Observable
-                  .combineLatest(
-                    freq_start_c.DOM, pop_size_c.DOM,
-                    num_cycles_c.DOM, num_markers_c.DOM,
-		    time_html$,
-		    freqal_plot.DOM,
-                    exphe_plot.DOM, numal_plot.DOM)
+  const vdom$ = Rx.Observable.combineLatest(
+    freq_start_c.DOM, pop_size_c.DOM,
+    num_cycles_c.DOM, num_markers_c.DOM,
+    time_html$,
+    freqal_plot.DOM,
+    exphe_plot.DOM, numal_plot.DOM)
                   .map(([freq_start, pop_size, num_cycles, num_markers,
-			 time_html,
-                         freqal, exphe, numal]) =>
+                         time_html,
+                         freqal, exphe, numal]
+                  ) =>
                     <div>
-                      <div>
+                      <div style="text-align: center">
                         {freq_start}
                         {pop_size}
                         {num_cycles}
@@ -164,8 +164,8 @@ export const SimpleFreqApp = (sources) => {
                         <br/>
                         <button id={tag} value="1">Simulate</button>
                       </div>
-		      {time_html}
-		      {freqal}
+                      {time_html}
+                      {freqal}
                       {exphe}
                       {numal}
                     </div>
