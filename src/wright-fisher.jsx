@@ -107,16 +107,18 @@ export const WFApp = (sources) => {
   num_markers_c.value.subscribe(v => num_markers = v)
 
   const exphe_plot = Plot(
-    {id: tag + '-exphe', y_label: 'Expected Heterozygosity'},
+    {id: tag + '-exphe', y_label: 'Expected Heterozygosity',
+    title: 'Expected Heterozygosity'},
     {DOM: sources.DOM, vals: exphe$})
 
   const sr_plot = Plot(
-    {id: tag + '-sr', y_label: 'Sex Ratio'},
+    {id: tag + '-sr', y_label: 'Sex Ratio', title: 'Sex Ratio'},
     {DOM: sources.DOM, vals: sex_ratio$})
 
   
   const numal_plot = Plot(
-    {id: tag + '-numal', y_label: 'Number of distinct alleles'},
+    {id: tag + '-numal', y_label: 'Number of distinct alleles',
+    title: 'Number of distinct alleles'},
     {DOM: sources.DOM, vals: numal$})
 
   const simulate$ = sources.DOM.select('#' + tag)
@@ -132,28 +134,29 @@ export const WFApp = (sources) => {
     return init
   })
 
-  const vdom$ = Rx.Observable
-                  .combineLatest(
-                    marker_type_c.DOM, pop_size_c.DOM,
-                    num_cycles_c.DOM, num_markers_c.DOM,
-                    exphe_plot.DOM, sr_plot.DOM, numal_plot.DOM)
-                  .map(([marker_type, pop_size, num_cycles, num_markers,
-                         exphe, sex_ratio, numal]) =>
-                           <div>
-                             <h1>WF</h1>
-                      <div>
-                        {marker_type}
-                        {pop_size}
-                        {num_cycles}
-                        {num_markers}
-                        <br/>
-                        <button id={tag} value="1">Simulate</button>
-                      </div>
-                      {exphe}
-                      {sex_ratio}
-                      {numal}
-                    </div>
-                  )
+  const vdom$ = Rx.Observable.combineLatest(
+    marker_type_c.DOM, pop_size_c.DOM,
+    num_cycles_c.DOM, num_markers_c.DOM,
+    exphe_plot.DOM, sr_plot.DOM, numal_plot.DOM).map(
+      ([marker_type, pop_size, num_cycles, num_markers,
+        exphe, sex_ratio, numal]) =>
+          <div>
+            <h1>The Wright-Fisher model</h1>
+            <div>
+              {marker_type}
+              {pop_size}
+              {num_cycles}
+              {num_markers}
+              <br/>
+              <div style="text-align: center">
+                <button id={tag} value="1">Simulate</button>
+              </div>
+            </div>
+            {exphe}
+            {sex_ratio}
+            {numal}
+          </div>
+    )
 
   const sinks = {
     DOM: vdom$,
