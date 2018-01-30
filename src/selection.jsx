@@ -72,34 +72,39 @@ export const SelectionAppFactory = (sel_type) => (sources) => {
         x: state.cycle - 1, y: numal, marker: 'M' + cnt++}})
   })
 
-  const s_c = Slider({DOM: sources.DOM},
-                     {className: '.' + tag + '-s', label: 's (%):',
-                      step: 1, min: 0, value: 10, max: 20,
-                      print: (x) => x / 100})
+  const s_c = Slider(
+    {DOM: sources.DOM},
+    {className: '.' + tag + '-s', label: 'Selection coefficient s (%)',
+     step: 1, min: 0, value: 10, max: 20, print: (x) => x / 100})
   let s
   s_c.value.subscribe(v => s = v / 100)
   
-  const freq_start_c = Slider({DOM: sources.DOM},
-                              {className: '.' + tag + '-freq_start', label: 'freq start (%):',
-                               step: 1, min: 1, value: 50, max: 99})
+  const freq_start_c = Slider(
+    {DOM: sources.DOM},
+    {className: '.' + tag + '-freq_start',
+     label: 'Starting frequency of the derived (selected) allele (%)',
+     step: 1, min: 1, value: 50, max: 99})
   let freq_start
   freq_start_c.value.subscribe(v => freq_start = v)
 
-  const pop_size_c = Slider({DOM: sources.DOM},
-                            {className: '.' + tag + '-pop_size', label: 'pop size:',
-                             step: 10, min: 10, value: 50, max: 300})
+  const pop_size_c = Slider(
+    {DOM: sources.DOM},
+    {className: '.' + tag + '-pop_size', label: 'Population size',
+     step: 10, min: 10, value: 50, max: 300})
   let pop_size
   pop_size_c.value.subscribe(v => pop_size = v)
   
-  const num_cycles_c = Slider({DOM: sources.DOM},
-                              {className: '.' + tag + '-num_cycles', label: 'cycles:',
-                               step: 10, min: 10, value: 20, max: 200})
+  const num_cycles_c = Slider(
+    {DOM: sources.DOM},
+    {className: '.' + tag + '-num_cycles', label: 'Cycles',
+     step: 10, min: 10, value: 20, max: 200})
   let num_cycles
   num_cycles_c.value.subscribe(v => num_cycles = v)
 
-  const num_markers_c = Slider({DOM: sources.DOM},
-                               {className: '.' + tag + '-num_markers', label: 'markers:',
-                                step: 1, min: 1, value: 4, max: 20})
+  const num_markers_c = Slider(
+    {DOM: sources.DOM},
+    {className: '.' + tag + '-num_markers', label: 'Number of markers',
+     step: 1, min: 1, value: 4, max: 20})
   let num_markers
   num_markers_c.value.subscribe(v => num_markers = v)
 

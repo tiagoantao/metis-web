@@ -87,31 +87,36 @@ export const AlphaApp = (sources) => {
 
   const marker_type_c = Selector({DOM: sources.DOM},
                                  {className: '.' + tag + '-marker_type',
-                                  label: 'marker type:'})
+                                  label: 'Marker type'})
   let marker_type
   marker_type_c.value.subscribe(v => marker_type = v)
 
-  const perc_alpha_c = Slider({DOM: sources.DOM},
-                              {className: '.' + tag + '-perc_alpha', label: 'fraction sired by a single male:',
-                               step: 5, min: 10, value: 50, max: 100})
+  const perc_alpha_c = Slider(
+    {DOM: sources.DOM},
+    {className: '.' + tag + '-perc_alpha',
+     label: 'Fraction sired by a single male',
+     step: 5, min: 10, value: 50, max: 100})
   let perc_alpha
   perc_alpha_c.value.subscribe(v => perc_alpha = v)
   
-  const pop_size_c = Slider({DOM: sources.DOM},
-                            {className: '.' + tag + '-pop_size', label: 'pop size:',
-                             step: 10, min: 10, value: 300, max: 300})
+  const pop_size_c = Slider(
+    {DOM: sources.DOM},
+    {className: '.' + tag + '-pop_size', label: 'Population size',
+     step: 10, min: 10, value: 300, max: 300})
   let pop_size
   pop_size_c.value.subscribe(v => pop_size = v)
   
-  const num_cycles_c = Slider({DOM: sources.DOM},
-                              {className: '.' + tag + '-num_cycles', label: 'cycles:',
-                               step: 10, min: 10, value: 20, max: 200})
+  const num_cycles_c = Slider(
+    {DOM: sources.DOM},
+    {className: '.' + tag + '-num_cycles', label: 'cycles:',
+     step: 10, min: 10, value: 20, max: 200})
   let num_cycles
   num_cycles_c.value.subscribe(v => num_cycles = v)
 
-  const num_markers_c = Slider({DOM: sources.DOM},
-                               {className: '.' + tag + '-num_markers', label: 'markers:',
-                                step: 1, min: 1, value: 4, max: 20})
+  const num_markers_c = Slider(
+    {DOM: sources.DOM},
+    {className: '.' + tag + '-num_markers', label: 'Number of markers',
+     step: 1, min: 1, value: 4, max: 20})
   let num_markers
   num_markers_c.value.subscribe(v => num_markers = v)
 

@@ -89,37 +89,37 @@ export const DeclineApp = (sources) => {
 
   const marker_type_c = Selector({DOM: sources.DOM},
                                  {className: '.' + tag + '-marker_type',
-                                  label: 'marker type:'})
+                                  label: 'Marker type'})
   let marker_type
   marker_type_c.value.subscribe(v => marker_type = v)
   
   const start_pop_size_c = Slider({DOM: sources.DOM},
-                            {className: '.' + tag + '-start_pop_size', label: 'start pop size:',
+                            {className: '.' + tag + '-start_pop_size', label: 'Starting population size',
                              step: 10, min: 10, value: 200, max: 300})
   let start_pop_size
   start_pop_size_c.value.subscribe(v => start_pop_size = v)
 
   const end_pop_size_c = Slider({DOM: sources.DOM},
-                            {className: '.' + tag + '-end_pop_size', label: 'end pop size:',
+                            {className: '.' + tag + '-end_pop_size', label: 'Size after decline',
                              step: 10, min: 10, value: 30, max: 300})
   let end_pop_size
   end_pop_size_c.value.subscribe(v => end_pop_size = v)
 
   const decline_cycle_c = Slider({DOM: sources.DOM},
-                            {className: '.' + tag + '-decline_cycle', label: 'decline cycle:',
+                            {className: '.' + tag + '-decline_cycle', label: 'Decline cycle',
                              step: 10, min: 10, value: 100, max: 200})
   let decline_cycle
   decline_cycle_c.value.subscribe(v => decline_cycle = v)
 
     
   const num_cycles_c = Slider({DOM: sources.DOM},
-                              {className: '.' + tag + '-num_cycles', label: 'cycles:',
+                              {className: '.' + tag + '-num_cycles', label: 'Cycles',
                                step: 10, min: 10, value: 200, max: 200})
   let num_cycles
   num_cycles_c.value.subscribe(v => num_cycles = v)
 
   const num_markers_c = Slider({DOM: sources.DOM},
-                               {className: '.' + tag + '-num_markers', label: 'markers:',
+                               {className: '.' + tag + '-num_markers', label: 'Number of markers',
                                 step: 1, min: 1, value: 4, max: 20})
   let num_markers
   num_markers_c.value.subscribe(v => num_markers = v)

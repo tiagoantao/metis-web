@@ -88,46 +88,46 @@ export const SteppingStoneApp = (sources) => {
   
   const marker_type_c = Selector({DOM: sources.DOM},
                                  {className: '.' + tag + '-marker_type',
-                                  label: 'marker type:'})
+                                  label: 'Marker type'})
   let marker_type
   marker_type_c.value.subscribe(v => marker_type = v)
   
   const deme_size_c = Slider({DOM: sources.DOM},
                              {className: '.' + tag + '-deme_size',
-			      label: 'deme size:',
+			      label: 'Deme size',
                               step: 10, min: 10, value: 50, max: 100})
   let deme_size
   deme_size_c.value.subscribe(v => deme_size = v)
 
 
   const d1_c = Slider({DOM: sources.DOM},
-                      {className: '.' + tag + '-d1', label: 'num demes y:',
+                      {className: '.' + tag + '-d1', label: 'Vertical dimension (demes in the y axis)',
                        step: 1, min: 1, value: 5, max: 6})
   let d1
   d1_c.value.subscribe(v => d1 = v)
 
 
   const d2_c = Slider({DOM: sources.DOM},
-                       {className: '.' + tag + '-d2', label: 'num demes x:',
+                       {className: '.' + tag + '-d2', label: 'Horizontal dimension (demes in the x axis)',
                               step: 1, min: 1, value: 5, max: 6})
   let d2
   d2_c.value.subscribe(v => d2 = v)
 
   const num_migs_c = Slider({DOM: sources.DOM},
-                            {className: '.' + tag + '-num_migs', label: 'num migrants:',
+                            {className: '.' + tag + '-num_migs', label: 'Number of migrants',
                              step: 1, min: 0, value: 1, max: 9})
   let num_migs
   num_migs_c.value.subscribe(v => num_migs = v)
   
   
   const num_cycles_c = Slider({DOM: sources.DOM},
-                              {className: '.' + tag + '-num_cycles', label: 'cycles:',
+                              {className: '.' + tag + '-num_cycles', label: 'Cycles',
                                step: 10, min: 10, value: 20, max: 200})
   let num_cycles
   num_cycles_c.value.subscribe(v => num_cycles = v)
 
   const num_markers_c = Slider({DOM: sources.DOM},
-                               {className: '.' + tag + '-num_markers', label: 'markers:',
+                               {className: '.' + tag + '-num_markers', label: 'Number of markers',
                                 step: 1, min: 1, value: 4, max: 20})
   let num_markers
   num_markers_c.value.subscribe(v => num_markers = v)
