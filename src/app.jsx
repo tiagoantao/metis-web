@@ -15,67 +15,24 @@ import {SexRatioApp} from './sex-ratio'
 import {AlphaApp} from './alpha'
 import {SelectionDriftApp} from './selection-drift'
 
-const uikit_template =
-  nav({attrs:{className:"uk-navbar-container", "uk-navbar": 1}},
-      <div className="uk-navbar-left">
 
-        <ul className="uk-navbar-nav">
-          <li className="uk-active"><a href="index.html">Metis</a></li>
-          <li><a href="#">Simple</a>
-            <div className="uk-navbar-dropdown">
-              <ul className="uk-nav uk-navbar-dropdown-nav">
-                <li><a href="#" id="menu-wf">Wright-Fisher</a></li>
-                <li><a href="#" id="menu-single">Wright-Fisher with sex</a></li>
-                <li><a href="#" id="menu-freq">Initial Frequency</a></li>
-                <li><a href="#" id="menu-stoch">Stochasticity</a></li>
-              </ul>
-            </div>
-          </li>
-          <li><a href="#">Fluctuations</a>
-            <div className="uk-navbar-dropdown">
-              <ul className="uk-nav uk-navbar-dropdown-nav">
-                <li><a href="#" id="menu-decline">Decline</a></li>
-              </ul>
-            </div>
-          </li>
-          <li><a href="#">Selection</a>
-            <div className="uk-navbar-dropdown">
-              <ul className="uk-nav uk-navbar-dropdown-nav">
-                <li><a href="#" id="menu-dominant">Dominant</a></li>
-                <li><a href="#" id="menu-recessive">Recessive</a></li>
-                <li><a href="#" id="menu-hz">Hz advantage</a></li>
-              </ul>
-            </div>
-          </li>
-          <li><a href="#">Structure</a>
-            <div className="uk-navbar-dropdown">
-              <ul className="uk-nav uk-navbar-dropdown-nav">
-                <li><a href="#" id="menu-island">Island</a></li>
-                <li><a href="#" id="menu-stoned">Stepping-stone</a></li>
-              </ul>
-            </div>
-          </li>
-          <li><a href="#">Mating</a>
-            <div className="uk-navbar-dropdown">
-              <ul className="uk-nav uk-navbar-dropdown-nav">
-                <li><a href="#" id="menu-sex-ratio">Sex-Ratio</a></li>
-                <li><a href="#" id="menu-alpha">Alpha male</a></li>
-              </ul>
-            </div>
-          </li>
-          <li><a href="#">Comparisons</a>
-            <div className="uk-navbar-dropdown">
-              <ul className="uk-nav uk-navbar-dropdown-nav">
-                <li><a href="#" id="menu-sel-drift">Selection and Drift</a></li>
-              </ul>
-            </div>
-          </li>
+const load_url = (url, cb) => {
+  const xhttp = new XMLHttpRequest()
+  xhttp.onreadystatechange = function() {
+    if (this.readyState == 4 && this.status == 200) {
+      cb(this)
+    }
+  }
+  xhttp.open('GET', url, true)
+  xhttp.send()
+}
 
-        </ul>
+const load_url_obs = Rx.Observable.bindCallback(load_url)
 
-      </div>
-  )
+const uikit_template$ = load_url_obs('/menu.html')
 
+
+uikit_template$.subscribe(x => console.log(111, x))
 
 export const App = (sources) => {
   const single_menu$ = sources.DOM.select('#menu-single').events('click')
@@ -190,54 +147,55 @@ export const App = (sources) => {
 
   
   const vdom$ = Rx
-    .Observable.combineLatest(recent_event$,
-			      sp_dom$, wf_dom$, fq_dom$, sch_dom$,
-                              dc_dom$,
-                              dom_dom$, rec_dom$, hz_dom$,
-			      il_dom$, sst_dom$,
-                              sr_dom$, ap_dom$,
-                              sd_dom$)
+    .Observable.combineLatest(
+      recent_event$, uikit_template$,
+      sp_dom$, wf_dom$, fq_dom$, sch_dom$,
+      dc_dom$,
+      dom_dom$, rec_dom$, hz_dom$,
+      il_dom$, sst_dom$,
+      sr_dom$, ap_dom$,
+      sd_dom$)
     .map(arr =>
       <div>
-        {uikit_template}
+        <div innerHTML={arr[1].responseText}></div>
         <div style={arr[0] === 'menu-single' ? 'display: block' : 'display: none'}>
-          {arr[1]}
-        </div>
-        <div style={arr[0] === 'menu-wf' ? 'display: block' : 'display: none'}>
           {arr[2]}
         </div>
-        <div style={arr[0] === 'menu-freq' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-wf' ? 'display: block' : 'display: none'}>
           {arr[3]}
         </div>
-        <div style={arr[0] === 'menu-stoch' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-freq' ? 'display: block' : 'display: none'}>
           {arr[4]}
         </div>
-        <div style={arr[0] === 'menu-decline' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-stoch' ? 'display: block' : 'display: none'}>
           {arr[5]}
         </div>
-        <div style={arr[0] === 'menu-dominant' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-decline' ? 'display: block' : 'display: none'}>
           {arr[6]}
         </div>
-        <div style={arr[0] === 'menu-recessive' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-dominant' ? 'display: block' : 'display: none'}>
           {arr[7]}
         </div>
-        <div style={arr[0] === 'menu-hz' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-recessive' ? 'display: block' : 'display: none'}>
           {arr[8]}
         </div>
-        <div style={arr[0] === 'menu-island' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-hz' ? 'display: block' : 'display: none'}>
           {arr[9]}
         </div>
-        <div style={arr[0] === 'menu-stoned' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-island' ? 'display: block' : 'display: none'}>
           {arr[10]}
         </div>
-        <div style={arr[0] === 'menu-sex-ratio' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-stoned' ? 'display: block' : 'display: none'}>
           {arr[11]}
         </div>
-        <div style={arr[0] === 'menu-alpha' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-sex-ratio' ? 'display: block' : 'display: none'}>
           {arr[12]}
         </div>
-        <div style={arr[0] === 'menu-sel-drift' ? 'display: block' : 'display: none'}>
+        <div style={arr[0] === 'menu-alpha' ? 'display: block' : 'display: none'}>
           {arr[13]}
+        </div>
+        <div style={arr[0] === 'menu-sel-drift' ? 'display: block' : 'display: none'}>
+          {arr[14]}
         </div>
       </div>
     )
