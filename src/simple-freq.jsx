@@ -122,7 +122,8 @@ export const SimpleFreqApp = (sources) => {
   const timefix_table = Table(
     {DOM: sources.DOM,
      data: timefix$.startWith([])},
-    {fields: ['marker', 'cycle']}
+    {fields: ['marker', 'cycle'],
+     headers: ['Marker', 'Fixation cycle']}
   )
   
   const exphe_plot = Plot(
@@ -167,6 +168,7 @@ export const SimpleFreqApp = (sources) => {
                         <br/>
                         <button id={tag} value="1">Simulate</button>
                       </div>
+		      <h2>Time to fixation</h2>
                       {time_html}
                       {freqal}
                       {exphe}
