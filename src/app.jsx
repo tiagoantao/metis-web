@@ -39,60 +39,60 @@ uikit_template$.subscribe(x => console.log(111, x))
 export const App = (sources) => {
   const main_page$ = sources.DOM.select('#main').events('click')
                             .startWith({timeStamp: -1,
-                                        srcElement: {id: 'main'}})
+                                        target: {id: 'main'}})
 
   const single_menu$ = sources.DOM.select('#menu-single').events('click')
                               .startWith({timeStamp: -1,
-                                          srcElement: {id: 'menu-single'}})
+                                          target: {id: 'menu-single'}})
 
   const wf_menu$ = sources.DOM.select('#menu-wf').events('click')
                           .startWith({timeStamp: -1,
-                                      srcElement: {id: 'menu-wf'}})
+                                      target: {id: 'menu-wf'}})
 
   
   const freq_menu$ = sources.DOM.select('#menu-freq').events('click')
                             .startWith({timeStamp: -1,
-                                        srcElement: {id: 'menu-freq'}})
+                                        target: {id: 'menu-freq'}})
 
   const stoch_menu$ = sources.DOM.select('#menu-stoch').events('click')
                              .startWith({timeStamp: -1,
-                                         srcElement: {id: 'menu-stoch'}})
+                                         target: {id: 'menu-stoch'}})
 
   const decline_menu$ = sources.DOM.select('#menu-decline').events('click')
                                .startWith({timeStamp: -1,
-                                           srcElement: {id: 'menu-decline'}})
+                                           target: {id: 'menu-decline'}})
   
   const dominant_menu$ = sources.DOM.select('#menu-dominant').events('click')
                                 .startWith({timeStamp: -1,
-                                            srcElement: {id: 'menu-dominant'}})
+                                            target: {id: 'menu-dominant'}})
 
   const recessive_menu$ = sources.DOM.select('#menu-recessive').events('click')
                                  .startWith({timeStamp: -1,
-                                             srcElement: {id: 'menu-recessive'}})
+                                             target: {id: 'menu-recessive'}})
 
   const hz_menu$ = sources.DOM.select('#menu-hz').events('click')
                           .startWith({timeStamp: -1,
-                                      srcElement: {id: 'menu-hz'}})
+                                      target: {id: 'menu-hz'}})
 
   const island_menu$ = sources.DOM.select('#menu-island').events('click')
                               .startWith({timeStamp: -1,
-                                          srcElement: {id: 'menu-island'}})
+                                          target: {id: 'menu-island'}})
 
   const stoned_menu$ = sources.DOM.select('#menu-stoned').events('click')
                               .startWith({timeStamp: -1,
-                                          srcElement: {id: 'menu-stoned'}})
+                                          target: {id: 'menu-stoned'}})
   
   const sex_ratio_menu$ = sources.DOM.select('#menu-sex-ratio').events('click')
                                  .startWith({timeStamp: -1,
-                                             srcElement: {id: 'menu-sex-ratio'}})
+                                             target: {id: 'menu-sex-ratio'}})
 
   const alpha_menu$ = sources.DOM.select('#menu-alpha').events('click')
                                  .startWith({timeStamp: -1,
-                                             srcElement: {id: 'menu-alpha'}})
+                                             target: {id: 'menu-alpha'}})
   
   const sel_drift_menu$ = sources.DOM.select('#menu-sel-drift').events('click')
                                  .startWith({timeStamp: -1,
-                                             srcElement: {id: 'menu-sel-drift'}})
+                                             target: {id: 'menu-sel-drift'}})
   
   
   const recent_event$ = Rx.Observable.combineLatest(
@@ -109,7 +109,7 @@ export const App = (sources) => {
                             for (var entry of entries) {
                               if (entry.timeStamp > ts) {
                                 ts = entry.timeStamp
-                                id = entry.srcElement.id
+                                id = entry.target.id
                               }
                             }
                             console.log(id)
