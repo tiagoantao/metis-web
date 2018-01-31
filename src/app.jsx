@@ -29,9 +29,9 @@ const load_url = (url, cb) => {
 
 const load_url_obs = Rx.Observable.bindCallback(load_url)
 
-const uikit_template$ = load_url_obs('/menu.html')
+const uikit_template$ = load_url_obs('menu.html')
 
-const main_template$ = load_url_obs('/main.html')
+const main_template$ = load_url_obs('main.html')
 
 
 uikit_template$.subscribe(x => console.log(111, x))
