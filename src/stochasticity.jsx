@@ -15,17 +15,14 @@ import {
   ops_rep_SexualReproduction,
   ops_RxOperator,  // Currently not in use
   ops_stats_demo_SexStatistics,
-  ops_stats_hz_ExpHe,
   ops_stats_FreqAl,
-  ops_stats_TimeFix,
-  ops_stats_NumAl,
   ops_wrap_list,
   p_generate_n_inds,
   sp_Species} from '@tiagoantao/metis-sim'
 
 
-const prepare_sim_state = (tag, pop_size, num_markers, freq_start) => {
-  const genome_size = num_markers
+const prepare_sim_state = (tag, pop_size, freq_start) => {
+  const genome_size = 1
 
   const unlinked_genome = gn_generate_unlinked_genome(
     genome_size, () => {return new gn_SNP()})
@@ -34,10 +31,7 @@ const prepare_sim_state = (tag, pop_size, num_markers, freq_start) => {
     new ops_rep_SexualReproduction(species, pop_size),
     new ops_culling_KillOlderGenerations(),
     new ops_stats_demo_SexStatistics(),
-    new ops_stats_NumAl(),
-    new ops_stats_FreqAl(),
-    new ops_stats_TimeFix(),
-    new ops_stats_hz_ExpHe()
+    new ops_stats_FreqAl()
   ])
   const individuals = p_generate_n_inds(pop_size, () =>
     i_assign_random_sex(integrated_generate_individual_with_genome(
@@ -65,7 +59,6 @@ export const StochasticityApp = (sources) => {
     freq_cycle = state.cycle
 
     const freqal = state.global_parameters.FreqAl.unlinked[0]
-    //console.log(333, state.cycle, freq_cnt)
     return [{x: state.cycle, y: freqal, marker: 'Sim' + freq_cnt}]
   })
 
@@ -80,7 +73,7 @@ export const StochasticityApp = (sources) => {
   const pop_size_c = Slider(
     {DOM: sources.DOM},
     {className: '.' + tag + '-pop_size',
-     label: 'Starting frequency of the derived allele (%)',
+     label: 'Population size',
      step: 10, min: 10, value: 50, max: 300})
   let pop_size
   pop_size_c.value.subscribe(v => pop_size = v)
@@ -91,13 +84,6 @@ export const StochasticityApp = (sources) => {
      step: 10, min: 10, value: 20, max: 500})
   let num_cycles
   num_cycles_c.value.subscribe(v => num_cycles = v)
-
-  const num_markers_c = Slider(
-    {DOM: sources.DOM},
-    {className: '.' + tag + '-num_markers', label: 'Number of markers',
-     step: 1, min: 1, value: 4, max: 20})
-  let num_markers
-  num_markers_c.value.subscribe(v => num_markers = v)
 
   const freqal_plot = Plot(
     {clean: false,
@@ -113,8 +99,7 @@ export const StochasticityApp = (sources) => {
   const metis$ = simulate$.map(_ => {
     const init = {
       num_cycles,
-      state: prepare_sim_state(tag, pop_size,
-			       num_markers, 100 - freq_start)
+      state: prepare_sim_state(tag, pop_size, 100 - freq_start)
     }
     return init
   })
@@ -122,16 +107,15 @@ export const StochasticityApp = (sources) => {
   const vdom$ = Rx.Observable
                   .combineLatest(
 		    freq_start_c.DOM, pop_size_c.DOM,
-		    num_cycles_c.DOM, num_markers_c.DOM,
+		    num_cycles_c.DOM,
 		    freqal_plot.DOM)
-                  .map(([freq_start, pop_size, num_cycles, num_markers,
+                  .map(([freq_start, pop_size, num_cycles,
 			 freqal]) =>
                     <div>
                       <div>
                         {freq_start}
                         {pop_size}
                         {num_cycles}
-                        {num_markers}
                         <br/>
                         <button id={tag} value="1">Simulate</button>
                       </div>
