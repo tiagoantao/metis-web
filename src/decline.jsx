@@ -114,7 +114,7 @@ export const DeclineApp = (sources) => {
     
   const num_cycles_c = Slider({DOM: sources.DOM},
                               {className: '.' + tag + '-num_cycles', label: 'Cycles',
-                               step: 10, min: 10, value: 200, max: 200})
+                               step: 10, min: 10, value: 200, max: 500})
   let num_cycles
   num_cycles_c.value.subscribe(v => num_cycles = v)
 
