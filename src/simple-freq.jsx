@@ -61,7 +61,7 @@ export const SimpleFreqApp = (sources) => {
     var cnt = 1
     return state.global_parameters.FreqAl.unlinked.map(freqal => {
       return {
-        x: state.cycle, y: freqal, marker: 'M' + cnt++}})
+        x: state.cycle - 1, y: freqal, marker: 'M' + cnt++}})
   })
 
   const exphe$ = my_metis$.map(state => {
@@ -84,6 +84,21 @@ export const SimpleFreqApp = (sources) => {
       return {
         cycle: tf, marker: 'M' + cnt++}})
   })
+
+  const exphe_timefix$ = exphe$
+    .combineLatest(timefix$, (exp_he, time_fix) => {
+      const comb = []
+      for (let i=0; i<exp_he.length; i++) {
+        comb.push({
+          marker: exp_he[i].marker,
+          cycle: time_fix[i].cycle,
+          exp_he: Math.round(100 * exp_he[i].y) / 100
+	})
+      }
+      return comb
+    })
+
+  exphe_timefix$.subscribe(x => console.log(111, x))
 
   const freq_start_c = Slider(
     {DOM: sources.DOM},
@@ -121,9 +136,9 @@ export const SimpleFreqApp = (sources) => {
 
   const timefix_table = Table(
     {DOM: sources.DOM,
-     data: timefix$.startWith([])},
-    {fields: ['marker', 'cycle'],
-     headers: ['Marker', 'Fixation cycle']}
+     data: exphe_timefix$.startWith([])},
+    {fields: ['marker', 'cycle', 'exp_he'],
+     headers: ['Marker', 'Fixation cycle', 'Expected Hz']}
   )
   
   const exphe_plot = Plot(
@@ -138,7 +153,7 @@ export const SimpleFreqApp = (sources) => {
                            .events('click')
                            .map(ev => parseInt(ev.target.value))
 
-  simulate$.subscribe((x) => console.log(2123, x))
+  //simulate$.subscribe((x) => console.log(2123, x))
   
   const metis$ = simulate$.map(_ => {
     const init = {
@@ -168,7 +183,7 @@ export const SimpleFreqApp = (sources) => {
                         <br/>
                         <button id={tag} value="1">Simulate</button>
                       </div>
-		      <h2>Time to fixation</h2>
+		      <h2>Time to fixation and Expected Hz</h2>
                       {time_html}
                       {freqal}
                       {exphe}
