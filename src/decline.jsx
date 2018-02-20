@@ -174,7 +174,9 @@ export const DeclineApp = (sources) => {
                         {num_cycles}
                         {num_markers}
                         <br/>
-                        <button id={tag} value="1">Simulate</button>
+                        <div style="text-align: center">
+                          <button id={tag} value="1">Simulate</button>
+                        </div>
                       </div>
                       <h2>Expected Heterozygosity</h2>
                       {exphe_table}
