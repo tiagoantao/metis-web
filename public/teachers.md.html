@@ -1,0 +1,42 @@
+<meta charset="utf-8" fmt="-*- markdown -*-">
+
+**Teaching notes**
+
+# Introduction
+
+Most models should be straightforward and are not discussed here
+
+
+# Structured models
+
+Migration in structured models is given as an absolute value. For example:
+
+On an island model with 3 demes and 2 migrants, that means that each
+deme will export 4 individuals, 2 for each of the remaining demes
+
+!!! WARNING
+    The current version does not check if there are enough individuals
+    to migrate, so if you have a deme size of 10, 5 demes and 3 migrants,
+    the code will break. This will be sorted soon.
+
+## Island models
+
+Island models do not wrap around. One and two Dimensions are supported.
+
+Of course, demes at borders will send and receive less individuals than
+more cosmopolitan demes at the center.
+
+# Recombination
+
+Note that the relationship between recombination and genetic distance
+(d in cM) is:
+
+
+$$ P[recomb] = \frac{1 - e^{\frac{-2d}{100}}}{2} $$
+
+It is *not*:
+
+$$ P[recomb] = d $$
+
+
+<!-- Markdeep: --><script src="markdeep.min.js"></script><script>window.alreadyProcessedMarkdeep||(document.body.style.visibility="visible")</script>
