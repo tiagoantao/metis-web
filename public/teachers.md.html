@@ -3,12 +3,52 @@
                             **Teaching notes**
                          [[Back to simulator](index.html)]
 
-# Introduction
+# Preliminary notes
 
-Most models should be straightforward and are not discussed here
+Most models should be straightforward and are not discussed here. Please
+contact us if you disagree.
+
+# Tweaks for teaching
+
+We have made some changes to the behavior of the simulations in order
+to insure a smoother experience. These changes are documented here
+
+## Sex generation
+
+Sex generators used in the teaching tool will always generate at least
+one element of each sex. This is particularly important for small
+populations (say with a N of 10) where there would be a reasonable
+probability that only one sex would be generated, thus stopping
+the simulation due to no mating possibilities.
+
+This should have no qualitative impact bu we suggest that, if you are
+interested in small populations - say in conservation settings - 
+that you discuss this with your students.
+
+# Models
+
+## Introductory models
+
+- Wright-Fisher. Standard, no sex. SNPs and Microsats
+- Wright-Fisher with sex
+- Changing initial frequency of derived allele
+- Stochasticity of models
+
+!!!
+    Unless otherwise noticed all models include male and female sex
 
 
-# Structured models
+## Population fluctuation
+
+- Decline or expansion
+
+## Selection
+
+- Dominant
+- Recessive
+- Heterozygote advantage
+
+## Structured populations
 
 Migration in structured models is given as an absolute value. For example:
 
@@ -20,14 +60,24 @@ deme will export 4 individuals, 2 for each of the remaining demes
     to migrate, so if you have a deme size of 10, 5 demes and 3 migrants,
     the code will break. This will be sorted soon.
 
-## Island models
+### Island models
 
 Island models do not wrap around. One and two Dimensions are supported.
 
 Of course, demes at borders will send and receive less individuals than
 more cosmopolitan demes at the center.
 
-# Recombination
+## Mating
+
+### Sex-ratio
+
+Specifies the sex-ratio of the population
+
+### Alpha-male
+
+Model where a single male sire x% of the population
+
+## Recombination
 
 Note that the relationship between probability of recombination and
 genetic distance (d in cM) is:
