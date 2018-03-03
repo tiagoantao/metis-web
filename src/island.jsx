@@ -141,31 +141,30 @@ export const IslandApp = (sources) => {
     return init
   })
 
-  const vdom$ = Rx.Observable
-                  .combineLatest(
-                    marker_type_c.DOM,
-                    deme_size_c.DOM, num_demes_c.DOM, num_migs_c.DOM,
-                    num_cycles_c.DOM, num_markers_c.DOM,
-                    exphe_plot.DOM, dexphe_plot.DOM)
-                  .map(([marker_type,
-                         num_demes, deme_size, num_migs,
-                         num_cycles, num_markers,
-                         exphe, dexphe]) =>
-                           <div>
-                             <div>
-                               {marker_type}
-                               {num_demes}
-                               {num_migs}
-                               {deme_size}
-                               {num_cycles}
-                               {num_markers}
-                               <br/>
-                               <button id={tag} value="1">Simulate</button>
-                             </div>
-                             {exphe}
-                             {dexphe}
-                           </div>
-                  )
+  const vdom$ = Rx.Observable.combineLatest(
+    marker_type_c.DOM,
+    deme_size_c.DOM, num_demes_c.DOM, num_migs_c.DOM,
+    num_cycles_c.DOM, num_markers_c.DOM,
+    exphe_plot.DOM, dexphe_plot.DOM).map(
+      ([marker_type,
+        num_demes, deme_size, num_migs,
+        num_cycles, num_markers,
+        exphe, dexphe]) =>
+          <div>
+            <div>
+              {marker_type}
+              {num_demes}
+              {num_migs}
+              {deme_size}
+              {num_cycles}
+              {num_markers}
+              <br/>
+              <button id={tag} value="1">Simulate</button>
+            </div>
+            {exphe}
+            {dexphe}
+          </div>
+    )
 
   const sinks = {
     DOM: vdom$,
