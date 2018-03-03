@@ -211,12 +211,12 @@ export const App = (sources) => {
         <div style={event === 'menu-sel-drift' ? 'display: block' : 'display: none'}>
           {arr[12]}
         </div>
-	<div>
-	  <p><small>This is metis-web.
-	  A population genetics' learning tool on the web.
-	    <a href="mailto:tiagoantao@gmail.com">Contact us</a></small> </p>
-	</div>
-	<div style="width: 50%; margin-left: auto"><img src="umt.jpg"/></div>
+        <div>
+          <p><small>This is metis-web.
+          A population genetics' learning tool on the web.
+            <a href="mailto:tiagoantao@gmail.com">Contact us</a></small> </p>
+        </div>
+        <div style="width: 50%; margin-left: auto"><img src="umt.jpg"/></div>
       </div>
     })
 

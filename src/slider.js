@@ -8,10 +8,10 @@ export const Slider = (sources, props) => {
     const print = props.print || eq
 
     const new_value$ = DOM
-	  .select('input')
-	  .events('input')
-	  .map(ev => conv(ev.target.value))
-	  .startWith(props.value)
+          .select('input')
+          .events('input')
+          .map(ev => conv(ev.target.value))
+          .startWith(props.value)
 
     const vdom$ = new_value$
           .map(state =>
@@ -27,8 +27,8 @@ export const Slider = (sources, props) => {
               )
 
     const sinks = {
-	DOM: vdom$,
-	value: new_value$
+        DOM: vdom$,
+        value: new_value$
     }
 
     return sinks
