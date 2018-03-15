@@ -93,12 +93,10 @@ export const SimpleFreqApp = (sources) => {
           marker: exp_he[i].marker,
           cycle: time_fix[i].cycle,
           exp_he: Math.round(100 * exp_he[i].y) / 100
-	})
+        })
       }
       return comb
     })
-
-  exphe_timefix$.subscribe(x => console.log(111, x))
 
   const freq_start_c = Slider(
     {DOM: sources.DOM},
@@ -159,7 +157,7 @@ export const SimpleFreqApp = (sources) => {
     const init = {
       num_cycles,
       state: prepare_sim_state(tag, pop_size,
-			       num_markers, 100 - freq_start)
+                               num_markers, 100 - freq_start)
     }
     return init
   })
@@ -183,7 +181,7 @@ export const SimpleFreqApp = (sources) => {
                         <br/>
                         <button id={tag} value="1">Simulate</button>
                       </div>
-		      <h2>Time to fixation and Expected Hz</h2>
+                      <h2>Time to fixation and Expected Hz</h2>
                       {time_html}
                       {freqal}
                       {exphe}
