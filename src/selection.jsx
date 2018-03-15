@@ -24,32 +24,32 @@ import {
 
 
 const prepare_sim_state = (tag, pop_size, num_markers, freq_start,
-  sel, marker_name, feature_position) => {
-  const genome_size = num_markers
+                           sel, marker_name, feature_position) => {
+                             const genome_size = num_markers
 
-  const unlinked_genome = gn_generate_unlinked_genome(
-    genome_size, () => {return new gn_SNP()})
-  const species = new sp_Species('unlinked', unlinked_genome)
-  const mater_factory = (reproductor, individuals) =>
-    new ops_rep_AutosomeSNPMater(
-      reproductor, individuals,
-      sel, marker_name, feature_position)
-  const operators = ops_wrap_list([
-    new ops_rep_SexualReproduction(species, pop_size, [], mater_factory),
-    new ops_culling_KillOlderGenerations(),
-    new ops_stats_demo_SexStatistics(),
-    new ops_stats_NumAl(),
-    new ops_stats_hz_ExpHe()
-  ])
-  const individuals = p_generate_n_inds(pop_size, () =>
-    i_assign_random_sex(integrated_generate_individual_with_genome(
-      species, 0,
-      (ind) => integrated_create_freq_genome(freq_start / 100, ind))))
-  const state = {
-    global_parameters: {tag, stop: false},
-    individuals, operators, cycle: 1}
-  return state
-}
+                             const unlinked_genome = gn_generate_unlinked_genome(
+                               genome_size, () => {return new gn_SNP()})
+                             const species = new sp_Species('unlinked', unlinked_genome)
+                             const mater_factory = (reproductor, individuals) =>
+                               new ops_rep_AutosomeSNPMater(
+                                 reproductor, individuals,
+                                 sel, marker_name, feature_position)
+                             const operators = ops_wrap_list([
+                               new ops_rep_SexualReproduction(species, pop_size, [], mater_factory),
+                               new ops_culling_KillOlderGenerations(),
+                               new ops_stats_demo_SexStatistics(),
+                               new ops_stats_NumAl(),
+                               new ops_stats_hz_ExpHe()
+                             ])
+                             const individuals = p_generate_n_inds(pop_size, () =>
+                               i_assign_random_sex(integrated_generate_individual_with_genome(
+                                 species, 0,
+                                 (ind) => integrated_create_freq_genome(freq_start / 100, ind))))
+                             const state = {
+                               global_parameters: {tag, stop: false},
+                               individuals, operators, cycle: 1}
+                             return state
+                           }
 
 
 export const SelectionAppFactory = (sel_type) => (sources) => {
@@ -74,7 +74,7 @@ export const SelectionAppFactory = (sel_type) => (sources) => {
 
   const s_c = Slider(
     {DOM: sources.DOM},
-    {className: '.' + tag + '-s', label: 'Selection coefficient s (%)',
+    {className: '.' + tag + '-s', label: 'Selection coefficient s',
      step: 1, min: 0, value: 10, max: 20, print: (x) => x / 100})
   let s
   s_c.value.subscribe(v => s = v / 100)
@@ -132,37 +132,42 @@ export const SelectionAppFactory = (sel_type) => (sources) => {
       case 'hz':
         sel = {0: 1 - s, 1: 1, 2: 1 - s}
         break
+      case 'hnz':
+        sel = {0: 1, 1: 1 - s, 2: 1}
+        break
     }
     const init = {
       num_cycles, state: prepare_sim_state(
-	tag, pop_size, num_markers, freq_start, sel, 'unlinked', 0)
+        tag, pop_size, num_markers, freq_start, sel, 'unlinked', 0)
     }
     return init
   })
 
-  const vdom$ = Rx.Observable
-                  .combineLatest(
-                    s_c.DOM,
-                    freq_start_c.DOM, pop_size_c.DOM,
-                    num_cycles_c.DOM, num_markers_c.DOM,
-                    exphe_plot.DOM, numal_plot.DOM)
-                  .map(([s, freq_start, pop_size, num_cycles, num_markers,
-                         exphe, numal]) =>
-                           <div>
-                             <h1>Selection {sel_type}</h1>
-                             <div>
-                               {s}
-                               {freq_start}
-                               {pop_size}
-                               {num_cycles}
-                               {num_markers}
-                               <br/>
-                               <button id={tag} value="1">Simulate</button>
-                             </div>
-                             {exphe}
-                             {numal}
-                           </div>
-                  )
+  const vdom$ = Rx.Observable.combineLatest(
+    s_c.DOM,
+    freq_start_c.DOM, pop_size_c.DOM,
+    num_cycles_c.DOM, num_markers_c.DOM,
+    exphe_plot.DOM, numal_plot.DOM).map(
+      ([s, freq_start, pop_size, num_cycles, num_markers,
+        exphe, numal]) =>
+          <div>
+            <h1>Selection {sel_type}</h1>
+            <div>
+              {s}
+              {freq_start}
+              {pop_size}
+              {num_cycles}
+              {num_markers}
+              <br/>
+              <div style="text-align: center">
+
+                <button id={tag} value="1">Simulate</button>
+              </div>
+            </div>
+            {exphe}
+            {numal}
+          </div>
+    )
 
   const sinks = {
     DOM: vdom$,

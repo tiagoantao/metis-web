@@ -74,6 +74,10 @@ export const App = (sources) => {
                           .startWith({timeStamp: -1,
                                       target: {id: 'menu-hz'}})
 
+  const hnz_menu$ = sources.DOM.select('#menu-hnz').events('click')
+                           .startWith({timeStamp: -1,
+                                       target: {id: 'menu-hnz'}})
+  
   const island_menu$ = sources.DOM.select('#menu-island').events('click')
                               .startWith({timeStamp: -1,
                                           target: {id: 'menu-island'}})
@@ -99,7 +103,7 @@ export const App = (sources) => {
     main_page$,
     single_menu$, wf_menu$, freq_menu$, stoch_menu$,
     decline_menu$,
-    dominant_menu$, recessive_menu$, hz_menu$,
+    dominant_menu$, recessive_menu$, hz_menu$, hnz_menu$,
     island_menu$, stoned_menu$,
     sex_ratio_menu$, alpha_menu$,
     sel_drift_menu$)
@@ -136,6 +140,9 @@ export const App = (sources) => {
   const hz_pop = SelectionAppFactory('hz')({
     DOM: sources.DOM, metis: sources.metis})
   const hz_dom$ = hz_pop.DOM
+  const hnz_pop = SelectionAppFactory('hnz')({
+    DOM: sources.DOM, metis: sources.metis})
+  const hnz_dom$ = hnz_pop.DOM
 
   const island_pop = IslandApp({DOM: sources.DOM, metis: sources.metis})
   const il_dom$ = island_pop.DOM
@@ -158,7 +165,7 @@ export const App = (sources) => {
       recent_event$, uikit_template$, main_template$,
       sp_dom$, wf_dom$, fq_dom$, sch_dom$,
       dc_dom$,
-      dom_dom$, rec_dom$, hz_dom$,
+      dom_dom$, rec_dom$, hz_dom$, hnz_dom$,
       il_dom$, sst_dom$,
       sr_dom$, ap_dom$,
       sd_dom$)
@@ -169,8 +176,8 @@ export const App = (sources) => {
       arr = arr.slice(3)
       return <div>
         <div innerHTML={menu}/>
-	<div style={event === 'main' ? 'display: block' : 'display: none'}
-	     innerHTML={main}/>
+        <div style={event === 'main' ? 'display: block' : 'display: none'}
+             innerHTML={main}/>
 
         <div style={event === 'menu-single' ? 'display: block' : 'display: none'}>
           {arr[0]}
@@ -196,24 +203,27 @@ export const App = (sources) => {
         <div style={event === 'menu-hz' ? 'display: block' : 'display: none'}>
           {arr[7]}
         </div>
-        <div style={event === 'menu-island' ? 'display: block' : 'display: none'}>
+        <div style={event === 'menu-hnz' ? 'display: block' : 'display: none'}>
           {arr[8]}
         </div>
-        <div style={event === 'menu-stoned' ? 'display: block' : 'display: none'}>
+        <div style={event === 'menu-island' ? 'display: block' : 'display: none'}>
           {arr[9]}
         </div>
-        <div style={event === 'menu-sex-ratio' ? 'display: block' : 'display: none'}>
+        <div style={event === 'menu-stoned' ? 'display: block' : 'display: none'}>
           {arr[10]}
         </div>
-        <div style={event === 'menu-alpha' ? 'display: block' : 'display: none'}>
+        <div style={event === 'menu-sex-ratio' ? 'display: block' : 'display: none'}>
           {arr[11]}
         </div>
-        <div style={event === 'menu-sel-drift' ? 'display: block' : 'display: none'}>
+        <div style={event === 'menu-alpha' ? 'display: block' : 'display: none'}>
           {arr[12]}
+        </div>
+        <div style={event === 'menu-sel-drift' ? 'display: block' : 'display: none'}>
+          {arr[13]}
         </div>
         <div>
           <p><small>This is metis-web.
-          A population genetics' learning tool on the web.
+            A population genetics' learning tool on the web.
             <a href="mailto:tiagoantao@gmail.com">Contact us</a></small> </p>
         </div>
         <div style="width: 50%; margin-left: auto"><img src="umt.jpg"/></div>
@@ -225,7 +235,7 @@ export const App = (sources) => {
     metis: Rx.Observable.merge(
       wf_pop.metis, single_pop.metis, freq_pop.metis, stoch_pop.metis,
       decline_pop.metis, 
-      dominant_pop.metis, recessive_pop.metis, hz_pop.metis,
+      dominant_pop.metis, recessive_pop.metis, hz_pop.metis, hnz_pop.metis,
       island_pop.metis, stoned_pop.metis,
       sex_ratio_pop.metis, alpha_pop.metis,
       sel_drift_pop.metis)
