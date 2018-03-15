@@ -66,6 +66,10 @@ export const SelectionDriftApp = (sources) => {
 
   const htag1 = 'hsel-drift1'
   const htag2 = 'hsel-drift2'
+
+  const hntag1 = 'hnsel-drift1'
+  const hntag2 = 'hnsel-drift2'
+
   
   const my_dmetis1$ = sources.metis.filter(
     state => state.global_parameters.tag === dtag1)
@@ -79,6 +83,10 @@ export const SelectionDriftApp = (sources) => {
     state => state.global_parameters.tag === htag1)
   const my_hmetis2$ = sources.metis.filter(
     state => state.global_parameters.tag === htag2)
+  const my_hnmetis1$ = sources.metis.filter(
+    state => state.global_parameters.tag === hntag1)
+  const my_hnmetis2$ = sources.metis.filter(
+    state => state.global_parameters.tag === hntag2)
 
   const dfreqal1$ = my_dmetis1$.map(state => {
     var cnt = 1
@@ -116,10 +124,23 @@ export const SelectionDriftApp = (sources) => {
       return {
         x: state.cycle, y: freqal, marker: 'M' + cnt++}})
   })
+  const hnfreqal1$ = my_hnmetis1$.map(state => {
+    var cnt = 1
+    return state.global_parameters.FreqAl.unlinked.map(freqal => {
+      return {
+        x: state.cycle, y: freqal, marker: 'M' + cnt++}})
+  })
+  const hnfreqal2$ = my_hnmetis2$.map(state => {
+    var cnt = 1
+    return state.global_parameters.FreqAl.unlinked.map(freqal => {
+      return {
+        x: state.cycle, y: freqal, marker: 'M' + cnt++}})
+  })
 
+  
   const s_c = Slider(
     {DOM: sources.DOM},
-    {className: '.' + tag + '-s', label: 'Selection coefficient s (%):',
+    {className: '.' + tag + '-s', label: 'Selection coefficient s:',
      step: 1, min: 0, value: 10, max: 20, print: (x) => x / 100})
   let s
   s_c.value.subscribe(v => s = v / 100)
@@ -180,6 +201,12 @@ export const SelectionDriftApp = (sources) => {
   const hfreqal2_plot = Plot(
     {id: tag + '-hfreqal2', y_label: 'Frequency of Derived Allele'},
     {DOM: sources.DOM, vals: hfreqal2$})
+  const hnfreqal1_plot = Plot(
+    {id: tag + '-hnfreqal1', y_label: 'Frequency of Derived Allele'},
+    {DOM: sources.DOM, vals: hnfreqal1$})
+  const hnfreqal2_plot = Plot(
+    {id: tag + '-hnfreqal2', y_label: 'Frequency of Derived Allele'},
+    {DOM: sources.DOM, vals: hnfreqal2$})
 
   
   const simulate$ = sources.DOM.select('#' + tag)
@@ -236,18 +263,36 @@ export const SelectionDriftApp = (sources) => {
         htag2, pop_size2, num_markers, 100 - freq_start, sel, 'unlinked', 0)}
     return init
   })
+  const hnmetis1$ = simulate$.map(_ => {
+    const sel = {0: 1, 1: 1 - s, 2: 1}
+    const init = {
+      num_cycles,
+      state: prepare_sim_state(
+        hntag1, pop_size1, num_markers, 100 - freq_start, sel, 'unlinked', 0)}
+    return init
+  })
+  const hnmetis2$ = simulate$.map(_ => {
+    const sel = {0: 1, 1: 1 - s, 2: 1}
+    const init = {
+      num_cycles,
+      state: prepare_sim_state(
+        hntag2, pop_size2, num_markers, 100 - freq_start, sel, 'unlinked', 0)}
+    return init
+  })
   
   const vdom$ = Rx.Observable.combineLatest(
     s_c.DOM, freq_start_c.DOM, pop_size1_c.DOM, pop_size2_c.DOM,
     num_cycles_c.DOM, num_markers_c.DOM,
     dfreqal1_plot.DOM, dfreqal2_plot.DOM,
     rfreqal1_plot.DOM, rfreqal2_plot.DOM,
-    hfreqal1_plot.DOM, hfreqal2_plot.DOM).map(
+    hfreqal1_plot.DOM, hfreqal2_plot.DOM,
+    hnfreqal1_plot.DOM, hnfreqal2_plot.DOM).map(
       ([s, freq_start, pop_size1, pop_size2,
         num_cycles, num_markers,
         dfreqal1, dfreqal2,
         rfreqal1, rfreqal2,
-        hfreqal1, hfreqal2]) =>
+        hfreqal1, hfreqal2,
+        hnfreqal1, hnfreqal2]) =>
           <div>
             <div>
               {s}
@@ -279,7 +324,6 @@ export const SelectionDriftApp = (sources) => {
                 <td>{rfreqal2}</td>
               </tr>
 
-
               <tr><td colSpan="2">
                 <h2>Heterozygote advantage</h2></td></tr>
               <tr>
@@ -287,6 +331,12 @@ export const SelectionDriftApp = (sources) => {
                 <td>{hfreqal2}</td>
               </tr>
 
+              <tr><td colSpan="2">
+                <h2>Heterozygote disadvantage</h2></td></tr>
+              <tr>
+                <td>{hnfreqal1}</td>
+                <td>{hnfreqal2}</td>
+              </tr>
               
             </table>
           </div>
@@ -295,7 +345,8 @@ export const SelectionDriftApp = (sources) => {
   const sinks = {
     DOM: vdom$,
     metis: Rx.Observable.merge(
-      hmetis1$, hmetis2$, rmetis1$, rmetis2$, dmetis1$, dmetis2$)
+      hnmetis1$, hnmetis2$, hmetis1$, hmetis2$,
+      rmetis1$, rmetis2$, dmetis1$, dmetis2$)
   }
   
   return sinks
