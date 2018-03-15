@@ -3,7 +3,7 @@ import Rx from 'rxjs/Rx'
 import {Plot} from './plot.js'
 import {Selector} from './selector.js'
 import {Slider} from './slider.js'
-
+import {Table} from './table.js'
 
 import {
   gn_generate_unlinked_genome,
@@ -25,34 +25,35 @@ import {
   sp_Species} from '@tiagoantao/metis-sim'
 
 
-const prepare_sim_state = (tag, num_demes, deme_size, num_migs,
-                           num_markers, marker_type) => {
-  const genome_size = num_markers
+const prepare_sim_state = (
+  tag, num_demes, deme_size, num_migs,
+  num_markers, marker_type) => {
+    const genome_size = num_markers
 
-  const unlinked_genome = gn_generate_unlinked_genome(
-    genome_size, () => {
-      return marker_type === 'SNP'?
-        new gn_SNP() :
-        new gn_MicroSatellite(Array.from(new Array(10), (x,i) => i))
+    const unlinked_genome = gn_generate_unlinked_genome(
+      genome_size, () => {
+        return marker_type === 'SNP'?
+               new gn_SNP() :
+               new gn_MicroSatellite(Array.from(new Array(10), (x,i) => i))
       })
-  const species = new sp_Species('unlinked', unlinked_genome)
-  const operators = ops_wrap_list([
-    new ops_rep_StructuredSexualReproduction(species, deme_size, num_demes),
-    new ops_culling_KillOlderGenerations(),
-    new ops_p_MigrationIslandFixed(num_migs),
-    new ops_stats_demo_SexStatistics(),
-    new ops_stats_hz_ExpHe(),
-    new ops_stats_hz_ExpHeDeme()
-  ])
-  const individuals = p_generate_n_inds(deme_size * num_demes, () =>
-    i_assign_random_sex(integrated_generate_individual_with_genome(
-      species, 0, integrated_create_randomized_genome)))
-  p_assign_fixed_size_population(individuals, num_demes)
-  const state = {
-    global_parameters: {tag, stop: false},
-    individuals, operators, cycle: 1}
-  return state
-}
+    const species = new sp_Species('unlinked', unlinked_genome)
+    const operators = ops_wrap_list([
+      new ops_rep_StructuredSexualReproduction(species, deme_size, num_demes),
+      new ops_culling_KillOlderGenerations(),
+      new ops_p_MigrationIslandFixed(num_migs),
+      new ops_stats_demo_SexStatistics(),
+      new ops_stats_hz_ExpHe(),
+      new ops_stats_hz_ExpHeDeme()
+    ])
+    const individuals = p_generate_n_inds(deme_size * num_demes, () =>
+      i_assign_random_sex(integrated_generate_individual_with_genome(
+        species, 0, integrated_create_randomized_genome)))
+    p_assign_fixed_size_population(individuals, num_demes)
+    const state = {
+      global_parameters: {tag, stop: false},
+      individuals, operators, cycle: 1}
+    return state
+  }
 
 
 export const IslandApp = (sources) => {
@@ -71,7 +72,6 @@ export const IslandApp = (sources) => {
 
   const dexphe$ = my_metis$.map(state => {
     var cnt = 1
-      console.log(state.global_parameters)
     return state.global_parameters.DemeExpHe[0].unlinked.map(exphe => {
       return {
         x: state.cycle - 1, y: exphe, marker: 'M' + cnt++}})
@@ -120,6 +120,23 @@ export const IslandApp = (sources) => {
   let num_markers
   num_markers_c.value.subscribe(v => num_markers = v)
 
+  
+  const ht_table = Table(
+    {DOM: sources.DOM,
+     data: exphe$.startWith([])},
+    {fields: ['y', 'marker'],
+     headers: ['Expected Hz', 'Marker']}
+  )
+
+  const hs_table = Table(
+    {DOM: sources.DOM,
+     data: dexphe$.startWith([])},
+    {fields: ['y', 'marker'],
+     headers: ['Expected Hz', 'Marker']}
+  )
+
+  
+
   const exphe_plot = Plot(
     {id: tag + '-exphe', y_label: 'Expected Hz - Meta population'},
     {DOM: sources.DOM, vals: exphe$})
@@ -145,10 +162,12 @@ export const IslandApp = (sources) => {
     marker_type_c.DOM,
     deme_size_c.DOM, num_demes_c.DOM, num_migs_c.DOM,
     num_cycles_c.DOM, num_markers_c.DOM,
+    hs_table.DOM, ht_table.DOM,
     exphe_plot.DOM, dexphe_plot.DOM).map(
       ([marker_type,
         num_demes, deme_size, num_migs,
         num_cycles, num_markers,
+        hs_html, ht_html,
         exphe, dexphe]) =>
           <div>
             <div>
@@ -159,11 +178,23 @@ export const IslandApp = (sources) => {
               {num_cycles}
               {num_markers}
               <br/>
-              <button id={tag} value="1">Simulate</button>
+              <div style="text-align: center">
+                <button id={tag} value="1">Simulate</button>
+              </div>
             </div>
-            {exphe}
-            {dexphe}
-          </div>
+              <table align="center">
+                <tr>
+                  <td>First deme</td>
+                  <td>Total population</td>
+                </tr>
+                <tr>
+                  <td>{hs_html}</td>
+                  <td>{ht_html}</td>
+                </tr>
+              </table>
+              {exphe}
+              {dexphe}
+            </div>
     )
 
   const sinks = {
