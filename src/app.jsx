@@ -106,19 +106,19 @@ export const App = (sources) => {
     dominant_menu$, recessive_menu$, hz_menu$, hnz_menu$,
     island_menu$, stoned_menu$,
     sex_ratio_menu$, alpha_menu$,
-    sel_drift_menu$)
-                          .map(entries => {
-                            var ts = -10
-                            var id = ""
-                            for (var entry of entries) {
-                              if (entry.timeStamp > ts) {
-                                ts = entry.timeStamp
-                                id = entry.target.id
-                              }
-                            }
-                            console.log(id)
-                            return id
-                          })
+    sel_drift_menu$).map(
+      entries => {
+        var ts = -10
+        var id = ""
+        for (var entry of entries) {
+          if (entry.timeStamp > ts) {
+            ts = entry.timeStamp
+            id = entry.target.id
+          }
+        }
+        console.log(id)
+        return id
+      })
 
   const single_pop = SimpleApp({DOM: sources.DOM, metis: sources.metis})
   const sp_dom$ = single_pop.DOM
