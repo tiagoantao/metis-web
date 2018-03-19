@@ -16,6 +16,11 @@
     "population genetics",
     "simulation"
   ],
+  "author": {
+    "name": "Tiago Antao",
+    "email": "tiago@tiago.org",
+    "url": "http://tiago.org"
+  },
   "scripts": {
     "start": "node scripts/start.js",
     "test": "node scripts/test.js",
