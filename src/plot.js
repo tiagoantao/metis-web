@@ -31,6 +31,7 @@ const plot_spec = conf => {
         }
     }`}
 
+
 const prepare_plot = (vl_text, conf, points, cb) => {
     const vl_json = JSON.parse(vl_text)
     vl_json.width = conf.width || 600
@@ -53,6 +54,7 @@ const update_plot = (view, points) => {
     view.insert('lines', points).run()
     //document.getElementById('vega').style.display = 'none'
 }
+
 
 const clean_plot = (view) => {
     view.remove('lines', _ => true).run()
@@ -96,9 +98,9 @@ export const Plot = (conf, sources) => {
 
     const vdom$ = state$.map(state => div(
         {attrs: {
-	    id: conf.id,
-	    style: 'margin: auto'
-	}}))
+            id: conf.id,
+            style: 'margin: auto'
+        }}))
 
     const sinks = {
         update: state$.startWith(null),
