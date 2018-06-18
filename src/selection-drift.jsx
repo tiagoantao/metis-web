@@ -4,13 +4,9 @@ import {Plot} from './plot.js'
 import {Selector} from './selector.js'
 import {Slider} from './slider.js'
 
+import {create_unlinked_species} from './sim.js'
 
 import {
-  gn_generate_unlinked_genome,
-  gn_SNP,
-  i_assign_random_sex,
-  integrated_create_freq_genome,
-  integrated_generate_individual_with_genome,
   ops_culling_KillOlderGenerations,
   ops_rep_AutosomeSNPMater,
   ops_rep_SexualReproduction,
@@ -20,17 +16,13 @@ import {
   ops_stats_TimeFix,
   ops_stats_NumAl,
   ops_wrap_list,
-  p_generate_n_inds,
-  sp_Species} from '@tiagoantao/metis-sim'
+  p_generate_n_inds
+} from '@tiagoantao/metis-sim'
 
 
 const prepare_sim_state = (tag, pop_size, num_markers, freq_start,
   sel, marker_name, feature_position) => {
-  const genome_size = num_markers
-
-  const unlinked_genome = gn_generate_unlinked_genome(
-    genome_size, () => {return new gn_SNP()})
-    const species = new sp_Species('unlinked', unlinked_genome)
+    const species = create_unlinked_species(num_markers, 'SNP')
     const mater_factory = (reproductor, individuals) =>
       new ops_rep_AutosomeSNPMater(
         reproductor, individuals,
@@ -213,8 +205,6 @@ export const SelectionDriftApp = (sources) => {
                            .events('click')
                            .map(ev => parseInt(ev.target.value))
 
-  simulate$.subscribe((x) => console.log(2123, x))
-  
   const dmetis1$ = simulate$.map(_ => {
     const sel = {0: 1 - s, 1: 1, 2: 1}
     const init = {
@@ -304,41 +294,43 @@ export const SelectionDriftApp = (sources) => {
                 <button id={tag} value="1">Simulate</button>
               </div>
             </div>
-            <table>
-              <tr>
-                <td>{pop_size1}</td>
-                <td>{pop_size2}</td>
-              </tr>
+            <div style="margin: auto">
+              <table>
+                <tr>
+                  <td>{pop_size1}</td>
+                  <td>{pop_size2}</td>
+                </tr>
 
-              <tr><td colSpan="2">
-                <h2>Dominant selection</h2></td></tr>
-              <tr>
-                <td>{dfreqal1}</td>
-                <td>{dfreqal2}</td>
-              </tr>
+                <tr><td colSpan="2">
+                  <h2>Dominant selection</h2></td></tr>
+                <tr>
+                  <td>{dfreqal1}</td>
+                  <td>{dfreqal2}</td>
+                </tr>
 
-              <tr><td colSpan="2">
-                <h2>Recessive selection</h2></td></tr>
-              <tr>
-                <td>{rfreqal1}</td>
-                <td>{rfreqal2}</td>
-              </tr>
+                <tr><td colSpan="2">
+                  <h2>Recessive selection</h2></td></tr>
+                <tr>
+                  <td>{rfreqal1}</td>
+                  <td>{rfreqal2}</td>
+                </tr>
 
-              <tr><td colSpan="2">
-                <h2>Heterozygote advantage</h2></td></tr>
-              <tr>
-                <td>{hfreqal1}</td>
-                <td>{hfreqal2}</td>
-              </tr>
+                <tr><td colSpan="2">
+                  <h2>Heterozygote advantage</h2></td></tr>
+                <tr>
+                  <td>{hfreqal1}</td>
+                  <td>{hfreqal2}</td>
+                </tr>
 
-              <tr><td colSpan="2">
-                <h2>Heterozygote disadvantage</h2></td></tr>
-              <tr>
-                <td>{hnfreqal1}</td>
-                <td>{hnfreqal2}</td>
-              </tr>
-              
-            </table>
+                <tr><td colSpan="2">
+                  <h2>Heterozygote disadvantage</h2></td></tr>
+                <tr>
+                  <td>{hnfreqal1}</td>
+                  <td>{hnfreqal2}</td>
+                </tr>
+
+              </table>
+            </div>
           </div>
     )
 

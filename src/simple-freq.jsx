@@ -179,7 +179,9 @@ export const SimpleFreqApp = (sources) => {
                         {num_cycles}
                         {num_markers}
                         <br/>
-                        <button id={tag} value="1">Simulate</button>
+                        <div style="text-align: center">
+                          <button id={tag} value="1">Simulate</button>
+                        </div>
                       </div>
                       <h2>Time to fixation and Expected Hz</h2>
                       {time_html}
