@@ -27,7 +27,7 @@
     "build": "node scripts/build.js"
   },
   "dependencies": {
-    "@cycle/dom": "^20.1.0",
+    "@cycle/dom": "=20.1.0",
     "@cycle/rxjs-run": "^8.0.0",
     "@tiagoantao/metis-sim": "github:tiagoantao/metis-sim",
     "d3": "^4.12.0",

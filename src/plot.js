@@ -45,7 +45,6 @@ const prepare_plot = (vl_text, conf, points, cb) => {
     view.initialize(id_)
     view.insert('lines', points)
     view.run()
-
     return view
 }
 
@@ -84,7 +83,6 @@ export const Plot = (conf, sources) => {
         let points = []
         for (let x_point of poses) {
             if (x_point.x < max_cycle && clean) {
-                console.log(2222, x_point)
                 clean_plot(view)
             }
             max_cycle = x_point.x
@@ -92,7 +90,7 @@ export const Plot = (conf, sources) => {
             points.push(x_point)
         }
         if (view) {
-            update_plot(view, points, a => console.log(123, a))
+            update_plot(view, points)
         }
     })
 
