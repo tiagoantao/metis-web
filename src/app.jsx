@@ -14,6 +14,7 @@ import {SteppingStoneApp} from './stepping-stone'
 import {SexRatioApp} from './sex-ratio'
 import {AlphaApp} from './alpha'
 import {SelectionDriftApp} from './selection-drift'
+import {RecombNeutralApp} from './recomb-neutral'
 
 
 const load_url = (url, cb) => {
@@ -91,13 +92,17 @@ export const App = (sources) => {
                                              target: {id: 'menu-sex-ratio'}})
 
   const alpha_menu$ = sources.DOM.select('#menu-alpha').events('click')
-                                 .startWith({timeStamp: -1,
-                                             target: {id: 'menu-alpha'}})
+                             .startWith({timeStamp: -1,
+                                         target: {id: 'menu-alpha'}})
   
   const sel_drift_menu$ = sources.DOM.select('#menu-sel-drift').events('click')
                                  .startWith({timeStamp: -1,
                                              target: {id: 'menu-sel-drift'}})
-  
+
+  const recomb_neutral_menu$ = sources.DOM.select('#menu-recomb-neutral').events('click')
+                                 .startWith({timeStamp: -1,
+                                             target: {id: 'menu-recomb-neutral'}})
+
   
   const recent_event$ = Rx.Observable.combineLatest(
     main_page$,
@@ -106,7 +111,8 @@ export const App = (sources) => {
     dominant_menu$, recessive_menu$, hz_menu$, hnz_menu$,
     island_menu$, stoned_menu$,
     sex_ratio_menu$, alpha_menu$,
-    sel_drift_menu$).map(
+    sel_drift_menu$,
+    recomb_neutral_menu$).map(
       entries => {
         var ts = -10
         var id = ""
@@ -159,6 +165,10 @@ export const App = (sources) => {
   const sel_drift_pop = SelectionDriftApp({DOM: sources.DOM, metis: sources.metis})
   const sd_dom$ = sel_drift_pop.DOM
 
+  const recomb_neutral_pop = RecombNeutralApp({DOM: sources.DOM, metis: sources.metis})
+  const rn_dom$ = recomb_neutral_pop.DOM
+
+  
   
   const vdom$ = Rx
     .Observable.combineLatest(
@@ -168,7 +178,8 @@ export const App = (sources) => {
       dom_dom$, rec_dom$, hz_dom$, hnz_dom$,
       il_dom$, sst_dom$,
       sr_dom$, ap_dom$,
-      sd_dom$)
+      sd_dom$,
+      rn_dom$)
     .map(arr => {
       const event = arr[0]
       const menu = arr[1].responseText
@@ -221,6 +232,9 @@ export const App = (sources) => {
         <div style={event === 'menu-sel-drift' ? 'display: block' : 'display: none'}>
           {arr[13]}
         </div>
+        <div style={event === 'menu-recomb-neutral' ? 'display: block' : 'display: none'}>
+          {arr[14]}
+        </div>
         <div>
           <p><small>This is metis-web.
             A population genetics' learning tool on the web.
@@ -238,7 +252,8 @@ export const App = (sources) => {
       dominant_pop.metis, recessive_pop.metis, hz_pop.metis, hnz_pop.metis,
       island_pop.metis, stoned_pop.metis,
       sex_ratio_pop.metis, alpha_pop.metis,
-      sel_drift_pop.metis)
+      sel_drift_pop.metis,
+      recomb_neutral_pop.metis)
     
   }
   
