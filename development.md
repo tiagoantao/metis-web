@@ -12,7 +12,11 @@ Developing
 
 Do
 
-`npm run start`
+
+```sh
+npm install
+npm run start
+```
 
 to start the development server. If there are problems do the usual
 
@@ -29,11 +33,3 @@ The system will auto-reload content. Unless you change the layout
 - `npm install` (on a first run)
 - `node build.js`
 
-Deployment
-==========
-
-<style class="fallback">body{visibility:hidden;white-space:pre;font-family:monospace}</style>
-
-<script src="https://casual-effects.com/markdeep/latest/markdeep.min.js"></script>
-
-<script>window.alreadyProcessedMarkdeep||(document.body.style.visibility="visible")</script>
