@@ -16,7 +16,10 @@ import {
   ops_stats_TimeFix,
   ops_stats_NumAl,
   ops_wrap_list,
-  p_generate_n_inds
+  p_generate_n_inds,
+  i_assign_random_sex,
+  integrated_generate_individual_with_genome,
+  integrated_create_freq_genome
 } from '@tiagoantao/metis-sim'
 
 
